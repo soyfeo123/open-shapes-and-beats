@@ -1,0 +1,51 @@
+ManifestFileVersion: 0
+CRC: 192622854
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: a08e8a7a08fd43bf082105d28beeff8f
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: cddf137ccf19b52ba4b34248a0bf6914
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 61
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 104
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: afe3889f23dac44ae85dd330fbb8dcfa, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b5e5d365208824abcab4100134a9d952, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4b749bdc699b1415b86e88b6472f52c8, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 157
+  Script: {instanceID: 0}
+- Class: 196
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Levels/ISaidMeow/Level.unity
+Dependencies: []
