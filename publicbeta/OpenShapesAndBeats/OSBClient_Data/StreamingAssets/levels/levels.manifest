@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 1133734860
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: level_isaidmeow
+      Dependencies: {}
+    Info_1:
+      Name: level_isaidmeow_scene
+      Dependencies: {}

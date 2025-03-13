@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 3907031700
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: de9b727b26929cbb264094eaebcbc4b5
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 4a8cc3174ae2043bbcd0bc424ae56e47
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11500000, guid: 81e3423107b0b451cb0153b29931979b, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Levels/ISaidMeow/SongMetadata.asset
+Dependencies: []
