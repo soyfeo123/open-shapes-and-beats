@@ -108,13 +108,19 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
     public void Event_TogglePlayback()
     {
+        if(levelMusic == null)
+        {
+            Notification.CreateNotification("[_<_HEY!_>_]\nYou need to select a song first!", "[enter] got it", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Return, () => { } } });
+            return;
+        }
+
         isPlaying = !isPlaying;
-        if(levelMusic != null)
+        
         levelMusic.TimePosition = EditorPlayhead.Singleton.SongPosS;
         Debug.Log(levelMusic.TimePosition);
         if (isPlaying)
         {
-            if(levelMusic != null)
+            
             levelMusic.Play(EditorPlayhead.Singleton.SongPosS);
             playIcon.sprite = pauseIconSprite;
             OSBLevelEditorStaticValues.onPlay.Invoke((int)EditorPlayhead.Singleton.SongPosMS);
@@ -122,7 +128,7 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         else
         {
             OSBLevelEditorStaticValues.onStop.Invoke();
-            if(levelMusic != null)
+            
             levelMusic.Pause();
             playIcon.sprite = playIconSprite;
         }
