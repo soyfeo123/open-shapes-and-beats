@@ -155,9 +155,37 @@ namespace OSB.Editor
             MainLevelManager.Singleton.onFrame.AddListener(Frame);
             OSBLevelEditorStaticValues.onStop.AddListener(() =>
             {
+                if (hasActivated)
+                {
+                    Dispose();
+                }
+                else if (hasPrepared)
+                {
+                    GameObject.Destroy(mainObject);
+                    MainLevelManager.Singleton.onFrame.RemoveListener(Frame);
+                }
                 hasActivated = false;
                 hasPrepared = false;
                 shouldBeDisposed = false;
+                MainLevelManager.Singleton.onFrame.RemoveListener(Frame);
+                
+                Debug.Log("stop");
+            });
+            OSBLevelEditorStaticValues.onPlay.AddListener((time)=>
+            {
+                if(time > (int)objParams["Time"])
+                {
+                    
+                    hasActivated = true;
+                    hasPrepared = true;
+                    shouldBeDisposed = true;
+                    Debug.Log("play from actor is bad");
+                }
+                else
+                {
+                    MainLevelManager.Singleton.onFrame.AddListener(Frame);
+                    Debug.Log("i should reinitialize the object");
+                }
             });
         }
 
@@ -177,15 +205,19 @@ namespace OSB.Editor
 
         public virtual void Frame()
         {
-            if((MainLevelManager.Singleton.msTime == (int)objParams["Time"] - (int)objParams["Warning"]) && needsWarning && !hasPrepared)
+            if((MainLevelManager.Singleton.msTime >= (int)objParams["Time"] - (int)objParams["Warning"]) && needsWarning && !hasPrepared)
             {
                 Prepare();
             }
-            if(MainLevelManager.Singleton.msTime == (int)objParams["Time"] && !hasActivated)
+            else if(MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !needsWarning && !hasPrepared)
+            {
+                Prepare();
+            }
+            if(MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !hasActivated && needsWarning)
             {
                 ActivateAttack();
             }
-            if(MainLevelManager.Singleton.msTime == (int)objParams["Time"] + (int)objParams["Duration"] && !shouldBeDisposed)
+            if(MainLevelManager.Singleton.msTime >= (int)objParams["Time"] + (int)objParams["Duration"] && !shouldBeDisposed && needsWarning)
             {
                 Dispose();
             }
@@ -200,6 +232,10 @@ namespace OSB.Editor
 
         public void MoveBy(float x, float y)
         {
+            if(mainObject == null)
+            {
+                return;
+            }
             mainObject.transform.position += new Vector3(x, y, 0);
 
             if(rc != null)

@@ -6,9 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Warning.unity
+    guid: e4591804a1a554247acd30fdb17e6ba2
+  - enabled: 1
     path: Assets/Scenes/Tester.unity
     guid: 72f7cccf1b90e4379a348c42be946b20
   - enabled: 1
     path: Assets/Scenes/LevelEditor.unity
     guid: 492a737f0bdb4430da1d38602ef39527
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

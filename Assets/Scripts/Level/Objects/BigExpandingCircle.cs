@@ -7,7 +7,7 @@ public class BigExpandingCircle : LevelActor
     public BigExpandingCircle() : base()
     {
         needsWarning = true; // what do you think the default size speed should be?
-        objParams.Add("circleSizeSpeed", 0.48f);
+        objParams.Add("circleSizeSpeed", 0.6f);
     }
 
     public override void Prepare()
@@ -40,6 +40,7 @@ public class BigExpandingCircle : LevelActor
 
     public override void Dispose()
     {
+        if(mainObject != null)
         mainObject.transform.DOScale(0, 0.06f).SetEase(Ease.Linear).OnComplete(() =>
         {
             base.Dispose();

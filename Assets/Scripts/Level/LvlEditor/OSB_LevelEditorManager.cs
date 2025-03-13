@@ -45,7 +45,14 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
         var circle = new BigExpandingCircle();
         circle.objParams["Time"] = 5000;
-        
+
+        var debris = new FlyingProjectile();
+        debris.objParams["Time"] = 5500;
+
+        var debris_ = new FlyingProjectile();
+        debris_.objParams["Time"] = 5500;
+        var debrisv = new FlyingProjectile();
+        debrisv.objParams["Time"] = 5500;
     }
 
     string ConvertToMinutesAndSeconds(float seconds)
@@ -108,9 +115,11 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         {
             levelMusic.Play(EditorPlayhead.Singleton.SongPosS);
             playIcon.sprite = pauseIconSprite;
+            OSBLevelEditorStaticValues.onPlay.Invoke((int)EditorPlayhead.Singleton.SongPosMS);
         }
         else
         {
+            OSBLevelEditorStaticValues.onStop.Invoke();
             levelMusic.Pause();
             playIcon.sprite = playIconSprite;
         }
@@ -182,6 +191,15 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         }
     }
 
+    // Save Related Stuff
+
+    public void Event_NewLevel()
+    {
+        Notification.CreateNotification(@"[_<_NEW LEVEL_>_]
+All unsaved progress you've done in this level will be lost!
+<_You sure?_>", "[esc] no   [enter] yes", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Escape, ()=> { } }, { KeyCode.Return, () => { UnityEngine.SceneManagement.SceneManager.LoadScene("LevelEditor"); } }  } );
+    } 
+
 
     // Misc
 
@@ -211,4 +229,12 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 public static class OSBLevelEditorStaticValues
 {
     public static UnityEngine.Events.UnityEvent onStop = new UnityEngine.Events.UnityEvent();
+    public static UnityEngine.Events.UnityEvent<int> onPlay = new UnityEngine.Events.UnityEvent<int>();
+
+    [RuntimeInitializeOnLoadMethod]
+    public static void BandadeBugFix()
+    {
+        onStop.AddListener(()=> { });
+        onPlay.AddListener((thing)=> { Debug.Log("Play Fired"); });
+    }
 }

@@ -26,7 +26,7 @@ public class FlyingProjectile : LevelActor
 
     public FlyingProjectile() : base()
     {
-        
+        needsWarning = false;
     }
 
     public override void Prepare()
@@ -48,7 +48,8 @@ public class FlyingProjectile : LevelActor
         visualGoRoundRound.startAtRandomDir = false;
         LogicHitbox.AddToLA(this);
 
-        mainObject.transform.position = new Vector3(9, Random.Range(-4f, 4f), 0);
+        int randomValue = Random.Range((int)0, (int)3);
+        mainObject.transform.position = new Vector3(9, randomValue == 0 ? -3f : (randomValue == 1 ? 0 : (randomValue == 2 ? 3f : 0)), 0);
         direction = Random.Range(-30, -122) * Mathf.Deg2Rad; // ??? // NO WAY THAT ACTUALLY WORKED?????
 
         //rc.AddVisibilityRenderer();
@@ -57,6 +58,8 @@ public class FlyingProjectile : LevelActor
 
     public override void Frame()
     {
+        base.Frame();
+        if(hasPrepared)
         MoveBy(5f * Time.deltaTime * Mathf.Sin(direction), 5f * Time.deltaTime * Mathf.Cos(direction));
     }
 }
