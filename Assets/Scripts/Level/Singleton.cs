@@ -16,6 +16,13 @@ public class MBSingleton<T> : MonoBehaviour where T : MBSingleton<T>
             return mb_instance;
         }
     }
+    public static bool HasInstance
+    {
+        get
+        {
+            return mb_instance != null;
+        }
+    }
 
     private static void SetInstance(T instance)
     {
@@ -38,6 +45,13 @@ public class MBSingleton<T> : MonoBehaviour where T : MBSingleton<T>
 public class MBSingletonDestroy<T> : MonoBehaviour where T : MBSingletonDestroy<T>
 {
     private static T mb_instance;
+    public static bool HasInstance
+    {
+        get
+        {
+            return mb_instance != null;
+        }
+    }
     public static T Singleton
     {
         get
@@ -64,6 +78,14 @@ public class MBSingletonDestroy<T> : MonoBehaviour where T : MBSingletonDestroy<
     {
         SetInstance(this as T);
 
+    }
+
+    public void Destroy()
+    {
+        if (mb_instance)
+        {
+            GameObject.Destroy(mb_instance.gameObject);
+        }
     }
 
     //static T CreateInstance() => new GameObject($"{typeof(T).Name}(AutoCreated)", typeof(T)).GetComponent<T>();

@@ -130,9 +130,6 @@ namespace OSB.Editor
     public class LevelActor
     {
         public OSBPoint position;
-        public int warning;
-        public int duration;
-        public int time;
         public GameObject visual;
         public GameObject hitbox;
         public GameObject mainObject;
@@ -152,8 +149,8 @@ namespace OSB.Editor
             objParams.Add("Time", 99999);
             objParams.Add("Duration", 1000);
             objParams.Add("OutroDuration", 250);
-            MainLevelManager.Singleton.onFrame.AddListener(Frame);
-            OSBLevelEditorStaticValues.onStop.AddListener(() =>
+            
+            /*OSBLevelEditorStaticValues.onStop.AddListener(() =>
             {
                 if (hasActivated)
                 {
@@ -173,7 +170,7 @@ namespace OSB.Editor
             });
             OSBLevelEditorStaticValues.onPlay.AddListener((time)=>
             {
-                if(time > (int)objParams["Time"])
+                if(time > (float)objParams["Time"])
                 {
                     
                     hasActivated = true;
@@ -186,14 +183,15 @@ namespace OSB.Editor
                     MainLevelManager.Singleton.onFrame.AddListener(Frame);
                     Debug.Log("i should reinitialize the object");
                 }
-            });
+            });*/
         }
 
         public virtual void Prepare()
         {
-            mainObject = new GameObject("Spawn-" + UnityEngine.Random.Range(462, 9263));
+            mainObject = new GameObject(Utils.GenerateUniqueName("Spawn"));
             visual = new GameObject("Visual");
             visual.transform.parent = mainObject.transform;
+            MainLevelManager.Singleton.onFrame.AddListener(Frame);
             hasPrepared = true;
             
         }
@@ -205,21 +203,24 @@ namespace OSB.Editor
 
         public virtual void Frame()
         {
-            if((MainLevelManager.Singleton.msTime >= (int)objParams["Time"] - (int)objParams["Warning"]) && needsWarning && !hasPrepared)
+            if (!OSBLevelEditorStaticValues.IsInEditor)
             {
-                Prepare();
-            }
-            else if(MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !needsWarning && !hasPrepared)
-            {
-                Prepare();
-            }
-            if(MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !hasActivated && needsWarning)
-            {
-                ActivateAttack();
-            }
-            if(MainLevelManager.Singleton.msTime >= (int)objParams["Time"] + (int)objParams["Duration"] && !shouldBeDisposed && needsWarning)
-            {
-                Dispose();
+                if ((MainLevelManager.Singleton.msTime >= (int)objParams["Time"] - (int)objParams["Warning"]) && needsWarning && !hasPrepared)
+                {
+                    Prepare();
+                }
+                else if (MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !needsWarning && !hasPrepared)
+                {
+                    Prepare();
+                }
+                if (MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !hasActivated && needsWarning)
+                {
+                    ActivateAttack();
+                }
+                if (MainLevelManager.Singleton.msTime >= (int)objParams["Time"] + (int)objParams["Duration"] && !shouldBeDisposed && needsWarning)
+                {
+                    Dispose();
+                }
             }
         }
 

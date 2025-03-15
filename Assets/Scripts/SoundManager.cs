@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+using UnityEngine.Events;
 
 public class SoundManager : MBSingleton<SoundManager>
 {
@@ -17,13 +19,13 @@ public class SoundManager : MBSingleton<SoundManager>
         PlaySound(Resources.Load(resourcePath) as AudioClip);
     }
 
-    public void PlaySound(AudioClip clip)
+    public void PlaySound(AudioClip clip, float volume = 0.75f)
     {
         if(sfxSource == null)
         {
-            GameObject go = new GameObject("SFX-" + Random.Range(271, 953));
+            GameObject go = new GameObject(Utils.GenerateUniqueName("SFX"));
             sfxSource = go.AddComponent<AudioSource>();
-
+            sfxSource.volume = volume;
         }
         sfxSource.PlayOneShot(clip);
     }
@@ -41,6 +43,26 @@ public class SoundManager : MBSingleton<SoundManager>
     }
 }
 
+/// <summary>
+/// Sounds that must be loaded throughout the entire game.
+/// </summary>
+public static class LoadedSFXEnum
+{
+    public static AudioClip UI_SUBMIT;
+    public static AudioClip UI_SELECT;
+    public static AudioClip UI_REJECT;
+    public static AudioClip UI_BIGSUBMIT;
+
+    [RuntimeInitializeOnLoadMethod]
+    static void Load()
+    {
+        UI_SUBMIT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_SUBMIT_2");
+        UI_SELECT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_SELECT");
+        UI_REJECT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_REJECT");
+        UI_BIGSUBMIT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_BIGSUBMIT");
+    }
+}
+
 public class Music
 {
     public AudioClip Clip
@@ -54,7 +76,7 @@ public class Music
             audioSrc.clip = value;
         }
     }
-    AudioSource audioSrc;
+    public AudioSource audioSrc;
 
     public float TimePosition
     {
@@ -68,9 +90,24 @@ public class Music
         }
     }
 
+    /// <summary>
+    /// 0-100
+    /// </summary>
+    public float Volume
+    {
+        get
+        {
+            return audioSrc.volume * 100f;
+        }
+        set
+        {
+            audioSrc.volume = value * 0.01f;
+        }
+    }
+
     public Music()
     {
-        GameObject go = new GameObject("MUSIC-" + Random.Range(574,1372));
+        GameObject go = new GameObject(Utils.GenerateUniqueName("MUSIC"));
         audioSrc = go.AddComponent<AudioSource>();
     }
 
@@ -79,9 +116,10 @@ public class Music
         Object.Destroy(audioSrc.gameObject);
     }
 
-    public void Play(float time = 0)
+    public void Play(float time = 0, float vol = 100)
     {
         float pos = TimePosition;
+        Volume = vol;
         audioSrc.time = pos;
         audioSrc.Play();
         audioSrc.time = time;
@@ -98,5 +136,10 @@ public class Music
     {
         audioSrc.Stop();
         TimePosition = 0;
+    }
+
+    public void FadeOut(UnityAction onComplete, float time = 1f)
+    {
+        audioSrc.DOFade(0, time).OnComplete(()=> { onComplete.Invoke(); });
     }
 }

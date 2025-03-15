@@ -7,8 +7,9 @@ using OSB.Editor;
 using System.IO;
 using SFB;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class OSB_LevelEditorManager : MBSingleton<OSB_LevelEditorManager>
+public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
 {
     [Header("Shown Text Stuff")]
     public TextMeshProUGUI playheadTimePosition;
@@ -222,7 +223,10 @@ All unsaved progress you've done in this level will be lost!
 
     public void Event_Quit()
     {
-        Application.Quit();
+        FadeManager.FadeOut(0.5f, () =>
+        {
+            SceneManager.LoadScene("OSB_Debug");
+        });
     }
 
     IEnumerator ConstantlySpawnFunnyDebris()
@@ -239,6 +243,14 @@ public static class OSBLevelEditorStaticValues
 {
     public static UnityEngine.Events.UnityEvent onStop = new UnityEngine.Events.UnityEvent();
     public static UnityEngine.Events.UnityEvent<int> onPlay = new UnityEngine.Events.UnityEvent<int>();
+
+    public static bool IsInEditor
+    {
+        get
+        {
+            return OSB_LevelEditorManager.HasInstance;
+        }
+    }
 
     [RuntimeInitializeOnLoadMethod]
     public static void BandadeBugFix()
