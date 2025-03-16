@@ -14,7 +14,7 @@ Ever saw JSAB and said "Hey, I completed all the challenges, I played all the le
 - Fully accessible open source code!
 
 # HOW TO CLONE/BUILD
-TO USE THIS PROJECT, YOU NEED UNITY 2022.2!
+TO USE THIS PROJECT, YOU NEED UNITY 6!
 
 Click the Code button and Download ZIP.
 
