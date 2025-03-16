@@ -8,6 +8,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 {
@@ -27,6 +28,21 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public Image IntroLogoVisual;
     public CanvasGroup MainMenuContainerGroup;
 
+    [Header("Updating Text References")]
+    public TextMeshProUGUI topbarTime;
+    public TextMeshProUGUI gamejoltTopbarUser;
+    public string signedOutGamejoltUsername;
+
+    [Header("GameJolt Stuff")]
+    public GameObject GJPanel;
+    public GameObject GJPanel_SignInPanel;
+    public GameObject GJPanel_SignedInPanel;
+    public Image GJ_Topbar_Icon;
+    public TMP_InputField GJPanel_SignInPanel_Username;
+    public TMP_InputField GJPanel_SignInPanel_Token;
+    bool gjPanelOpened = false;
+    public Sprite defaultUser;
+
     float[] audioSamp = new float[256];
 
 
@@ -41,6 +57,8 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         MainMenuContainerGroup.interactable = false;
         HideRightButtons();
         Topbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(Topbar.GetComponent<RectTransform>().anchoredPosition.x, 71.3074f);
+
+        defaultUser = Resources.Load<Sprite>("Textures/UI/DefaultUser");
     }
 
     float GetAverageAmplitude()
@@ -79,8 +97,27 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
             }
         }
 
+        topbarTime.text = System.DateTime.Now.ToString("ddd dd MMM  hh:mm tt");
+        if (OSBGameJolt.Singleton.currentGJUser.IsAuthenticated)
+        {
+            gamejoltTopbarUser.text = "<b>" + OSBGameJolt.Singleton.currentGJUser.DeveloperName + "</b>\n<size=17>@" + OSBGameJolt.Singleton.currentGJUser.Name;
+            GJPanel_SignedInPanel.SetActive(true);
+            GJPanel_SignInPanel.SetActive(false);
+            if(OSBGameJolt.Singleton.currentGJUser.Avatar)
+            {
+                GJ_Topbar_Icon.sprite = OSBGameJolt.Singleton.currentGJUser.Avatar;
+            }
+        }
+        else
+        {
+            gamejoltTopbarUser.text = signedOutGamejoltUsername;
+            GJPanel_SignedInPanel.SetActive(false);
+            GJPanel_SignInPanel.SetActive(true);
+            GJ_Topbar_Icon.sprite = defaultUser;
+        }
+
 #if UNITY_2017_1_OR_NEWER
-        if (Input.GetKeyDown(KeyCode.Y))
+        /*if (Input.GetKeyDown(KeyCode.Y))
         {
             HideRightButtons();
         }
@@ -96,7 +133,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         {
             PlayRandomSongForMainMenu();
             Event_OpenMainMenu();
-        }
+        }*/
 #endif
     }
 
@@ -147,6 +184,9 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public void TopbarExit()
     {
         Topbar.GetComponent<RectTransform>().DOAnchorPosY(71.3074f, 1f).SetEase(Ease.OutExpo);
+
+        gjPanelOpened = true;
+        Event_TopBar_GJUser();
     }
 
     public void ShowRightButtons()
@@ -175,6 +215,8 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void Event_LevelEditorOpen()
     {
+        GameJolt.API.Trophies.TryUnlock(261659);
+
         menuMusic.FadeOut(() => { }, 0.5f);
         FadeManager.FadeOut(0.5f, () =>
         {
@@ -204,5 +246,35 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         {
             Application.Quit();
         });
+    }
+
+    public void Event_TopBar_GJUser()
+    {
+        gjPanelOpened = !gjPanelOpened;
+        if (gjPanelOpened)
+        {
+            GJPanel.transform.DOScaleY(1, 0.2f).SetEase(Ease.OutBack);
+            SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_PANEL_OPEN);
+        }
+        else
+        {
+            GJPanel.transform.DOScaleY(0, 0.2f).SetEase(Ease.InBack);
+            SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_PANEL_CLOSE);
+        }
+    }
+
+    public void Event_TopBar_GJ_SignIn()
+    {
+        OSBGameJolt.Singleton.SignIn(GJPanel_SignInPanel_Username.text, GJPanel_SignInPanel_Token.text);
+    }
+
+    public void Event_TopBar_GJ_SeeTrophies()
+    {
+        GameJolt.UI.GameJoltUI.Instance.ShowTrophies();
+    }
+
+    public void Event_TopBar_GJ_SignOut()
+    {
+        OSBGameJolt.Singleton.SignOut();
     }
 }

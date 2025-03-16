@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2811fcc5e667f714e9b4c5aee85e9330
+timeCreated: 1432347336
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/Loading.anim
+  uploadId: 536125

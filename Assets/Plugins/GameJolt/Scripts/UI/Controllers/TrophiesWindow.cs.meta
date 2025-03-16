@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: a5ca77b89c6419b488fa7a1b94c0a301
+timeCreated: 1432344152
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/UI/Controllers/TrophiesWindow.cs
+  uploadId: 536125

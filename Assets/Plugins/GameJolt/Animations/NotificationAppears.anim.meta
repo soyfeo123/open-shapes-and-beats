@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c6aba10c1ca3db140b24a34afe81e639
+timeCreated: 1433363673
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/NotificationAppears.anim
+  uploadId: 536125

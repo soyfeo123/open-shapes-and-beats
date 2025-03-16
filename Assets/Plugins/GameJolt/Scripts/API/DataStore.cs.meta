@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: cff00f49e6ef05c48bcc18ce34fd2f0f
+timeCreated: 1428211030
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/API/DataStore.cs
+  uploadId: 536125

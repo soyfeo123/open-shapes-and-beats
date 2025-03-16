@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 99075a5c98f57084c97e00404e8b0d45
+timeCreated: 1430610480
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/UI/Behaviours/KeyboardNavigableForm.cs
+  uploadId: 536125

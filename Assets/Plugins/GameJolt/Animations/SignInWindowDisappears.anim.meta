@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e1885cc77e9203a4daa357caa7d9dcba
+timeCreated: 1430958417
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/SignInWindowDisappears.anim
+  uploadId: 536125

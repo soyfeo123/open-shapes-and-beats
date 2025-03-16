@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: db367073a04f2e74cb05b2a6b51e7763
+timeCreated: 1428204937
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/API/Objects/Trophy.cs
+  uploadId: 536125

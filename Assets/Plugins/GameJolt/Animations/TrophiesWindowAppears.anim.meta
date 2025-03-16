@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7dda0680958b92a44a061ef287be49d6
+timeCreated: 1432349409
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/TrophiesWindowAppears.anim
+  uploadId: 536125

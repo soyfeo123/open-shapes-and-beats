@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 8adfbc78d00af7544b52ee96e05f9b06
+timeCreated: 1428196632
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/API/Objects/Table.cs
+  uploadId: 536125

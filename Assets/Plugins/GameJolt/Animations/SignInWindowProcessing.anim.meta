@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 025f80cae6c91de4893f19c969fa6b1e
+timeCreated: 1430718095
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/SignInWindowProcessing.anim
+  uploadId: 536125

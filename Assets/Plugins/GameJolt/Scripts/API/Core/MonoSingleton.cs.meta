@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: fa1823af4a2b44348b9b18fb82205870
+timeCreated: 1431207933
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/API/Core/MonoSingleton.cs
+  uploadId: 536125

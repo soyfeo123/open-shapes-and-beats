@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 90deceee486bc63489ac84ed03c2e230
+timeCreated: 1430107417
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/GameJoltController.controller
+  uploadId: 536125

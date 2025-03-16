@@ -44,16 +44,7 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
 
 
-        var circle = new BigExpandingCircle();
-        circle.objParams["Time"] = 5000;
-
-        var debris = new FlyingProjectile();
-        debris.objParams["Time"] = 5500;
-
-        var debris_ = new FlyingProjectile();
-        debris_.objParams["Time"] = 5500;
-        var debrisv = new FlyingProjectile();
-        debrisv.objParams["Time"] = 5500;
+        StartCoroutine(LoadSong(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3")));
     }
 
     string ConvertToMinutesAndSeconds(float seconds)

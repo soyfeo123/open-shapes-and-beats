@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d3ec411947f349140b5dd299da729f9e
+timeCreated: 1433030566
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/LeaderboardsWindowProcessing.anim
+  uploadId: 536125

@@ -177,7 +177,7 @@ public class OSB_Player : MonoBehaviour
             DashParticles.Play();
             CircleParticles.Stop();
             CircleParticles.Play();
-            StartCoroutine(DashStuff());
+            DashStuff();
         }
         
     }
@@ -213,9 +213,10 @@ public class OSB_Player : MonoBehaviour
         }
     }
 
-    IEnumerator DashStuff()
+    void DashStuff()
     {
-        Speed = Speed * 4.2f;
+        float originalSpeed = Speed;
+        float dashSpeed = originalSpeed * 4.2f;
         float xPos, yPos;
         xPos = p_targetScale.x;
         yPos = p_targetScale.y;
@@ -226,11 +227,20 @@ public class OSB_Player : MonoBehaviour
         canDash = false;
         
         isInDash = true;
-        yield return new WaitForSeconds(dashDuration);
-        isInDash = false;
-        p_targetScale.x = xPos;
-        p_targetScale.y = yPos;
-        Speed = Speed / 4.2f;
+
+        DOTween.To(() => dashSpeed, x =>
+        {
+            dashSpeed = x;
+            Speed = originalSpeed + dashSpeed;
+        }, 0f, dashDuration).SetEase(Ease.Linear).OnComplete(()=>
+        {
+            isInDash = false;
+            p_targetScale.x = xPos;
+            p_targetScale.y = yPos;
+        });
+
+        
+        
     }
 
     public void OnGUI()

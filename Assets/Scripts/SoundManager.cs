@@ -52,6 +52,8 @@ public static class LoadedSFXEnum
     public static AudioClip UI_SELECT;
     public static AudioClip UI_REJECT;
     public static AudioClip UI_BIGSUBMIT;
+    public static AudioClip UI_PANEL_OPEN;
+    public static AudioClip UI_PANEL_CLOSE;
 
     [RuntimeInitializeOnLoadMethod]
     static void Load()
@@ -60,6 +62,9 @@ public static class LoadedSFXEnum
         UI_SELECT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_SELECT");
         UI_REJECT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_REJECT");
         UI_BIGSUBMIT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_BIGSUBMIT");
+
+        UI_PANEL_OPEN = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_PANEL_OPEN");
+        UI_PANEL_CLOSE = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_PANEL_CLOSE");
     }
 }
 

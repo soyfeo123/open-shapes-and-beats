@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 126116fe1ed20164697e3ccab61982f4
+timeCreated: 1432357835
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/TrophiesWindowDisappears.anim
+  uploadId: 536125

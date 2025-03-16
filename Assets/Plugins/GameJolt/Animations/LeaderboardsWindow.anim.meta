@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 05ff3a398773cc64a8d1455c12e15a3e
+timeCreated: 1433026792
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/LeaderboardsWindow.anim
+  uploadId: 536125

@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: ac649ed694941164595bd10fed4d9a52
+timeCreated: 1428191339
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/API/Sessions.cs
+  uploadId: 536125

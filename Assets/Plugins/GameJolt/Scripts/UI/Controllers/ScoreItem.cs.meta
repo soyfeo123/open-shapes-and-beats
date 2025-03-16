@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: fc42eac5b105ea541a2db36720325c68
+timeCreated: 1433031589
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/UI/Controllers/ScoreItem.cs
+  uploadId: 536125

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 607a137d8ba8f6a4d88f0faf59c03038
+timeCreated: 1433026806
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Animations/LeaderboardsWindowDisappears.anim
+  uploadId: 536125

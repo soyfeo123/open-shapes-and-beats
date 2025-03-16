@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: d643ebd0583fe994a8c4fd8a34020d83
+timeCreated: 1508942409
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/Editor/GameJolt/SettingsEditor.cs
+  uploadId: 536125

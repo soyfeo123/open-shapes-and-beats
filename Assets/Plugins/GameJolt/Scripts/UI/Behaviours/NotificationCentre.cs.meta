@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: f49b53b118d0c9b4397679b9c5ed01d0
+timeCreated: 1433563485
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103938
+  packageName: Game Jolt API
+  packageVersion: 2.5.8
+  assetPath: Assets/Plugins/GameJolt/Scripts/UI/Behaviours/NotificationCentre.cs
+  uploadId: 536125
