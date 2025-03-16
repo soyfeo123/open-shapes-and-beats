@@ -27,6 +27,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public Image IntroLogo;
     public Image IntroLogoVisual;
     public CanvasGroup MainMenuContainerGroup;
+    public GameObject playlistContainer;
 
     [Header("Updating Text References")]
     public TextMeshProUGUI topbarTime;
@@ -45,7 +46,8 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     float[] audioSamp = new float[256];
 
-
+    [HideInInspector]
+    public float averageMusicFreq;
 
     public void Start()
     {
@@ -90,10 +92,10 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         if (menuMusic.audioSrc.isPlaying)
         {
             menuMusic.audioSrc.GetSpectrumData(audioSamp, 0, FFTWindow.Blackman);
-            float average = GetAverageAmplitude();
+            averageMusicFreq = GetAverageAmplitude();
             foreach (ObjectToPulseWithMusic objectToPulseWithMusic in objectsToPulse)
             {
-                objectToPulseWithMusic.obj.transform.localScale = Vector3.one * (1 + average * objectToPulseWithMusic.multiplier);
+                objectToPulseWithMusic.obj.transform.localScale = Vector3.one * (1 + averageMusicFreq * objectToPulseWithMusic.multiplier);
             }
         }
 
@@ -165,8 +167,10 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
             {
                 menuMusic.Dispose();
             }
-
-            menuMusic = SoundManager.Singleton.CreateMusic(DownloadHandlerAudioClip.GetContent(request));
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+            
+            menuMusic = SoundManager.Singleton.CreateMusic(clip);
+            
             Debug.Log("Loaded " + new FileInfo(filepath).Name + "! You didn't screw it up!");
             onComplete.Invoke();
         }
@@ -185,7 +189,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     {
         Topbar.GetComponent<RectTransform>().DOAnchorPosY(71.3074f, 1f).SetEase(Ease.OutExpo);
 
-        gjPanelOpened = true;
+        if(gjPanelOpened)
         Event_TopBar_GJUser();
     }
 
@@ -198,19 +202,40 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         MenuRightButtons.transform.DOScaleX(0, 0.5f).SetEase(Ease.OutExpo);
     }
 
+    public void OpenPlaylist()
+    {
+        menuMusic.FadeOut(() =>
+        {
+
+        }, 0.5f);
+        MainMenuContainerGroup.DOFade(0f, 0.5f);
+        MainMenuContainerGroup.interactable = false;
+        playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(0, 0.5f).SetEase(Ease.OutExpo);
+    }
+
+    public void ClosePlaylist()
+    {
+        
+        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_REJECT);
+        ShowRightButtons();
+        TopbarEnter();
+        MainMenuContainerGroup.DOFade(1f, 0.5f).OnComplete(()=>
+        {
+            PlayRandomSongForMainMenu();
+        });
+        MainMenuContainerGroup.interactable = true;
+        playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(1080, 0.5f).SetEase(Ease.OutExpo);
+    }
+
 
     // Button Events
 
     public void Event_EnterPlaylist()
     {
-        menuMusic.FadeOut(()=>
-        {
-            
-        }, 0.5f);
+        
         HideRightButtons();
         TopbarExit();
-        MainMenuContainerGroup.DOFade(0f, 0.5f);
-        MainMenuContainerGroup.interactable = false;
+        OpenPlaylist();
     }
 
     public void Event_LevelEditorOpen()
@@ -224,9 +249,9 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         });
     }
 
-    public void Event_OpenMainMenu()
+    public void Event_OpenMainMenu(bool reject)
     {
-        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_BIGSUBMIT);
+        SoundManager.Singleton.PlaySound(reject ? LoadedSFXEnum.UI_REJECT : LoadedSFXEnum.UI_BIGSUBMIT);
         IntroLogoVisual.DOFade(0f, 0.5f).SetEase(Ease.InExpo);
         IntroLogo.transform.DOScale(0, 0.5f).SetEase(Ease.InExpo).OnComplete(() =>
         {

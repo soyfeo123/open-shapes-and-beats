@@ -15,6 +15,8 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     float previousWidth;
 
     public bool haveDelay = true;
+    public bool changeScale = true;
+    public bool playSubmitSound = true;
 
     GameObject leftTriangle;
     GameObject rightTriangle;
@@ -61,7 +63,10 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     }
     public void OnPointerExit(PointerEventData data)
     {
-        currentTransform.localScale = Vector3.one;
+        if (changeScale)
+        {
+            currentTransform.localScale = Vector3.one;
+        }
         currentTransform.DOKill();
         currentTransform.DOSizeDelta(new Vector2(previousWidth, currentTransform.sizeDelta.y), 0.3f).SetEase(Ease.OutExpo);
         Vector3 pos = currentTransform.position;
@@ -86,9 +91,12 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         currentTransform.sizeDelta = size;
         currentTransform.DOSizeDelta(new Vector2(previousWidth * 1.5f, currentTransform.sizeDelta.y), 0.5f).SetEase(Ease.OutExpo);
 
-        currentTransform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
-        currentTransform.DOScale(1, 0.5f).SetEase(Ease.OutExpo);
-
+        if (changeScale)
+        {
+            currentTransform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+            currentTransform.DOScale(1, 0.5f).SetEase(Ease.OutExpo);
+        }
+        if(playSubmitSound)
         SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_SUBMIT);
 
         StartCoroutine(ClickDelay());
