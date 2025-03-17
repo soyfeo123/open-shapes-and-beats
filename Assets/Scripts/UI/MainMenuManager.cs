@@ -51,6 +51,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void Start()
     {
+        menuMusic = new Music();
         PlayRandomSongForMainMenu();
         
 
@@ -61,6 +62,8 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         Topbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(Topbar.GetComponent<RectTransform>().anchoredPosition.x, 71.3074f);
 
         defaultUser = Resources.Load<Sprite>("Textures/UI/DefaultUser");
+
+        
     }
 
     float GetAverageAmplitude()
@@ -75,16 +78,17 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void PlayRandomSongForMainMenu()
     {
+        
         string supportedExt = "*.mp3,*.wav,*.ogg";
         string[] possibleSongs = Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "songs")).Where(s => supportedExt.Contains(Path.GetExtension(s).ToLower())).ToArray();
         int randomI = Random.Range(0, (int)possibleSongs.Length);
         Debug.Log("random: " + randomI + " from " + possibleSongs.Length);
         string selected = possibleSongs[randomI];
 
-        StartCoroutine(LoadSong(selected, () =>
+        menuMusic.LoadMusic(selected, ()=>
         {
-            menuMusic.Play(0, 35);
-        }));
+            menuMusic.Play(vol: 35);
+        });
     }
 
     private void Update()
@@ -139,47 +143,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 #endif
     }
 
-    IEnumerator LoadSong(string filepath, UnityAction onComplete)
-    {
-        AudioType type = AudioType.UNKNOWN;
-
-        switch (new FileInfo(filepath).Extension)
-        {
-            case ".wav":
-                type = AudioType.WAV;
-                break;
-            case ".mp3":
-                type = AudioType.MPEG;
-                break;
-            case ".ogg":
-                type = AudioType.OGGVORBIS;
-                break;
-            default:
-                type = AudioType.MPEG;
-                break;
-        }
-
-        UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip("file://" + filepath, type);
-        yield return request.SendWebRequest();
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            if (menuMusic != null)
-            {
-                menuMusic.Dispose();
-            }
-            AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
-            
-            menuMusic = SoundManager.Singleton.CreateMusic(clip);
-            
-            Debug.Log("Loaded " + new FileInfo(filepath).Name + "! You didn't screw it up!");
-            onComplete.Invoke();
-        }
-
-        else
-        {
-            Debug.LogError("Error while loading audioclip! " + request.result + " | Message: " + request.error);
-        }
-    }
+    
 
     public void TopbarEnter()
     {
@@ -206,7 +170,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     {
         menuMusic.FadeOut(() =>
         {
-
+            menuMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3"), ()=> { menuMusic.Play(); });
         }, 0.5f);
         MainMenuContainerGroup.DOFade(0f, 0.5f);
         MainMenuContainerGroup.interactable = false;
@@ -215,7 +179,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void ClosePlaylist()
     {
-        
+        menuMusic.FadeOut(() => { }, 0.5f);
         SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_REJECT);
         ShowRightButtons();
         TopbarEnter();

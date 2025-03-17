@@ -37,6 +37,7 @@ public class FlyingProjectile : LevelActor
         innerCircle = new GameObject("CoolCircleBecauseItLooksGood");
         innerCircle.transform.parent = visual.transform;
         innerCircle.AddComponent<SpriteRenderer>().sprite = LevelSpawnSprites.GENERIC_CIRCLE;
+        innerCircle.transform.position = new Vector3(0,0,0.1f);
         innerCircle.transform.localScale = Vector3.one * 4;
         innerCircle.transform.DOScale(0, 0.5f).SetEase(Ease.Linear);
         innerCircle.GetComponent<SpriteRenderer>().DOColor(RenderComponent.pink,0.5f).SetEase(Ease.Linear);
@@ -44,7 +45,7 @@ public class FlyingProjectile : LevelActor
         rc.SetColorToPink();
 
         visualGoRoundRound = visual.AddComponent<LogicSpin>();
-        visualGoRoundRound.speed = 410;
+        visualGoRoundRound.speed = 500;
         visualGoRoundRound.startAtRandomDir = false;
         LogicHitbox.AddToLA(this);
 

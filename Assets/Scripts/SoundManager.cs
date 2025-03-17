@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
+using UnityEngine.Networking;
+using System.IO;
 
 public class SoundManager : MBSingleton<SoundManager>
 {
@@ -114,6 +116,45 @@ public class Music
     {
         GameObject go = new GameObject(Utils.GenerateUniqueName("MUSIC"));
         audioSrc = go.AddComponent<AudioSource>();
+    }
+
+    public void LoadMusic(string filePath, System.Action onComplete)
+    {
+        Stop();
+        AudioType type = AudioType.UNKNOWN;
+
+        switch (new FileInfo(filePath).Extension)
+        {
+            case ".wav":
+                type = AudioType.WAV;
+                break;
+            case ".mp3":
+                type = AudioType.MPEG;
+                break;
+            case ".ogg":
+                type = AudioType.OGGVORBIS;
+                break;
+            default:
+                type = AudioType.MPEG;
+                break;
+        }
+
+        UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip("file://" + filePath, type);
+        request.SendWebRequest().completed += delegate
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+                Clip = clip;
+                Debug.Log("Loaded " + new FileInfo(filePath).Name + "! Wow! Look!");
+
+                onComplete.Invoke();
+            }
+            else
+            {
+                Debug.LogError("ERROR whlie loading song! Result: " + request.result + ", message: " + request.error);
+            }
+        };
     }
 
     public void Dispose()

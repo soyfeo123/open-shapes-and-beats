@@ -4,6 +4,7 @@ public class LogicMoveWithMenuMusic : MonoBehaviour
 {
     bool flipped;
     Vector3 orgPosition;
+    public float multiplier = 1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,6 +18,6 @@ public class LogicMoveWithMenuMusic : MonoBehaviour
 
         float y = 1 * (1 + MainMenuManager.Singleton.averageMusicFreq * 1500);
 
-        transform.localPosition = orgPosition + new Vector3(0, y, 0);
+        transform.localPosition = orgPosition + new Vector3(0, y * multiplier, 0);
     }
 }

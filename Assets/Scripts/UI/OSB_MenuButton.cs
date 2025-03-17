@@ -49,7 +49,7 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerEnter(PointerEventData data)
     {
         currentTransform.DOKill();
-        currentTransform.DOSizeDelta(new Vector2(currentTransform.sizeDelta.x * 1.5f, currentTransform.sizeDelta.y), 0.3f).SetEase(Ease.OutExpo);
+        currentTransform.DOSizeDelta(new Vector2(currentTransform.sizeDelta.x * 1.5f, currentTransform.sizeDelta.y), 0.3f).SetEase(Ease.OutBack);
         Vector3 pos = currentTransform.position;
         pos.z = 10;
         currentTransform.position = pos;
@@ -68,7 +68,7 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             currentTransform.localScale = Vector3.one;
         }
         currentTransform.DOKill();
-        currentTransform.DOSizeDelta(new Vector2(previousWidth, currentTransform.sizeDelta.y), 0.3f).SetEase(Ease.OutExpo);
+        currentTransform.DOSizeDelta(new Vector2(previousWidth, currentTransform.sizeDelta.y), 0.3f).SetEase(Ease.OutBack);
         Vector3 pos = currentTransform.position;
         pos.z = 0;
         currentTransform.position = pos;

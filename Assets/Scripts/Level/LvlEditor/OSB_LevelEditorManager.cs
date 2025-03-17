@@ -42,9 +42,9 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
 The level editor is still in beta. Stuff [_IS_] going to be broken, and many other features are coming too.
 <_Remember to report any bugs to Palo/GameSharp!_>", "[enter] continue", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Return, () => { } } });
 
+        levelMusic = new Music();
 
-
-        StartCoroutine(LoadSong(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3")));
+        levelMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3"), () => { });
     }
 
     string ConvertToMinutesAndSeconds(float seconds)
@@ -151,46 +151,10 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
     public void Event_ChangeSong()
     {
         string filePath = StandaloneFileBrowser.OpenFilePanel("Select a song", "", new ExtensionFilter[] { new("Music Files", "mp3", "wav", "ogg"), new("All Files", "*") }, false)[0];
-        StartCoroutine(LoadSong(filePath));
+        levelMusic.LoadMusic(filePath, () => { });
     }
 
-    IEnumerator LoadSong(string filepath)
-    {
-        AudioType type = AudioType.UNKNOWN;
-
-        switch (new FileInfo(filepath).Extension)
-        {
-            case ".wav":
-                type = AudioType.WAV;
-                break;
-            case ".mp3":
-                type = AudioType.MPEG;
-                break;
-            case ".ogg":
-                type = AudioType.OGGVORBIS;
-                break;
-            default:
-                type = AudioType.MPEG;
-                break;
-        }
-
-        UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip("file://" + filepath, type);
-        yield return request.SendWebRequest();
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            if(levelMusic != null)
-            {
-                levelMusic.Dispose();
-            }
-
-            levelMusic = SoundManager.Singleton.CreateMusic(DownloadHandlerAudioClip.GetContent(request));
-            Debug.Log("Loaded " + new FileInfo(filepath).Name + "! You didn't screw it up!");
-        }
-        else
-        {
-            Debug.LogError("Error while loading audioclip! " + request.result + " | Message: " + request.error);
-        }
-    }
+    
 
     // Save Related Stuff
 
