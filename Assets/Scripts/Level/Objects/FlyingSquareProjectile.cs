@@ -21,6 +21,7 @@ public class FlyingProjectile : LevelActor
     LogicSpin visualGoRoundRound;
 
     float direction;
+    float randomSpeed;
 
     GameObject innerCircle;
 
@@ -38,21 +39,21 @@ public class FlyingProjectile : LevelActor
         innerCircle.transform.parent = visual.transform;
         innerCircle.AddComponent<SpriteRenderer>().sprite = LevelSpawnSprites.GENERIC_CIRCLE;
         innerCircle.transform.position = new Vector3(0,0,0.1f);
-        innerCircle.transform.localScale = Vector3.one * 4;
-        innerCircle.transform.DOScale(0, 0.5f).SetEase(Ease.Linear);
-        innerCircle.GetComponent<SpriteRenderer>().DOColor(RenderComponent.pink,0.5f).SetEase(Ease.Linear);
+        innerCircle.transform.localScale = Vector3.one * 5;
+        innerCircle.transform.DOScale(0, 0.35f).SetEase(Ease.Linear);
+        innerCircle.GetComponent<SpriteRenderer>().DOColor(RenderComponent.pink,0.3f).SetEase(Ease.Linear);
 
         rc.SetColorToPink();
 
         visualGoRoundRound = visual.AddComponent<LogicSpin>();
-        visualGoRoundRound.speed = 500;
+        visualGoRoundRound.speed = 600;
         visualGoRoundRound.startAtRandomDir = false;
         LogicHitbox.AddToLA(this);
 
         int randomValue = Random.Range((int)0, (int)3);
         mainObject.transform.position = new Vector3(9, randomValue == 0 ? -3f : (randomValue == 1 ? 0 : (randomValue == 2 ? 3f : 0)), 0);
         direction = Random.Range(-30, -122) * Mathf.Deg2Rad; // ??? // NO WAY THAT ACTUALLY WORKED?????
-
+        randomSpeed = Random.Range(4f, 6f);
         //rc.AddVisibilityRenderer();
         //Debug.Log(direction);
     }
@@ -61,6 +62,6 @@ public class FlyingProjectile : LevelActor
     {
         base.Frame();
         if(hasPrepared)
-        MoveBy(5f * Time.deltaTime * Mathf.Sin(direction), 5f * Time.deltaTime * Mathf.Cos(direction));
+        MoveBy(randomSpeed * Time.deltaTime * Mathf.Sin(direction), randomSpeed * Time.deltaTime * Mathf.Cos(direction));
     }
 }

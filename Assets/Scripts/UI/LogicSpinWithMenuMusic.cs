@@ -23,7 +23,7 @@ public class LogicSpinWithMenuMusic : MonoBehaviour
     {
         flipped = !flipped;
 
-        Dir = 1 * (1 +MainMenuManager.Singleton.averageMusicFreq * 600);
+        Dir = 1 * (MainMenuManager.Singleton.averageMusicFreq * 600);
 
         //Debug.Log($"Dir: {Dir}, flipped: {flipped}, multiplier: {(flipped ? -1 : 1)}, result: {Dir * (flipped ? -1 : 1)}");
         //Debug.Log($"Before Rotate: {transform.eulerAngles.z}");

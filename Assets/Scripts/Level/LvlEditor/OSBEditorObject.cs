@@ -9,6 +9,9 @@ public class OSBEditorObject : MonoBehaviour
 {
     public string actorType;
     public LevelActor assignedActor;
+    public bool objectNeedsWarning = false;
+    public RectTransform activeZone;
+    public RectTransform warningZone;
     //public Dictionary<string, object> objParams = new Dictionary<string, object>();
     public float relativeXPos;
     public float actualTime
@@ -19,11 +22,18 @@ public class OSBEditorObject : MonoBehaviour
         }
         set
         {
+            
+
             SetRelativePos(value / 10f);
-            assignedActor.objParams["Time"] = relativeXPos * 10f;
+
+            assignedActor.objParams["Time"].number.Value = relativeXPos * 10f;
         }
     }
-    bool mustExecute = true;
+    bool mustExecute = false;
+
+    bool hasWarned;
+    bool hasActivated;
+
     private void Awake()
     {
         
@@ -46,7 +56,7 @@ public class OSBEditorObject : MonoBehaviour
 
         assignedActor = Activator.CreateInstance(typeOfActor) as LevelActor;
 
-        assignedActor.objParams["Time"] = Mathf.Infinity;
+        assignedActor.objParams["Time"].number.Value = Mathf.Infinity;
         
         OSBLevelEditorStaticValues.onPlay.AddListener((time) =>
         {
@@ -56,6 +66,12 @@ public class OSBEditorObject : MonoBehaviour
         OSBLevelEditorStaticValues.onStop.AddListener(() =>
         {
             mustExecute = false;
+
+            hasWarned = false;
+            hasActivated = false;
+            assignedActor.hasActivated = false;
+            assignedActor.hasPrepared = false;
+
             if(assignedActor.mainObject != null)
             {
                 assignedActor.Dispose();
@@ -66,13 +82,35 @@ public class OSBEditorObject : MonoBehaviour
     private void Update()
     {
         relativeXPos = GetComponent<RectTransform>().anchoredPosition.x - minX;
+        if (objectNeedsWarning)
+        {
+            assignedActor.objParams["Warning"].number.Value = warningZone.sizeDelta.x * 10f;
+            assignedActor.objParams["Duration"].number.Value = activeZone.sizeDelta.x * 10f;
+        }
         
+
         //Debug.Log(actualTime);
-        if (mustExecute && EditorPlayhead.Singleton.SongPosMS >= actualTime)
+        if (mustExecute && EditorPlayhead.Singleton.SongPosMS >= actualTime && !objectNeedsWarning)
         {
             mustExecute = false;
             Debug.Log("executing object");
             assignedActor.Prepare();
+        }
+
+        if (mustExecute && !hasWarned && objectNeedsWarning && EditorPlayhead.Singleton.SongPosMS >= actualTime - assignedActor.objParams["Warning"].number.Value)
+        {
+            hasWarned = true;
+            assignedActor.Prepare();
+        }
+        if(mustExecute && !hasActivated && objectNeedsWarning && EditorPlayhead.Singleton.SongPosMS >= actualTime)
+        {
+            hasActivated = true;
+            assignedActor.ActivateAttack();
+        }
+        if (mustExecute &&objectNeedsWarning && EditorPlayhead.Singleton.SongPosMS >= actualTime + assignedActor.objParams["Duration"].number.Value)
+        {
+            mustExecute = false;
+            assignedActor.Dispose();
         }
     }
 
@@ -90,17 +128,57 @@ public class OSBEditorObject : MonoBehaviour
         xPos = Mathf.Clamp(xPos, 0, 99999f);
         Vector2 pos = rt.anchoredPosition;
         pos.x = xPos + minX;
+        pos.y = 0;
         rt.anchoredPosition = pos;
         relativeXPos = GetComponent<RectTransform>().anchoredPosition.x - minX;
-        assignedActor.objParams["Time"] = relativeXPos * 10f;
+        assignedActor.objParams["Time"].number.Value = relativeXPos * 10f;
     }
+
+    float offset = 0;
 
     public void OnMouseDrag()
     {
+
+
         RectTransform rt = transform.parent.GetComponent<RectTransform>();
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, null, out point);
-        SetRelativePos(point.x);
+        SetRelativePos(point.x - offset);
         
+    }
+
+    public void SetOffsetForDrag(BaseEventData data_)
+    {
+        PointerEventData data = data_ as PointerEventData;
+        if (data.button != PointerEventData.InputButton.Left) return;
+
+        RectTransform rt = transform.GetComponent<RectTransform>();
+        Vector2 point;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, null, out point);
+        offset = point.x;
+        Debug.Log(offset);
+    }
+
+    public void OnRightClicked(BaseEventData data_)
+    {
+        PointerEventData data = data_ as PointerEventData;
+        switch (data.button)
+        {
+            default:
+                RectTransform rt = transform.parent.GetComponent<RectTransform>();
+                Vector2 point;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, null, out point);
+                offset = point.x;
+                Debug.Log(offset);
+
+                break;
+
+            case PointerEventData.InputButton.Right:
+                Debug.Log("yes");
+                transform.parent.parent.GetComponent<OSBLayer>().objectsOnLayer.Remove(this);
+                Destroy(gameObject);
+
+                break;
+        }
     }
 }

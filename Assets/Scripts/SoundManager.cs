@@ -5,6 +5,9 @@ using DG.Tweening;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using System.IO;
+using System.Threading.Tasks;
+using PimDeWitte.UnityMainThreadDispatcher;
+using System.Threading;
 
 public class SoundManager : MBSingleton<SoundManager>
 {
@@ -121,6 +124,7 @@ public class Music
     public void LoadMusic(string filePath, System.Action onComplete)
     {
         Stop();
+        Volume = 100;
         AudioType type = AudioType.UNKNOWN;
 
         switch (new FileInfo(filePath).Extension)
@@ -138,21 +142,24 @@ public class Music
                 type = AudioType.MPEG;
                 break;
         }
-
         UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip("file://" + filePath, type);
-        request.SendWebRequest().completed += delegate
+        //request.SetRequestHeader("Range", "bytes=0-10000");
+        Debug.Log("rq" + request);
+
+        ((DownloadHandlerAudioClip)request.downloadHandler).streamAudio = true;
+
+        var req = request.SendWebRequest();
+        req.completed += delegate
         {
-            if (request.result == UnityWebRequest.Result.Success)
+            if(request.result == UnityWebRequest.Result.Success)
             {
                 AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
                 Clip = clip;
-                Debug.Log("Loaded " + new FileInfo(filePath).Name + "! Wow! Look!");
-
-                onComplete.Invoke();
+                onComplete?.Invoke();
             }
             else
             {
-                Debug.LogError("ERROR whlie loading song! Result: " + request.result + ", message: " + request.error);
+                Notification.CreateNotification("[_<_ERROR WHILE LOADING AUDIO_>_]\nPlease contact Palo for more info.", "[enter] ok", new Dictionary<KeyCode, UnityAction>() { { KeyCode.Return, ()=> { } } });
             }
         };
     }
@@ -186,6 +193,16 @@ public class Music
 
     public void FadeOut(UnityAction onComplete, float time = 1f)
     {
-        audioSrc.DOFade(0, time).OnComplete(()=> { onComplete.Invoke(); });
+        audioSrc.DOKill();
+        audioSrc.DOFade(0, time).OnComplete(()=> { onComplete?.Invoke(); });
+    }
+
+    public void FadeIn(UnityAction onComplete, float time = 1f)
+    {
+        float vol = audioSrc.volume;
+        
+        audioSrc.DOKill();
+        audioSrc.volume = 0;
+        audioSrc.DOFade(vol, time).SetEase(Ease.Linear).OnComplete(() => { onComplete?.Invoke(); });
     }
 }

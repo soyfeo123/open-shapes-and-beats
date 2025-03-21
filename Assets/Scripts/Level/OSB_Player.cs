@@ -143,7 +143,7 @@ public class OSB_Player : MonoBehaviour
                 p_targetScale = new Vector3(1,1,1);
                 p_scale = p_targetScale;
                 p_targetDirection = -90;
-                VisualObj.transform.DOScale(1, 1).SetEase(Ease.OutElastic, 5f);
+                VisualObj.transform.DOScale(1, 1.1f).SetEase(Ease.OutElastic, 5f, 0.2f);
             }
 
             movesChange = movesDuringTheFrame;

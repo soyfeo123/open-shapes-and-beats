@@ -26,6 +26,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public GameObject MenuRightButtons;
     public Image IntroLogo;
     public Image IntroLogoVisual;
+    public TextMeshProUGUI introLogoFooter;
     public CanvasGroup MainMenuContainerGroup;
     public GameObject playlistContainer;
 
@@ -43,6 +44,12 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public TMP_InputField GJPanel_SignInPanel_Token;
     bool gjPanelOpened = false;
     public Sprite defaultUser;
+
+    [Header("Playlist Stuff")]
+    public Transform songContainer;
+    public GameObject playlistEntry;
+    public List<LvlMetadataV1> playlistSongs = new List<LvlMetadataV1>();
+
 
     float[] audioSamp = new float[256];
 
@@ -168,9 +175,37 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void OpenPlaylist()
     {
+        playlistSongs.Clear();
+        foreach(Transform transform_ in songContainer)
+        {
+            Destroy(transform_.gameObject);
+        }
+
+        foreach(string level in Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "levelsserialized")))
+        {
+            if (new FileInfo(level).Extension != ".txt") continue;
+            Debug.Log("Loading " + level);
+            LvlMetadataV1 metadata = new LvlMetadataV1();
+            metadata.LoadFromString(File.ReadAllText(level));
+            if (!metadata.IsValid())
+            {
+                Notification.CreateNotification("[_<_ERROR WHILE LOADING SONG_>_]\nOne of your levels is either corrupt or not a level.\nCheck your levelsserialized directory!", "[enter] awh, got it", new Dictionary<KeyCode, UnityAction>() { { KeyCode.Return, () => { } } });
+            }
+            else
+            {
+                metadata.StartLoad();
+                playlistSongs.Add(metadata);
+                GameObject playlistEntryLocal = Instantiate(playlistEntry);
+                playlistEntryLocal.GetComponent<PlaylistTrackSelection>().metadata = metadata;
+                playlistEntryLocal.transform.SetParent(songContainer);
+            }
+
+
+        }
+
         menuMusic.FadeOut(() =>
         {
-            menuMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3"), ()=> { menuMusic.Play(); });
+            //menuMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3"), ()=> { menuMusic.Play(); });
         }, 0.5f);
         MainMenuContainerGroup.DOFade(0f, 0.5f);
         MainMenuContainerGroup.interactable = false;
@@ -213,17 +248,38 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         });
     }
 
+    bool introLogoInAnimation;
+
     public void Event_OpenMainMenu(bool reject)
     {
+        introLogoInAnimation = true;
         SoundManager.Singleton.PlaySound(reject ? LoadedSFXEnum.UI_REJECT : LoadedSFXEnum.UI_BIGSUBMIT);
+        introLogoFooter.transform.DOScale(0.5f, 0.5f).SetEase(Ease.InBack);
+        introLogoFooter.DOFade(0f, 0.5f).SetEase(Ease.InBack, 0.3f);
         IntroLogoVisual.DOFade(0f, 0.5f).SetEase(Ease.InExpo);
         IntroLogo.transform.DOScale(0, 0.5f).SetEase(Ease.InExpo).OnComplete(() =>
         {
             MainMenuContainerGroup.DOFade(1f, 0.5f).SetEase(Ease.OutExpo);
             ShowRightButtons();
             TopbarEnter();
+            introLogoInAnimation = false;
         });
         
+    }
+
+    public void Event_Hover_IntroLogo()
+    {
+        if (!introLogoInAnimation)
+        {
+            IntroLogo.transform.DOScale(1.5f, 0.3f).SetEase(Ease.OutBounce);
+        }
+    }
+    public void Event_HoverExit_IntroLogo()
+    {
+        if (!introLogoInAnimation)
+        {
+            IntroLogo.transform.DOScale(1.3f, 0.3f).SetEase(Ease.OutBounce);
+        }
     }
 
     public void Event_QuitGame()
@@ -265,5 +321,10 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public void Event_TopBar_GJ_SignOut()
     {
         OSBGameJolt.Singleton.SignOut();
+    }
+
+    public void Event_NextSong()
+    {
+        PlayRandomSongForMainMenu();
     }
 }

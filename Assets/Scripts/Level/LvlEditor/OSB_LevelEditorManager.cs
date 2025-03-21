@@ -62,7 +62,7 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
         if (isPlaying)
         {
-            EditorPlayhead.Singleton.SongPosMS += Time.deltaTime * 1000f;
+            EditorPlayhead.Singleton.SongPosMS = (float)levelMusic.audioSrc.timeSamples / levelMusic.Clip.frequency * 1000f;
             MainLevelManager.Singleton.msTime = EditorPlayhead.Singleton.SongPosMS;
         }
 

@@ -20,7 +20,7 @@ namespace OSB.Editor
             _internalTable = new DataTable();
         }
 
-        public class ExpressionVariables
+        public struct ExpressionVariables
         {
             public string textToReplace;
             public float value;
@@ -34,6 +34,11 @@ namespace OSB.Editor
 
         public static float ConvertExpression(string parse, params ExpressionVariables[] vars)
         {
+            if (string.IsNullOrEmpty(parse))
+            {
+                return 0;
+            }
+
             string input = parse;
             foreach(ExpressionVariables var in vars)
             {
@@ -107,6 +112,7 @@ namespace OSB.Editor
 
             actor.hitbox = new GameObject("Hitbox");
             actor.hitbox.transform.parent = actor.mainObject.transform;
+            
 
             actor.logicHitbox.collider = actor.hitbox.AddComponent<PolygonCollider2D>();
 
@@ -122,8 +128,75 @@ namespace OSB.Editor
                 actor.logicHitbox.collider.SetPath(i, points.ToArray());
             }
 
-
+            actor.hitbox.transform.localPosition = Vector3.zero;
             actor.hitbox.tag = "LevelHitbox";
+        }
+    }
+
+    public class ActorParam
+    {
+        public ActorNumber number;
+        public string text;
+
+        public ActorParam(ActorNumber num)
+        {
+            number = num;
+            text = "";
+        }
+
+        public ActorParam(string text_,ActorNumber num)
+        {
+            text = text_;
+            number = num;
+        }
+    }
+
+    public class ActorNumber
+    {
+        public float Value
+        {
+            get
+            {
+                float val = 0;
+
+                string[] parsed = expression.Split('|');
+                if (parsed.Length > 1)
+                {
+                    if(parsed[0] == "rand")
+                    {
+                        float min = PaloUtils.ConvertExpression(parsed[1], Overrides.ToArray());
+                        float max = PaloUtils.ConvertExpression(parsed[2], Overrides.ToArray());
+                        val = UnityEngine.Random.Range(min, max);
+                    }
+                }
+                else
+                {
+                    val = PaloUtils.ConvertExpression(expression, Overrides.ToArray());
+                }
+                return val;
+            }
+            set
+            {
+                expression = value.ToString();
+            }
+        }
+        string expression;
+        public List<PaloUtils.ExpressionVariables> Overrides;
+
+        public ActorNumber(string exp)
+        {
+            expression = exp;
+            Overrides = new();
+        }
+
+        public static implicit operator ActorNumber(float value)
+        {
+            return new ActorNumber(value.ToString());
+        }
+
+        public static implicit operator ActorNumber(string value)
+        {
+            return new ActorNumber(value);
         }
     }
 
@@ -141,49 +214,16 @@ namespace OSB.Editor
         public bool hasActivated = false;
         public bool hasPrepared = false;
 
-        public Dictionary<string, object> objParams = new Dictionary<string, object>();
+        public string ID;
+
+        public Dictionary<string, ActorParam> objParams = new Dictionary<string, ActorParam>();
 
         public LevelActor()
         {
-            objParams.Add("Warning", 2000);
-            objParams.Add("Time", 99999);
-            objParams.Add("Duration", 1000);
-            objParams.Add("OutroDuration", 250);
-            
-            /*OSBLevelEditorStaticValues.onStop.AddListener(() =>
-            {
-                if (hasActivated)
-                {
-                    Dispose();
-                }
-                else if (hasPrepared)
-                {
-                    GameObject.Destroy(mainObject);
-                    MainLevelManager.Singleton.onFrame.RemoveListener(Frame);
-                }
-                hasActivated = false;
-                hasPrepared = false;
-                shouldBeDisposed = false;
-                MainLevelManager.Singleton.onFrame.RemoveListener(Frame);
-                
-                Debug.Log("stop");
-            });
-            OSBLevelEditorStaticValues.onPlay.AddListener((time)=>
-            {
-                if(time > (float)objParams["Time"])
-                {
-                    
-                    hasActivated = true;
-                    hasPrepared = true;
-                    shouldBeDisposed = true;
-                    Debug.Log("play from actor is bad");
-                }
-                else
-                {
-                    MainLevelManager.Singleton.onFrame.AddListener(Frame);
-                    Debug.Log("i should reinitialize the object");
-                }
-            });*/
+            objParams.Add("Warning", new(2000));
+            objParams.Add("Time", new(99999));
+            objParams.Add("Duration", new(1000));
+            objParams.Add("OutroDuration", new(200));
         }
 
         public virtual void Prepare()
@@ -193,6 +233,7 @@ namespace OSB.Editor
             visual.transform.parent = mainObject.transform;
             MainLevelManager.Singleton.onFrame.AddListener(Frame);
             hasPrepared = true;
+
             
         }
 
@@ -205,19 +246,23 @@ namespace OSB.Editor
         {
             if (!OSBLevelEditorStaticValues.IsInEditor)
             {
-                if ((MainLevelManager.Singleton.msTime >= (int)objParams["Time"] - (int)objParams["Warning"]) && needsWarning && !hasPrepared)
+                float timeValue = objParams["Time"].number.Value;
+                float warningValue = objParams["Warning"].number.Value;
+                float durationValue = objParams["Duration"].number.Value;
+
+                if ((MainLevelManager.Singleton.msTime >= timeValue - warningValue) && needsWarning && !hasPrepared)
                 {
                     Prepare();
                 }
-                else if (MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !needsWarning && !hasPrepared)
+                else if (MainLevelManager.Singleton.msTime >= timeValue && !needsWarning && !hasPrepared)
                 {
                     Prepare();
                 }
-                if (MainLevelManager.Singleton.msTime >= (int)objParams["Time"] && !hasActivated && needsWarning)
+                if (MainLevelManager.Singleton.msTime >= timeValue && !hasActivated && needsWarning)
                 {
                     ActivateAttack();
                 }
-                if (MainLevelManager.Singleton.msTime >= (int)objParams["Time"] + (int)objParams["Duration"] && !shouldBeDisposed && needsWarning)
+                if (MainLevelManager.Singleton.msTime >= timeValue + durationValue && !shouldBeDisposed && needsWarning)
                 {
                     Dispose();
                 }

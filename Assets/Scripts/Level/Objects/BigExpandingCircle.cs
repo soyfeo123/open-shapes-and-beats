@@ -7,7 +7,7 @@ public class BigExpandingCircle : LevelActor
     public BigExpandingCircle() : base()
     {
         needsWarning = true; // what do you think the default size speed should be?
-        objParams.Add("circleSizeSpeed", 0.6f);
+        objParams.Add("circleSizeSpeed", new ActorParam(1f));
     }
 
     public override void Prepare()
@@ -34,7 +34,7 @@ public class BigExpandingCircle : LevelActor
         base.Frame();
         if (hasActivated)
         {
-            mainObject.transform.localScale += Vector3.one * ((float)objParams["circleSizeSpeed"]) * Time.deltaTime;
+            mainObject.transform.localScale += Vector3.one * (objParams["circleSizeSpeed"].number.Value) * Time.deltaTime;
         }
     }
 
