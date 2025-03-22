@@ -150,7 +150,7 @@ public class OSB_Player : MonoBehaviour
         }
 
         if(movesDuringTheFrame)
-        p_scale = Vector3.Lerp(p_scale, p_targetScale, 15 * Time.deltaTime);
+        p_scale = Vector3.Lerp(p_scale, p_targetScale, 10 * Time.deltaTime);
         if(movesDuringTheFrame)
         VisualObj.transform.localScale = p_scale;
 

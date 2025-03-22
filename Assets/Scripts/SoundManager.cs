@@ -154,6 +154,7 @@ public class Music
             if(request.result == UnityWebRequest.Result.Success)
             {
                 AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+                clip.LoadAudioData();
                 Clip = clip;
                 onComplete?.Invoke();
             }

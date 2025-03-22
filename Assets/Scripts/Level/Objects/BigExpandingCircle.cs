@@ -34,7 +34,7 @@ public class BigExpandingCircle : LevelActor
         base.Frame();
         if (hasActivated)
         {
-            mainObject.transform.localScale += Vector3.one * (objParams["circleSizeSpeed"].number.Value) * Time.deltaTime;
+            mainObject.transform.localScale += Vector3.one * (objParams["circleSizeSpeed"].number.Value) * OSBLevelEditorStaticValues.deltaTime;
         }
     }
 

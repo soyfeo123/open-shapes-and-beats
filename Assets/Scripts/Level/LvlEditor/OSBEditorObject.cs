@@ -12,6 +12,8 @@ public class OSBEditorObject : MonoBehaviour
     public bool objectNeedsWarning = false;
     public RectTransform activeZone;
     public RectTransform warningZone;
+    public RectTransform activeZoneDrag;
+    public RectTransform warningZoneDrag;
     //public Dictionary<string, object> objParams = new Dictionary<string, object>();
     public float relativeXPos;
     public float actualTime
@@ -36,27 +38,27 @@ public class OSBEditorObject : MonoBehaviour
 
     private void Awake()
     {
-        
+        Debug.Log(" " + actorType);
+        Type typeOfActor = Type.GetType(actorType);
+        if (typeOfActor == null)
+        {
+
+            Notification.CreateNotification("[_<_INVALID OBJECT!_>_]\nPlease contact Palo/GameSharp to report this error, along with what you were doing.\nObject name: " + actorType, "[enter] got it", new() { { KeyCode.Return, () => { } } });
+            return;
+        }
+
+
+
+        assignedActor = Activator.CreateInstance(typeOfActor) as LevelActor;
+
+        assignedActor.objParams["Time"].number.Value = Mathf.Infinity;
+
 
         // FOR THE SAKE OF TESTING
         //assignedActor = new FlyingProjectile();
     }
     private void Start()
     {
-        Debug.Log(" " + actorType);
-        Type typeOfActor = Type.GetType(actorType);
-        /*if (typeOfActor == null)
-        {
-            
-            Notification.CreateNotification("[_<_INVALID OBJECT!_>_]\nPlease contact Palo/GameSharp to report this error, along with what you were doing.\nObject name: " + actorType, "[enter] got it", new() { { KeyCode.Return, () => { } } });
-            return;
-        }*/
-
-        
-
-        assignedActor = Activator.CreateInstance(typeOfActor) as LevelActor;
-
-        assignedActor.objParams["Time"].number.Value = Mathf.Infinity;
         
         OSBLevelEditorStaticValues.onPlay.AddListener((time) =>
         {
@@ -86,6 +88,14 @@ public class OSBEditorObject : MonoBehaviour
         {
             assignedActor.objParams["Warning"].number.Value = warningZone.sizeDelta.x * 10f;
             assignedActor.objParams["Duration"].number.Value = activeZone.sizeDelta.x * 10f;
+
+            var activeZoneDragPos = activeZoneDrag.GetComponent<RectTransform>().anchoredPosition;
+            activeZoneDragPos.x = activeZone.sizeDelta.x;
+            activeZoneDrag.GetComponent<RectTransform>().anchoredPosition = activeZoneDragPos;
+
+            var warningZoneDragPos = activeZoneDrag.GetComponent<RectTransform>().anchoredPosition;
+            warningZoneDragPos.x = warningZone.sizeDelta.x;
+            warningZoneDrag.GetComponent<RectTransform>().anchoredPosition = -warningZoneDragPos;
         }
         
 
@@ -180,5 +190,60 @@ public class OSBEditorObject : MonoBehaviour
 
                 break;
         }
+    }
+
+
+    float warningZoneOffset = 0;
+
+    public void SetOffsetForDragWarning(BaseEventData data_)
+    {
+        PointerEventData data = data_ as PointerEventData;
+        if (data.button != PointerEventData.InputButton.Left) return;
+
+        
+        Vector2 point;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(warningZoneDrag, Input.mousePosition, null, out point);
+        warningZoneOffset = point.x;
+        
+    }
+
+    public void DragWarningZone()
+    {
+        
+
+        Vector2 point;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(warningZone, Input.mousePosition, null, out point);
+
+        Vector2 size = warningZone.sizeDelta;
+        size.x = -point.x + warningZoneOffset;
+        warningZone.sizeDelta = size;
+    }
+
+
+
+    float activeZoneOffset = 0;
+
+    public void SetOffsetForDragActive(BaseEventData data_)
+    {
+        PointerEventData data = data_ as PointerEventData;
+        if (data.button != PointerEventData.InputButton.Left) return;
+
+
+        Vector2 point;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(activeZoneDrag, Input.mousePosition, null, out point);
+        activeZoneOffset = point.x;
+
+    }
+
+    public void DragActiveZone()
+    {
+
+
+        Vector2 point;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(activeZone, Input.mousePosition, null, out point);
+
+        Vector2 size = activeZone.sizeDelta;
+        size.x = point.x - activeZoneOffset;
+        activeZone.sizeDelta = size;
     }
 }

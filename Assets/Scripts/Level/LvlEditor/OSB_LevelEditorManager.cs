@@ -38,7 +38,6 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
         LevelSpawnSprites.LoadSprites();
 
         Notification.CreateNotification(@"[_<_NOTICE!_>_]
-
 The level editor is still in beta. Stuff [_IS_] going to be broken, and many other features are coming too.
 <_Remember to report any bugs to Palo/GameSharp!_>", "[enter] continue", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Return, () => { } } });
 
@@ -55,6 +54,8 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         return _minutes.ToString() + ":" + (_seconds < 10 ? "0" : "") + _seconds.ToString();
     }
 
+    float lastSongPos;
+
     // Update is called once per frame
     void Update()
     {
@@ -66,8 +67,8 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
             MainLevelManager.Singleton.msTime = EditorPlayhead.Singleton.SongPosMS;
         }
 
-
-
+        OSBLevelEditorStaticValues.deltaTime = EditorPlayhead.Singleton.SongPosS - lastSongPos;
+        lastSongPos = EditorPlayhead.Singleton.SongPosS;
 
         // TESTING RELATED STUFF
 #if UNITY_2017_1_OR_NEWER
@@ -198,6 +199,7 @@ public static class OSBLevelEditorStaticValues
 {
     public static UnityEngine.Events.UnityEvent onStop = new UnityEngine.Events.UnityEvent();
     public static UnityEngine.Events.UnityEvent<int> onPlay = new UnityEngine.Events.UnityEvent<int>();
+    public static float deltaTime;
 
     public static bool IsInEditor
     {

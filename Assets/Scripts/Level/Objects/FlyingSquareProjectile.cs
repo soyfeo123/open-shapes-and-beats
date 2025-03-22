@@ -62,6 +62,6 @@ public class FlyingProjectile : LevelActor
     {
         base.Frame();
         if(hasPrepared)
-        MoveBy(randomSpeed * Time.deltaTime * Mathf.Sin(direction), randomSpeed * Time.deltaTime * Mathf.Cos(direction));
+        MoveBy(randomSpeed * OSBLevelEditorStaticValues.deltaTime * Mathf.Sin(direction), randomSpeed * OSBLevelEditorStaticValues.deltaTime * Mathf.Cos(direction));
     }
 }
