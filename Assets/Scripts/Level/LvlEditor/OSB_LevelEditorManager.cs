@@ -185,6 +185,11 @@ All unsaved progress you've done in this level will be lost!
         });
     }
 
+    private void OnDestroy()
+    {
+        ThePlayersParents.Singleton.DestroyPlayer();
+    }
+
     IEnumerator ConstantlySpawnFunnyDebris()
     {
         while (true)

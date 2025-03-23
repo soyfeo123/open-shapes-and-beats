@@ -1,16 +1,11 @@
 using UnityEngine;
 
-public class OSBProductionInit : MonoBehaviour
+public class OSBProductionInit : OSBInit
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Init()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        base.Init();
+        Debug.Log("[OSB]: Production build!");
+        UIController.OpenMenu(UIMenus.WELCOME_SCREEN, false);
     }
 }
