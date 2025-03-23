@@ -181,7 +181,7 @@ All unsaved progress you've done in this level will be lost!
     {
         FadeManager.FadeOut(0.5f, () =>
         {
-            SceneManager.LoadScene("OSB_Debug");
+            OSBScenes.LoadGameplayScene();
         });
     }
 

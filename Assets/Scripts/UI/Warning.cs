@@ -15,7 +15,7 @@ public class Warning : MonoBehaviour
     {
         if (text.activeInHierarchy && Input.anyKeyDown)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("OSB_Debug");
+            OSBScenes.LoadGameplayScene();
         }
     }
 }

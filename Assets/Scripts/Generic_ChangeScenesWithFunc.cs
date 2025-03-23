@@ -7,6 +7,6 @@ public class Generic_ChangeScenesWithFunc : MonoBehaviour
 {
     public void Event_ChangeScene(string name)
     {
-        SceneManager.LoadScene(name);
+        OSBScenes.LoadGameplayScene();
     }
 }

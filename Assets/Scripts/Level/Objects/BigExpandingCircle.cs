@@ -7,7 +7,9 @@ public class BigExpandingCircle : LevelActor
     public BigExpandingCircle() : base()
     {
         needsWarning = true; // what do you think the default size speed should be?
-        objParams.Add("circleSizeSpeed", new ActorParam(1f));
+        objParams.Add("circleSizeSpeed", new ActorParam(1.25f));
+        objParams.Add("XPos", new(0f));
+        objParams.Add("YPos", new(0f));
     }
 
     public override void Prepare()
@@ -15,7 +17,7 @@ public class BigExpandingCircle : LevelActor
         base.Prepare();
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_CIRCLE);
         mainObject.transform.localScale = Vector3.one * 4;
-        mainObject.transform.position = new Vector3(Random.Range(-8, 8), Random.Range(-5, 5));
+        mainObject.transform.position = new Vector3(objParams["XPos"].number.Value, objParams["YPos"].number.Value);
         rc.renderer.color = new Color(RenderComponent.pink.r, RenderComponent.pink.g, RenderComponent.pink.b, 0.25f);
         
     }
@@ -27,6 +29,7 @@ public class BigExpandingCircle : LevelActor
         visual.transform.localScale = Vector3.zero;
         visual.transform.DOScale(1, 0.08f).SetEase(Ease.Linear);
         rc.SetColorToPink();
+        rc.renderer.DOColor(Color.white, 0.25f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
     }
 
     public override void Frame()
@@ -40,6 +43,8 @@ public class BigExpandingCircle : LevelActor
 
     public override void Dispose()
     {
+        if (mainObject != null)
+            rc.renderer.DOKill();
         if(mainObject != null)
         mainObject.transform.DOScale(0, 0.06f).SetEase(Ease.Linear).OnComplete(() =>
         {

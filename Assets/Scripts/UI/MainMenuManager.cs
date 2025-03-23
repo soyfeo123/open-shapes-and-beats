@@ -60,9 +60,8 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     {
         menuMusic = new Music();
         PlayRandomSongForMainMenu();
-        
 
-        FadeManager.FadeIn(1f);
+
         MainMenuContainerGroup.alpha = 0;
         MainMenuContainerGroup.interactable = false;
         HideRightButtons();
@@ -289,7 +288,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         menuMusic.FadeOut(()=> { }, 1f);
         FadeManager.FadeOut(1f, () =>
         {
-            Application.Quit();
+            OSBScenes.QuitGame();
         });
     }
 

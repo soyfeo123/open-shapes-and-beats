@@ -54,8 +54,6 @@ public class FlyingProjectile : LevelActor
         mainObject.transform.position = new Vector3(9, randomValue == 0 ? -3f : (randomValue == 1 ? 0 : (randomValue == 2 ? 3f : 0)), 0);
         direction = Random.Range(-30, -122) * Mathf.Deg2Rad; // ??? // NO WAY THAT ACTUALLY WORKED?????
         randomSpeed = Random.Range(4f, 6f);
-        //rc.AddVisibilityRenderer();
-        //Debug.Log(direction);
     }
 
     public override void Frame()
