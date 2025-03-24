@@ -20,6 +20,7 @@ namespace OSB.Editor
             _internalTable = new DataTable();
         }
 
+        [Serializable]
         public struct ExpressionVariables
         {
             public string textToReplace;
@@ -39,14 +40,21 @@ namespace OSB.Editor
                 return 0;
             }
 
-            string input = parse;
-            foreach(ExpressionVariables var in vars)
+            try
             {
-                input = input.Replace($"[{var.textToReplace}]", var.value.ToString());
-            }
+                string input = parse;
+                foreach (ExpressionVariables var in vars)
+                {
+                    input = input.Replace($"[{var.textToReplace}]", var.value.ToString());
+                }
 
-            float val = (float)Convert.ToDouble(_internalTable.Compute(input, ""));
-            return val;
+                float val = (float)Convert.ToDouble(_internalTable.Compute(input, ""));
+                return val;
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 
@@ -133,10 +141,16 @@ namespace OSB.Editor
         }
     }
 
+    [Serializable]
     public class ActorParam
     {
         public ActorNumber number;
         public string text;
+
+        public ActorParam()
+        {
+
+        }
 
         public ActorParam(ActorNumber num)
         {
@@ -151,6 +165,7 @@ namespace OSB.Editor
         }
     }
 
+    [Serializable]
     public class ActorNumber
     {
         public float Value
@@ -180,8 +195,13 @@ namespace OSB.Editor
                 expression = value.ToString();
             }
         }
-        string expression;
+        public string expression;
         public List<PaloUtils.ExpressionVariables> Overrides;
+
+        public ActorNumber()
+        {
+
+        }
 
         public ActorNumber(string exp)
         {
@@ -220,6 +240,7 @@ namespace OSB.Editor
 
         public LevelActor()
         {
+            objParams.Add("ID", new("", ""));
             objParams.Add("Warning", new(2000));
             objParams.Add("Time", new(99999));
             objParams.Add("Duration", new(1000));

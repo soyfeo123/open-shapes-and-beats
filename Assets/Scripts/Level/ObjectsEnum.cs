@@ -6,6 +6,7 @@ namespace OSB.Editor
     {
         public static Sprite GENERIC_SQUARE;
         public static Sprite GENERIC_CIRCLE;
+        public static Sprite BOMB;
 
         /// <summary>
         /// CALL THIS AT THE BEGINNING OF EVERY LEVEL OR WHEN THE LEVEL EDITOR'S LOADED
@@ -14,6 +15,7 @@ namespace OSB.Editor
         {
             GENERIC_SQUARE = Resources.Load<Sprite>("Textures/LvlObjs/GenericSquare");
             GENERIC_CIRCLE = Resources.Load<Sprite>("Textures/LvlObjs/GenericCircle");
+            BOMB = Resources.Load<Sprite>("Textures/LvlObjs/SpikeBomb");
         }
     }
 }

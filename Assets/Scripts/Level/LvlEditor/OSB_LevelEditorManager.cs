@@ -21,8 +21,11 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
 
     [Header("Actual Editor Variables")]
     public bool isPlaying;
+    public bool isRecording;
     public Music levelMusic;
-
+    public List<OSBLayer> layers =new List<OSBLayer>();
+    public Transform layerViewContent;
+    public Transform newLayerButton;
 
 #if UNITY_2017_1_OR_NEWER
     public BigExpandingCircle currentCircle;
@@ -56,6 +59,22 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
     float lastSongPos;
 
+    public static bool IsPointerFocusedInputField()
+    {
+
+        var selectables = Selectable.allSelectablesArray;
+        foreach (var selectable in selectables)
+        {
+            
+            TMP_InputField inputField = selectable as TMP_InputField;
+            if (inputField != null && inputField.isFocused)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -72,25 +91,28 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
         // TESTING RELATED STUFF
 #if UNITY_2017_1_OR_NEWER
-        if (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.E))
+        bool pointer = IsPointerFocusedInputField();
+
+
+        if (!pointer && (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.E)))
         {
             FlyingProjectile flyingProjectile = new FlyingProjectile();
             flyingProjectile.Prepare();
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        if (!pointer && Input.GetKeyDown(KeyCode.P))
         {
             StartCoroutine(ConstantlySpawnFunnyDebris());
         }
-        if (Input.GetKeyDown(KeyCode.C))
+        if (!pointer && Input.GetKeyDown(KeyCode.C))
         {
             currentCircle = new BigExpandingCircle();
             currentCircle.Prepare();
         }
-        if (Input.GetKeyDown(KeyCode.V))
+        if (!pointer && Input.GetKeyDown(KeyCode.V))
         {
             currentCircle.ActivateAttack();
         }
-        if (Input.GetKeyDown(KeyCode.B))
+        if (!pointer && Input.GetKeyDown(KeyCode.B))
         {
             currentCircle.Dispose();
         }
@@ -121,11 +143,17 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         else
         {
             OSBLevelEditorStaticValues.onStop.Invoke();
-            
+            isRecording = false;
             levelMusic.Pause();
             playIcon.sprite = playIconSprite;
         }
         
+    }
+
+    public void Event_Record()
+    {
+        isRecording = true;
+        Event_TogglePlayback();
     }
 
     public void Event_RewindToStart()
@@ -144,6 +172,18 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
     public void Event_DestroyPlayer()
     {
         ThePlayersParents.Singleton.DestroyPlayer();
+    }
+
+
+    // Layer Related Stuff
+
+    public void Event_AddLayer()
+    {
+        GameObject layer = Instantiate(Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/UI/TimelineLayer"));
+        layer.transform.SetParent(layerViewContent);
+        layer.name = "Layer" + layers.Count.ToString();
+        newLayerButton.SetAsLastSibling();
+        layers.Add(layer.GetComponent<OSBLayer>());
     }
 
 

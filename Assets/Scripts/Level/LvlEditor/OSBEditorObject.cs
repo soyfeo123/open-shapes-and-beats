@@ -14,8 +14,12 @@ public class OSBEditorObject : MonoBehaviour
     public RectTransform warningZone;
     public RectTransform activeZoneDrag;
     public RectTransform warningZoneDrag;
+
+    public Dictionary<string, ActorParam> paramTemplate;
+
     //public Dictionary<string, object> objParams = new Dictionary<string, object>();
     public float relativeXPos;
+    public bool initializeActor = true;
     public float actualTime
     {
         get
@@ -36,7 +40,7 @@ public class OSBEditorObject : MonoBehaviour
     bool hasWarned;
     bool hasActivated;
 
-    private void Awake()
+    public void InitInstance()
     {
         Debug.Log(" " + actorType);
         Type typeOfActor = Type.GetType(actorType);
@@ -51,7 +55,15 @@ public class OSBEditorObject : MonoBehaviour
 
         assignedActor = Activator.CreateInstance(typeOfActor) as LevelActor;
 
-        assignedActor.objParams["Time"].number.Value = Mathf.Infinity;
+        assignedActor.objParams["Time"].number.Value = actualTime;
+    }
+
+    private void Awake()
+    {
+        if(assignedActor == null)
+        {
+            InitInstance();
+        }
 
 
         // FOR THE SAKE OF TESTING
@@ -59,6 +71,13 @@ public class OSBEditorObject : MonoBehaviour
     }
     private void Start()
     {
+        if(paramTemplate != null)
+        {
+            assignedActor.objParams = new Dictionary<string, ActorParam>(paramTemplate);
+
+        }
+
+        GetComponent<RectTransform>().anchoredPosition = new Vector2(GetComponent<RectTransform>().anchoredPosition.x, 0);
         
         OSBLevelEditorStaticValues.onPlay.AddListener((time) =>
         {
@@ -83,11 +102,20 @@ public class OSBEditorObject : MonoBehaviour
 
     private void Update()
     {
-        relativeXPos = GetComponent<RectTransform>().anchoredPosition.x - minX;
+        Vector2 pos = GetComponent<RectTransform>().anchoredPosition;
+        pos.x = assignedActor.objParams["Time"].number.Value * 0.1f;
+        actualTime = assignedActor.objParams["Time"].number.Value;
+        GetComponent<RectTransform>().anchoredPosition = pos;
+
         if (objectNeedsWarning)
         {
-            assignedActor.objParams["Warning"].number.Value = warningZone.sizeDelta.x * 10f;
-            assignedActor.objParams["Duration"].number.Value = activeZone.sizeDelta.x * 10f;
+            Vector2 warningZoneSize = warningZone.sizeDelta;
+            warningZoneSize.x = assignedActor.objParams["Warning"].number.Value * 0.1f;
+            warningZone.sizeDelta = warningZoneSize;
+
+            Vector2 activeZoneSize = activeZone.sizeDelta;
+            activeZoneSize.x = assignedActor.objParams["Duration"].number.Value * 0.1f;
+            activeZone.sizeDelta = activeZoneSize;
 
             var activeZoneDragPos = activeZoneDrag.GetComponent<RectTransform>().anchoredPosition;
             activeZoneDragPos.x = activeZone.sizeDelta.x;
@@ -146,10 +174,12 @@ public class OSBEditorObject : MonoBehaviour
 
     float offset = 0;
 
+    bool isDrag = false;
+
     public void OnMouseDrag()
     {
 
-
+        isDrag = true;
         RectTransform rt = transform.parent.GetComponent<RectTransform>();
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, null, out point);
@@ -159,6 +189,7 @@ public class OSBEditorObject : MonoBehaviour
 
     public void SetOffsetForDrag(BaseEventData data_)
     {
+        isDrag = false;
         PointerEventData data = data_ as PointerEventData;
         if (data.button != PointerEventData.InputButton.Left) return;
 
@@ -175,11 +206,13 @@ public class OSBEditorObject : MonoBehaviour
         switch (data.button)
         {
             default:
-                RectTransform rt = transform.parent.GetComponent<RectTransform>();
-                Vector2 point;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, null, out point);
-                offset = point.x;
-                Debug.Log(offset);
+                if (!isDrag)
+                {
+                    GameObject window = Instantiate(Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/ParamsWindow"));
+                    window.GetComponent<ParamsWindowController>().actor = assignedActor;
+                    window.transform.SetParent(OSB_LevelEditorManager.Singleton.transform, false);
+                    window.GetComponent<ParamsWindowController>().InitWindow();
+                }
 
                 break;
 
@@ -214,9 +247,7 @@ public class OSBEditorObject : MonoBehaviour
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(warningZone, Input.mousePosition, null, out point);
 
-        Vector2 size = warningZone.sizeDelta;
-        size.x = -point.x + warningZoneOffset;
-        warningZone.sizeDelta = size;
+        assignedActor.objParams["Warning"].number.Value = (-point.x + warningZoneOffset) * 10f;
     }
 
 
@@ -242,8 +273,6 @@ public class OSBEditorObject : MonoBehaviour
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(activeZone, Input.mousePosition, null, out point);
 
-        Vector2 size = activeZone.sizeDelta;
-        size.x = point.x - activeZoneOffset;
-        activeZone.sizeDelta = size;
+        assignedActor.objParams["Duration"].number.Value = (point.x - activeZoneOffset) * 10f;
     }
 }
