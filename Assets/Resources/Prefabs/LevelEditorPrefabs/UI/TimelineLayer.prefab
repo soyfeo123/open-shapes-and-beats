@@ -741,7 +741,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Input
+  m_text: Bind Key
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}
   m_sharedMaterial: {fileID: -5575659497794398896, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}
@@ -780,7 +780,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -52.35
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

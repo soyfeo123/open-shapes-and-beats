@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a001fa8ee199e4fef899d1911d856730, type: 3}
-  m_Name: FlyingProjectile
+  m_Name: Laser
   m_EditorClassIdentifier: 
-  prefab: {fileID: 597890956092055232, guid: 100d60b95df0a470aa7e9e0702ca0d7e, type: 3}
-  editorIcon: {fileID: 21300000, guid: 87f0e35a1b4ef407d8c79ff5a70a67c5, type: 3}
-  cSharpActorName: FlyingProjectile
+  prefab: {fileID: 2199722413289242552, guid: b0b355643559e4214bb4f67e5004faa8, type: 3}
+  editorIcon: {fileID: 0}
+  cSharpActorName: Laser

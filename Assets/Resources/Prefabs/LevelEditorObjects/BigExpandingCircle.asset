@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 2199722413289242552, guid: 5b5c2ef4ff44c4b63b893955074e8001, type: 3}
   editorIcon: {fileID: 0}
+  cSharpActorName: BigExpandingCircle

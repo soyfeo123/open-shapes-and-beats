@@ -13,13 +13,14 @@ public static class GameProjectileManager
     public static void CreateCircleProjectiles(Vector3 point, int numberOfProjectiles)
     {
         float angle = 360f / (numberOfProjectiles);
+        float setRandomValue = Random.Range(-300, 300);
 
-        for(int i = 0; i < numberOfProjectiles; i++)
+        for (int i = 0; i < numberOfProjectiles; i++)
         {
-            Debug.Log(i + ": " + angle * i);
+            Debug.Log(i + ": " + (angle * i + setRandomValue));
             GameObject projectile = GameObject.Instantiate(genericProjectile);
             projectile.transform.position = point;
-            projectile.GetComponent<LogicMoveWithDirection>().direction = angle * i;
+            projectile.GetComponent<LogicMoveWithDirection>().direction = angle * i + setRandomValue;
         }
     }
 }

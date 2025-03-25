@@ -111,6 +111,7 @@ public class OSBLayer : MonoBehaviour
                 Destroy(obj.gameObject);
                 
             }
+            objectsOnLayer.Clear();
         } }, { KeyCode.Escape, ()=>{ } } } );
     }
 
@@ -127,10 +128,19 @@ public class OSBLayer : MonoBehaviour
                 window.GetComponent<ParamsWindowController>().InitWindow();
                 break;
             case PointerEventData.InputButton.Right:
-                // todo: implement object window and do the stuff
-                thingToClone = new SpikeBomb();
+                LvlEditorInventory.OpenInventory((GameObject editorObject, string actorName) =>
+                {
+                    Type actorType = Type.GetType(actorName);
+                    if(actorType == null)
+                    {
+                        Notification.CreateNotification("[_<_INVALID OBJECT!_>_]\nSomething went wrong and a wrong type of object was given.\nSend Palo/GameSharp the Unity logs along with what you were doing.\nSorry bout this!", "[enter] fine", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Return, () => { } } });
+                        return;
+                    }
 
-                objToClone = Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/" + thingToClone.GetType().Name);
+                    thingToClone = Activator.CreateInstance(actorType) as LevelActor;
+                    objToClone = editorObject;
+                    Debug.Log("Loaded " + actorName);
+                });
                 break;
         }
     }

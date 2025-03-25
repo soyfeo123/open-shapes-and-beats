@@ -1,0 +1,22 @@
+using UnityEngine;
+using OSB.Editor;
+
+public class #SCRIPTNAME# : LevelActor
+{
+    public #SCRIPTNAME#() : base()
+    {
+#NOTRIM#
+    }
+
+    public override void Prepare()
+    {
+        base.Prepare();
+#NOTRIM#
+    }
+
+    public override void ActivateAttack()
+    {
+        base.ActivateAttack();
+#NOTRIM#
+    }
+}

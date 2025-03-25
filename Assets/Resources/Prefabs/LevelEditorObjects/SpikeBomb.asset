@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 2199722413289242552, guid: 90861cfc5b08249daa902f09495e1d24, type: 3}
   editorIcon: {fileID: 0}
+  cSharpActorName: SpikeBomb

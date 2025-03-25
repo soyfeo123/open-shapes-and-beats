@@ -5,4 +5,5 @@ public class OSBEditorObjectDefinition : ScriptableObject
 {
     public GameObject prefab;
     public Sprite editorIcon;
+    public string cSharpActorName;
 }
