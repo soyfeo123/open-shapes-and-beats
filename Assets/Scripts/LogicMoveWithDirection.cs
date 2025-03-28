@@ -4,7 +4,7 @@ public class LogicMoveWithDirection : MonoBehaviour
 {
     public float direction;
     float innerDirection;
-    public float speed = 12f;
+    public float speed = 9f;
 
     private void Awake()
     {

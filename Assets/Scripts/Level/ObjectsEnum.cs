@@ -9,8 +9,9 @@ namespace OSB.Editor
         public static Sprite BOMB;
 
         /// <summary>
-        /// CALL THIS AT THE BEGINNING OF EVERY LEVEL OR WHEN THE LEVEL EDITOR'S LOADED
+        /// CALL THIS AT THE BEGINNING OF EVERY LEVEL OR WHEN THE LEVEL EDITOR'S LOADED (ACTUALLY NOT ANYMORE)
         /// </summary>
+        [RuntimeInitializeOnLoadMethod]
         public static void LoadSprites()
         {
             GENERIC_SQUARE = Resources.Load<Sprite>("Textures/LvlObjs/GenericSquare");

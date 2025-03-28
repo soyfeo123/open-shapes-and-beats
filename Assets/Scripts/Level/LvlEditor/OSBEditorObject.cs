@@ -32,7 +32,7 @@ public class OSBEditorObject : MonoBehaviour
 
             SetRelativePos(value / 10f);
 
-            assignedActor.objParams["Time"].number.Value = relativeXPos * 10f;
+            assignedActor.objParams["Time"].number.expression = (relativeXPos * 10f).ToString();
         }
     }
     bool mustExecute = false;
@@ -55,7 +55,7 @@ public class OSBEditorObject : MonoBehaviour
 
         assignedActor = Activator.CreateInstance(typeOfActor) as LevelActor;
 
-        assignedActor.objParams["Time"].number.Value = actualTime;
+        assignedActor.objParams["Time"].number.expression = actualTime.ToString();
     }
 
     private void Awake()
@@ -103,18 +103,18 @@ public class OSBEditorObject : MonoBehaviour
     private void Update()
     {
         Vector2 pos = GetComponent<RectTransform>().anchoredPosition;
-        pos.x = assignedActor.objParams["Time"].number.Value * 0.1f;
-        actualTime = assignedActor.objParams["Time"].number.Value;
+        pos.x = assignedActor.objParams["Time"].number.GetValue() * 0.1f;
+        actualTime = assignedActor.objParams["Time"].number.GetValue();
         GetComponent<RectTransform>().anchoredPosition = pos;
 
         if (objectNeedsWarning)
         {
             Vector2 warningZoneSize = warningZone.sizeDelta;
-            warningZoneSize.x = assignedActor.objParams["Warning"].number.Value * 0.1f;
+            warningZoneSize.x = assignedActor.objParams["Warning"].number.GetValue() * 0.1f;
             warningZone.sizeDelta = warningZoneSize;
 
             Vector2 activeZoneSize = activeZone.sizeDelta;
-            activeZoneSize.x = assignedActor.objParams["Duration"].number.Value * 0.1f;
+            activeZoneSize.x = assignedActor.objParams["Duration"].number.GetValue() * 0.1f;
             activeZone.sizeDelta = activeZoneSize;
 
             var activeZoneDragPos = activeZoneDrag.GetComponent<RectTransform>().anchoredPosition;
@@ -135,7 +135,7 @@ public class OSBEditorObject : MonoBehaviour
             assignedActor.Prepare();
         }
 
-        if (mustExecute && !hasWarned && objectNeedsWarning && EditorPlayhead.Singleton.SongPosMS >= actualTime - assignedActor.objParams["Warning"].number.Value)
+        if (mustExecute && !hasWarned && objectNeedsWarning && EditorPlayhead.Singleton.SongPosMS >= actualTime - assignedActor.objParams["Warning"].number.GetValue())
         {
             hasWarned = true;
             assignedActor.Prepare();
@@ -145,7 +145,7 @@ public class OSBEditorObject : MonoBehaviour
             hasActivated = true;
             assignedActor.ActivateAttack();
         }
-        if (mustExecute &&objectNeedsWarning && EditorPlayhead.Singleton.SongPosMS >= actualTime + assignedActor.objParams["Duration"].number.Value)
+        if (mustExecute &&objectNeedsWarning && EditorPlayhead.Singleton.SongPosMS >= actualTime + assignedActor.objParams["Duration"].number.GetValue())
         {
             mustExecute = false;
             assignedActor.Dispose();
@@ -169,7 +169,7 @@ public class OSBEditorObject : MonoBehaviour
         pos.y = 0;
         rt.anchoredPosition = pos;
         relativeXPos = GetComponent<RectTransform>().anchoredPosition.x - minX;
-        assignedActor.objParams["Time"].number.Value = relativeXPos * 10f;
+        assignedActor.objParams["Time"].number.expression = (relativeXPos * 10f).ToString();
     }
 
     float offset = 0;
@@ -247,7 +247,7 @@ public class OSBEditorObject : MonoBehaviour
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(warningZone, Input.mousePosition, null, out point);
 
-        assignedActor.objParams["Warning"].number.Value = (-point.x + warningZoneOffset) * 10f;
+        assignedActor.objParams["Warning"].number.expression = ((-point.x + warningZoneOffset) * 10f).ToString();
     }
 
 
@@ -273,6 +273,6 @@ public class OSBEditorObject : MonoBehaviour
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(activeZone, Input.mousePosition, null, out point);
 
-        assignedActor.objParams["Duration"].number.Value = (point.x - activeZoneOffset) * 10f;
+        assignedActor.objParams["Duration"].number.expression = ((point.x - activeZoneOffset) * 10f).ToString();
     }
 }

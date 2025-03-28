@@ -11,6 +11,10 @@ public class PaloDebug : OSBInit
 
         //MainLevelManager.Singleton.LoadLevel(MainGameLevels.I_SAID_MEOW);
         //UIController.OpenMenu(UIMenus.MAIN_MENU);
-        UIController.OpenMenu(UIMenus.WELCOME_SCREEN);
+        //UIController.OpenMenu(UIMenus.WELCOME_SCREEN);
+
+        MainLevelManager.Singleton.LoadLevel("OSBEditor");
+
+        
     }
 }

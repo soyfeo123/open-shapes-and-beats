@@ -50,6 +50,13 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public GameObject playlistEntry;
     public List<LvlMetadataV1> playlistSongs = new List<LvlMetadataV1>();
 
+    [Header("Background Stuff")]
+    public GameObject spinnySquareThings;
+    public GameObject snow;
+    public GameObject mainColorBg;
+
+    public bool noMoreSongsPlease = false;
+
 
     float[] audioSamp = new float[256];
 
@@ -196,6 +203,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
                 playlistSongs.Add(metadata);
                 GameObject playlistEntryLocal = Instantiate(playlistEntry);
                 playlistEntryLocal.GetComponent<PlaylistTrackSelection>().metadata = metadata;
+                playlistEntryLocal.GetComponent<PlaylistTrackSelection>().levelFileName = Path.GetFileNameWithoutExtension(new FileInfo(level).Name);
                 playlistEntryLocal.transform.SetParent(songContainer);
             }
 
@@ -325,5 +333,20 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public void Event_NextSong()
     {
         PlayRandomSongForMainMenu();
+    }
+
+    /// <summary>
+    /// should only be launched when the menu's boutta be killed
+    /// </summary>
+    public void RemoveBackground()
+    {
+        Destroy(snow);
+        Destroy(mainColorBg);
+        Destroy(spinnySquareThings);
+
+        noMoreSongsPlease = true;
+
+        menuMusic.Stop();
+        
     }
 }

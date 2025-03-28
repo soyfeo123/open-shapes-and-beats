@@ -7,6 +7,7 @@ public class LvlMetadataV1 : ILevelMetadata
     public string MiddleLine { get; set; }
     public string LevelAuthor { get; set; }
     public string SongFileName { get; set; }
+    public string SongLevelFile;
     string[] divided;
 
     public bool IsValid()
@@ -27,6 +28,7 @@ public class LvlMetadataV1 : ILevelMetadata
         MiddleLine = divided[3];
         LevelAuthor = divided[4];
         SongFileName = divided[5];
+        
         UnityEngine.Debug.Log($"Parsed: {TrackName} {MiddleLine} {TrackArtist} {LevelAuthor} {SongFileName}");
     }
 }

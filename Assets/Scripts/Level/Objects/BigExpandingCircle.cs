@@ -17,7 +17,7 @@ public class BigExpandingCircle : LevelActor
         base.Prepare();
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_CIRCLE);
         mainObject.transform.localScale = Vector3.one * 4;
-        mainObject.transform.position = new Vector3(objParams["XPos"].number.Value, objParams["YPos"].number.Value);
+        mainObject.transform.position = new Vector3(objParams["XPos"].number.GetValue(), objParams["YPos"].number.GetValue());
         rc.renderer.color = new Color(RenderComponent.pink.r, RenderComponent.pink.g, RenderComponent.pink.b, 0.25f);
         
     }
@@ -37,7 +37,7 @@ public class BigExpandingCircle : LevelActor
         base.Frame();
         if (hasActivated)
         {
-            mainObject.transform.localScale += Vector3.one * (objParams["circleSizeSpeed"].number.Value) * OSBLevelEditorStaticValues.deltaTime;
+            mainObject.transform.localScale += Vector3.one * (objParams["circleSizeSpeed"].number.GetValue()) * OSBLevelEditorStaticValues.deltaTime;
         }
     }
 

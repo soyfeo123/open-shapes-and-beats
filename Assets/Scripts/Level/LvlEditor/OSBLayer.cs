@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Linq;
 using Newtonsoft.Json;
+using System.Text;
 
 public class OSBLayer : MonoBehaviour
 {
@@ -84,7 +85,7 @@ public class OSBLayer : MonoBehaviour
                 instance.GetComponent<OSBEditorObject>().InitInstance();
                 instance.GetComponent<OSBEditorObject>().assignedActor.objParams = JsonConvert.DeserializeObject<Dictionary<string, ActorParam>>(JsonConvert.SerializeObject(thingToClone.objParams));
                 
-                instance.GetComponent<OSBEditorObject>().assignedActor.objParams["Time"].number.Value = EditorPlayhead.Singleton.SongPosMS;
+                instance.GetComponent<OSBEditorObject>().assignedActor.objParams["Time"].number.expression = EditorPlayhead.Singleton.SongPosMS.ToString();
                 instance.transform.SetParent(objContainer.transform);
                 
                 
@@ -165,4 +166,86 @@ public class OSBLayer : MonoBehaviour
     {
         StartCoroutine(WaitForKeyPressAndAssign());
     }
+
+    public string Save()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.AppendLine("LAYER>a");
+
+        void AppendProperty(string name, string value)
+        {
+            builder.Append(name + ":" + value + ",");
+        }
+
+        foreach(OSBEditorObject obj in objectsOnLayer)
+        {
+            builder.Append("OBJ>");
+
+            AppendProperty("d_Class", obj.actorType);
+            foreach(KeyValuePair<string, ActorParam> param in obj.assignedActor.objParams)
+            {
+                AppendProperty(param.Key, param.Value.number.expression);
+            }
+            builder.AppendLine();
+        }
+        builder.AppendLine("END");
+        return builder.ToString();
+    }
+
+    public void Load(string[] objects)
+    {
+        foreach(string objectLine in objects)
+        {
+            if (string.IsNullOrEmpty(objectLine))
+            {
+                continue;
+            }
+            Debug.Log(objectLine);
+            string[] paramsSplit = objectLine.Split(',');
+            string[] dClass = paramsSplit[0].Split(':');
+            GameObject instance = Instantiate(Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/" + dClass[1]));
+            
+            instance.GetComponent<OSBEditorObject>().actorType = dClass[1];
+            instance.GetComponent<OSBEditorObject>().InitInstance();
+            instance.transform.SetParent(objContainer.transform);
+
+            foreach (string param in paramsSplit)
+            {
+                
+                string[] paramNameAndKey = param.Split(':');
+                
+                
+                string paramName = paramNameAndKey[0];
+                if (string.IsNullOrEmpty(paramName))
+                {
+                    continue;
+                }
+
+                if(paramName == "d_Class")
+                {
+                    continue;
+                }
+
+                ActorParam value = new ActorParam(paramNameAndKey[1], paramNameAndKey[1]);
+
+                instance.GetComponent<OSBEditorObject>().assignedActor.objParams[paramName] = value;
+            }
+
+            objectsOnLayer.Add(instance.GetComponent<OSBEditorObject>());
+            
+
+        }
+    }
 }
+
+/*
+LEVEL FORMAT
+
+(level song path)
+LAYER>a
+OBJ>d_Class:(auto filled using OSBEditorObject),Warning:4721,Time:8643.32
+OBJ>d_Class:(auto filled using OSBEditorObject),Warning:4721,Time:8643.32
+LAYER>a
+OBJ>d_Class:(auto filled using OSBEditorObject),Warning:4721,Time:8643.32
+OBJ>d_Class:(auto filled using OSBEditorObject),Warning:4721,Time:8643.32
+ */

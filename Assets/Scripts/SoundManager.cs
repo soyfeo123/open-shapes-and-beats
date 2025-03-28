@@ -123,6 +123,12 @@ public class Music
 
     public void LoadMusic(string filePath, System.Action onComplete)
     {
+        if(audioSrc == null)
+        {
+            GameObject go = new GameObject(Utils.GenerateUniqueName("MUSIC"));
+            audioSrc = go.AddComponent<AudioSource>();
+        }
+
         Stop();
         Volume = 100;
         AudioType type = AudioType.UNKNOWN;
@@ -188,6 +194,9 @@ public class Music
 
     public void Stop()
     {
+        if (audioSrc == null)
+            return;
+
         audioSrc.Stop();
         TimePosition = 0;
     }

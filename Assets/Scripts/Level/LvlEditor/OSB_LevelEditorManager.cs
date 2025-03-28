@@ -8,6 +8,7 @@ using System.IO;
 using SFB;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Text;
 
 public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
 {
@@ -26,6 +27,7 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
     public List<OSBLayer> layers =new List<OSBLayer>();
     public Transform layerViewContent;
     public Transform newLayerButton;
+    public string musicFilePath;
 
 #if UNITY_2017_1_OR_NEWER
     public BigExpandingCircle currentCircle;
@@ -46,7 +48,8 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
         levelMusic = new Music();
 
-        levelMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3"), () => { });
+        musicFilePath = Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3");
+        levelMusic.LoadMusic(musicFilePath, () => { });
     }
 
     string ConvertToMinutesAndSeconds(float seconds)
@@ -94,28 +97,12 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         bool pointer = IsPointerFocusedInputField();
 
 
-        if (!pointer && (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.E)))
+        if(!pointer && Input.GetKeyDown(KeyCode.Z))
         {
-            FlyingProjectile flyingProjectile = new FlyingProjectile();
-            flyingProjectile.Prepare();
+            Debug.Log(layers[0].Save());
         }
-        if (!pointer && Input.GetKeyDown(KeyCode.P))
-        {
-            StartCoroutine(ConstantlySpawnFunnyDebris());
-        }
-        if (!pointer && Input.GetKeyDown(KeyCode.C))
-        {
-            currentCircle = new BigExpandingCircle();
-            currentCircle.Prepare();
-        }
-        if (!pointer && Input.GetKeyDown(KeyCode.V))
-        {
-            currentCircle.ActivateAttack();
-        }
-        if (!pointer && Input.GetKeyDown(KeyCode.B))
-        {
-            currentCircle.Dispose();
-        }
+
+
 #endif
     }
 
@@ -191,8 +178,8 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
     public void Event_ChangeSong()
     {
-        string filePath = StandaloneFileBrowser.OpenFilePanel("Select a song", "", new ExtensionFilter[] { new("Music Files", "mp3", "wav", "ogg"), new("All Files", "*") }, false)[0];
-        levelMusic.LoadMusic(filePath, () => { });
+        musicFilePath = StandaloneFileBrowser.OpenFilePanel("Select a song", "", new ExtensionFilter[] { new("Music Files", "mp3", "wav", "ogg"), new("All Files", "*") }, false)[0];
+        levelMusic.LoadMusic(musicFilePath, () => { });
     }
 
     
@@ -205,6 +192,64 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 All unsaved progress you've done in this level will be lost!
 <_You sure?_>", "[esc] no   [enter] yes", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Escape, ()=> { } }, { KeyCode.Return, () => { UnityEngine.SceneManagement.SceneManager.LoadScene("LevelEditor"); } }  } );
     } 
+
+    public void Event_SaveLevel()
+    {
+        string filePath = StandaloneFileBrowser.SaveFilePanel("Save the level", "", "level.osb", "osb");
+
+        StringBuilder builder = new StringBuilder();
+        builder.AppendLine(musicFilePath);
+        foreach(OSBLayer layer in layers)
+        {
+            builder.Append(layer.Save());
+        }
+
+        File.WriteAllText(filePath, builder.ToString());
+    }
+
+    public void Event_LoadLevel()
+    {
+        foreach(OSBLayer layer in layers)
+        {
+            Destroy(layer.gameObject);
+        }
+        layers.Clear();
+
+        string filePath = StandaloneFileBrowser.OpenFilePanel("Open a level", "", new ExtensionFilter[] { new("OSB Level", "osb") }, false)[0];
+        string[] file = File.ReadAllLines(filePath);
+
+        Debug.Log("Music: " + file[0]);
+        levelMusic.LoadMusic(file[0], ()=> { });
+
+        StringBuilder currentLayer = new StringBuilder();
+        foreach(string line in file)
+        {
+            string[] splitFromLineID = line.Split('>');
+
+            if (line == "LAYER>a")
+            {
+                currentLayer = new StringBuilder();
+                Debug.Log("New layer!");
+            }
+            else if(line == "END")
+            {
+                GameObject layer = Instantiate(Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/UI/TimelineLayer"));
+                layer.transform.SetParent(layerViewContent);
+                layer.name = "Layer" + layers.Count.ToString();
+                layer.GetComponent<OSBLayer>().Load(currentLayer.ToString().Split(System.Environment.NewLine));
+                newLayerButton.SetAsLastSibling();
+                layers.Add(layer.GetComponent<OSBLayer>());
+            }
+            else if(splitFromLineID[0] == "OBJ")
+            {
+                
+                
+                currentLayer.AppendLine(splitFromLineID[1]);
+            }
+            
+            
+        }
+    }
 
 
     // Misc
@@ -260,4 +305,15 @@ public static class OSBLevelEditorStaticValues
         onStop.AddListener(()=> { });
         onPlay.AddListener((thing)=> { Debug.Log("Play Fired"); });
     }
+}
+
+public class LevelSave
+{
+    public class SaveObject
+    {
+
+    }
+    
+    public string trackPath;
+    public List<List<SaveObject>> layers = new List<List<SaveObject>>();
 }

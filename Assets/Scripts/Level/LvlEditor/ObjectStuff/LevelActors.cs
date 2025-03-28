@@ -168,39 +168,34 @@ namespace OSB.Editor
     [Serializable]
     public class ActorNumber
     {
-        public float Value
-        {
-            get
-            {
-                float val = 0;
-
-                string[] parsed = expression.Split('|');
-                if (parsed.Length > 1)
-                {
-                    if(parsed[0] == "rand")
-                    {
-                        float min = PaloUtils.ConvertExpression(parsed[1], Overrides.ToArray());
-                        float max = PaloUtils.ConvertExpression(parsed[2], Overrides.ToArray());
-                        val = UnityEngine.Random.Range(min, max);
-                    }
-                }
-                else
-                {
-                    val = PaloUtils.ConvertExpression(expression, Overrides.ToArray());
-                }
-                return val;
-            }
-            set
-            {
-                expression = value.ToString();
-            }
-        }
+        
         public string expression;
         public List<PaloUtils.ExpressionVariables> Overrides;
 
         public ActorNumber()
         {
 
+        }
+
+        public float GetValue()
+        {
+            float val = 0;
+
+            string[] parsed = expression.Split('|');
+            if (parsed.Length > 1)
+            {
+                if (parsed[0] == "rand")
+                {
+                    float min = PaloUtils.ConvertExpression(parsed[1], Overrides.ToArray());
+                    float max = PaloUtils.ConvertExpression(parsed[2], Overrides.ToArray());
+                    val = UnityEngine.Random.Range(min, max);
+                }
+            }
+            else
+            {
+                val = PaloUtils.ConvertExpression(expression, Overrides.ToArray());
+            }
+            return val;
         }
 
         public ActorNumber(string exp)
@@ -241,7 +236,7 @@ namespace OSB.Editor
         public LevelActor()
         {
             objParams.Add("ID", new("", ""));
-            objParams.Add("Warning", new(2000));
+            objParams.Add("Warning", new(1000));
             objParams.Add("Time", new(99999));
             objParams.Add("Duration", new(1000));
             objParams.Add("OutroDuration", new(200));
@@ -252,6 +247,7 @@ namespace OSB.Editor
             mainObject = new GameObject(Utils.GenerateUniqueName("Spawn"));
             visual = new GameObject("Visual");
             visual.transform.parent = mainObject.transform;
+            if(OSBLevelEditorStaticValues.IsInEditor)
             MainLevelManager.Singleton.onFrame.AddListener(Frame);
             hasPrepared = true;
 
@@ -267,12 +263,14 @@ namespace OSB.Editor
         {
             if (!OSBLevelEditorStaticValues.IsInEditor)
             {
-                float timeValue = objParams["Time"].number.Value;
-                float warningValue = objParams["Warning"].number.Value;
-                float durationValue = objParams["Duration"].number.Value;
+                //Debug.Log("Not on editor");
+                float timeValue = objParams["Time"].number.GetValue();
+                float warningValue = objParams["Warning"].number.GetValue();
+                float durationValue = objParams["Duration"].number.GetValue();
 
                 if ((MainLevelManager.Singleton.msTime >= timeValue - warningValue) && needsWarning && !hasPrepared)
                 {
+                    Debug.Log("MUST PREPARE!");
                     Prepare();
                 }
                 else if (MainLevelManager.Singleton.msTime >= timeValue && !needsWarning && !hasPrepared)
@@ -281,10 +279,13 @@ namespace OSB.Editor
                 }
                 if (MainLevelManager.Singleton.msTime >= timeValue && !hasActivated && needsWarning)
                 {
+                    Debug.Log("GO!");
                     ActivateAttack();
                 }
                 if (MainLevelManager.Singleton.msTime >= timeValue + durationValue && !shouldBeDisposed && needsWarning)
                 {
+                    Debug.Log("bye bye");
+                    shouldBeDisposed = true;
                     Dispose();
                 }
             }
