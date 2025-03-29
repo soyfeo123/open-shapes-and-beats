@@ -38,7 +38,7 @@ public static class FadeManager
         instance.GetComponent<Image>().DOFade(1f, time).OnComplete(() =>
         {
             actionOnComplete.Invoke();
-            GameObject.Destroy(instance, 0.8f);
+            GameObject.Destroy(instance, 0.3f);
         });
     }
 }

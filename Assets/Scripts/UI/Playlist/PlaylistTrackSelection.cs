@@ -43,14 +43,6 @@ public class PlaylistTrackSelection : MonoBehaviour, IPointerEnterHandler, IPoin
 
     public void OnPointerClick(PointerEventData data)
     {
-        Camera.main.backgroundColor = Color.black;
-
-        MainMenuManager.Singleton.RemoveBackground();
-        MainMenuManager.Singleton.menuMusic.FadeOut(()=> { }, 0.25f);
-        UIController.FadeOut(0.25f, ()=>
-        {
-            MainLevelManager.Singleton.LoadLevel(levelFileName);
-        });
-        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_BIGSUBMIT);
+        DifficultySelection.Open(levelFileName);
     }
 }

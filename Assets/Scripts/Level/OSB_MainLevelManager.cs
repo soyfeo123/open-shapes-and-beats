@@ -23,6 +23,8 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
 
     public Music levelMusic;
 
+    public LevelMode currentLevelMode = LevelMode.Normal;
+
     protected override void Awake()
     {
         base.Awake();
@@ -36,6 +38,8 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
 
     public void LoadLevel(string levelName)
     {
+        levelActors.Clear();
+
         LevelSpawnSprites.LoadSprites();
         levelActive = false;
         msTime = 0;
@@ -49,6 +53,7 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
         Debug.Log(levelMetadata.TrackName + " " + levelMetadata.MiddleLine + " " + levelMetadata.TrackArtist);
         levelMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", levelMetadata.SongFileName), ()=> { });
 
+        if(currentLevelMode != LevelMode.ZenMode)
         ThePlayersParents.Singleton.SpawnPlayer();
 
         StartCoroutine(LevelDelay());
@@ -128,4 +133,9 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
 public static class MainGameLevels
 {
     public const string I_SAID_MEOW = "level_isaidmeow";
+}
+
+public enum LevelMode
+{
+    Normal, ZenMode, HardcoreMode
 }
