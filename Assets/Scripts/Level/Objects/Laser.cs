@@ -119,6 +119,7 @@ public class Laser : LevelActor
 
     public override void Dispose()
     {
+        if (mainObject == null) return;
 
         rc.renderer.DOFade(0, 0.05f);
         mainObject.transform.DOScaleX(0, 0.05f).SetEase(Ease.OutSine).OnComplete(() =>

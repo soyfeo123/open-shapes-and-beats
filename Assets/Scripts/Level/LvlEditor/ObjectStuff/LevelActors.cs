@@ -319,9 +319,11 @@ namespace OSB.Editor
         public virtual void Dispose()
         {
             shouldBeDisposed = true;
-            if(mainObject != null)
-            GameObject.Destroy(mainObject);
-            MainLevelManager.Singleton.onFrame.RemoveListener(Frame);
+            if (mainObject != null)
+            {
+                GameObject.Destroy(mainObject);
+                MainLevelManager.Singleton.onFrame.RemoveListener(Frame);
+            }
         }
     }
 

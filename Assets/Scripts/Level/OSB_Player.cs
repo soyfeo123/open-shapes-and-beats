@@ -271,7 +271,11 @@ public class OSB_Player : MonoBehaviour
             {
                 foreach(LevelActor actor in MainLevelManager.Singleton.levelActors)
                 {
-                    actor.Dispose();
+                    try
+                    {
+                        actor.Dispose();
+                    }
+                    catch { }
                 }
 
                 MainLevelManager.Singleton.levelActors.Clear();
