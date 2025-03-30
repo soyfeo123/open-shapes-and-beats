@@ -18,6 +18,7 @@ public class PlaylistTrackSelection : MonoBehaviour, IPointerEnterHandler, IPoin
 
         transform.Find("TrackName").GetComponent<TextMeshProUGUI>().text = metadata.TrackName;
         transform.Find("Artist").GetComponent<TextMeshProUGUI>().text = metadata.TrackArtist;
+        transform.Find("LevelAuthor").GetComponent<TextMeshProUGUI>().text = metadata.LevelAuthor;
     }
 
     // Update is called once per frame

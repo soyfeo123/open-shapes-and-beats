@@ -243,7 +243,7 @@ GameObject:
   - component: {fileID: 2122253506}
   - component: {fileID: 2122253505}
   - component: {fileID: 2122253508}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cam
   m_TagString: MainCamera
   m_Icon: {fileID: 0}

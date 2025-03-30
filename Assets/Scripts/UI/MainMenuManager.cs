@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using SFB;
 
 public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 {
@@ -272,6 +273,20 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
             introLogoInAnimation = false;
         });
         
+    }
+
+    public void Event_Import()
+    {
+        string[] files = StandaloneFileBrowser.OpenFilePanel("Select your levels", "", new ExtensionFilter[] { new("OSB Levels", "obz") }, true);
+
+        foreach(string level in files)
+        {
+            ObzFormat format = new ObzFormat(level);
+            format.Import();
+
+            
+        }
+        OpenPlaylist();
     }
 
     public void Event_Hover_IntroLogo()

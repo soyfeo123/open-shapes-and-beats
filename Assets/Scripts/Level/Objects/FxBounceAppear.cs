@@ -38,6 +38,9 @@ public class FxBounceAppear : LevelActor
 
     public override void Dispose()
     {
+        if (mainObject == null)
+            return;
+
         mainObject.transform.DOScale(0, 0.2f).SetEase(Ease.InSine).OnComplete(()=> base.Dispose());
     }
 }

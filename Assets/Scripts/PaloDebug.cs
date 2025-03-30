@@ -13,8 +13,9 @@ public class PaloDebug : OSBInit
         //UIController.OpenMenu(UIMenus.MAIN_MENU);
         //UIController.OpenMenu(UIMenus.WELCOME_SCREEN);
 
-        MainLevelManager.Singleton.LoadLevel("OSBEditor");
+        //MainLevelManager.Singleton.LoadLevel("OSBEditor");
 
-        
+        ObzFormat level = new ObzFormat("/Users/palo/Documents/Projects/Big/Open Shapes and Beats/Levels/OSBEditor.obz");
+        level.Import();
     }
 }

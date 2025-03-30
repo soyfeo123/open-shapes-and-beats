@@ -14,6 +14,7 @@ public class LogicMoveWithMenuMusic : MonoBehaviour
 
     void Update()
     {
+        if (!MainMenuManager.HasInstance) return;
         flipped = !flipped;
 
         float y = 1 * (1 + MainMenuManager.Singleton.averageMusicFreq * 1500);

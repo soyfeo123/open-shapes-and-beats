@@ -38,8 +38,9 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
 
     public void LoadLevel(string levelName)
     {
+        
         levelActors.Clear();
-
+        levelActors = new List<LevelActor>();
         LevelSpawnSprites.LoadSprites();
         levelActive = false;
         msTime = 0;
@@ -115,6 +116,7 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
     }
 
     float lastSongPos = 0;
+    bool inPauseMenu = false;
 
     private void Update()
     {
@@ -126,7 +128,63 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
             lastSongPos = msTime * 0.001f;
         }
         
-        onFrame.Invoke();
+        onFrame?.Invoke();
+
+        if (Input.GetKeyDown(KeyCode.Escape) && !inPauseMenu)
+        {
+            inPauseMenu = true;
+            Notification.CreateNotification(@"[_<_EXIT LEVEL_>_]
+You'll lose any rewards you were going to get.
+<_You sure?_>", "[enter] yes   [esc] no", new Dictionary<KeyCode, UnityAction>() { { KeyCode.Return, () =>
+                                            {
+                                                inPauseMenu = false;
+                                                StopLevel();
+                                            } }, { KeyCode.Escape, () => inPauseMenu = false } }) ;
+        }
+    }
+
+    public void StopLevel()
+    {
+        if (!OSBLevelEditorStaticValues.IsInEditor)
+        {
+            levelActive = false;
+
+            onFrame.RemoveAllListeners();
+
+            for(int i = 0; i < levelActors.Count; i++)
+            {
+                LevelActor actor = levelActors[i];
+                
+                try
+                {
+                    actor.Dispose();
+                    levelActors[i] = null;
+                }
+                catch(Exception ex) {
+                    Debug.LogError(ex.ToString());
+                }
+            }
+
+            levelActors.Clear();
+            levelActors = new List<LevelActor>();
+
+            System.GC.Collect();
+
+            levelMusic.FadeOut(null, 1f);
+
+            FadeManager.FadeOut(1f, () =>
+            {
+                levelMusic.Stop();
+                levelMusic.Dispose();
+                
+                Utils.Timer(0.25f, () =>
+                {
+                    ThePlayersParents.Singleton.DestroyPlayer();
+                    FadeManager.FadeIn(0.5f);
+                    UIController.OpenMenu(UIMenus.MAIN_MENU);
+                });
+            });
+        }
     }
 }
 

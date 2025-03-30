@@ -12,7 +12,7 @@ public static class DifficultySelection
         group.DOFade(1f, 0.1f);
 
         RectTransform mainWindow = instance.transform.Find("Bg/MainWindow").GetComponent<RectTransform>();
-        TextMeshProUGUI windowTitle = instance.transform.Find("Bg/MainWindow/Title").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI windowTitle = instance.transform.Find("Bg/MainWindow/Container/Title").GetComponent<TextMeshProUGUI>();
         CanvasGroup buttonListGroup = instance.transform.Find("Bg/MainWindow/ButtonList").gameObject.AddComponent<CanvasGroup>();
         buttonListGroup.alpha = 0f;
         windowTitle.alpha = 0f;

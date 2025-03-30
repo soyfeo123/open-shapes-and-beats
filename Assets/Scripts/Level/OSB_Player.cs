@@ -267,31 +267,7 @@ public class OSB_Player : MonoBehaviour
             Debug.Log("finished!");
             Destroy(collision.transform.parent.gameObject);
 
-            if (!OSBLevelEditorStaticValues.IsInEditor)
-            {
-                foreach(LevelActor actor in MainLevelManager.Singleton.levelActors)
-                {
-                    try
-                    {
-                        actor.Dispose();
-                    }
-                    catch { }
-                }
-
-                MainLevelManager.Singleton.levelActors.Clear();
-
-                MainLevelManager.Singleton.levelMusic.FadeOut(null, 1f);
-
-                FadeManager.FadeOut(1f, () =>
-                {
-                    Utils.Timer(0.25f, () =>
-                    {
-                        ThePlayersParents.Singleton.DestroyPlayer();
-                        FadeManager.FadeIn(0.5f);
-                        UIController.OpenMenu(UIMenus.MAIN_MENU);
-                    });
-                });
-            }
+            MainLevelManager.Singleton.StopLevel();
         }
     }
 
