@@ -14,4 +14,19 @@ public static class Utils
         float filler = 0f;
         DOTween.To(() => filler, x => filler = x, 1f, duration).OnComplete(() => onComplete?.Invoke());
     }
+
+    public static float ConvertPixelToPosition(float percent, UtilsDirection direction)
+    {
+        return Mathf.LerpUnclamped(direction == UtilsDirection.X ? -9f : 5f, direction == UtilsDirection.X ? 9f : -5f, Mathf.InverseLerp(0, direction == UtilsDirection.X ? 1280 : 720, percent));
+    }
+
+    public static float CalculateSize(float percent, float baseValue)
+    {
+        return Mathf.LerpUnclamped(0, baseValue, percent * 0.01f);
+    }
+}
+
+public enum UtilsDirection
+{
+    X, Y
 }

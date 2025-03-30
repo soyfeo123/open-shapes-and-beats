@@ -100,6 +100,8 @@ public class Music
         }
     }
 
+    public string musicPath;
+
     /// <summary>
     /// 0-100
     /// </summary>
@@ -163,6 +165,8 @@ public class Music
                 clip.LoadAudioData();
                 Clip = clip;
                 onComplete?.Invoke();
+
+                musicPath = filePath;
             }
             else
             {

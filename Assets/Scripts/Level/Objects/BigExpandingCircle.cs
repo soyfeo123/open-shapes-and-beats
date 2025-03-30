@@ -8,16 +8,17 @@ public class BigExpandingCircle : LevelActor
     {
         needsWarning = true; // what do you think the default size speed should be?
         objParams.Add("circleSizeSpeed", new ActorParam(1.25f));
-        objParams.Add("XPos", new(0f));
-        objParams.Add("YPos", new(0f));
+        objParams.Add("XPos", new(640f));
+        objParams.Add("YPos", new(360f));
+        objParams.Add("Size", new(100f));
     }
 
     public override void Prepare()
     {
         base.Prepare();
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_CIRCLE);
-        mainObject.transform.localScale = Vector3.one * 4;
-        mainObject.transform.position = new Vector3(objParams["XPos"].number.GetValue(), objParams["YPos"].number.GetValue());
+        SetPosition();
+        SetSize(4f, 4f);
         rc.renderer.color = new Color(RenderComponent.pink.r, RenderComponent.pink.g, RenderComponent.pink.b, 0.25f);
         
     }

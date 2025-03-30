@@ -259,6 +259,16 @@ namespace OSB.Editor
 
         }
 
+        public virtual void SetPosition()
+        {
+            mainObject.transform.position = new Vector3(Utils.ConvertPixelToPosition(objParams["XPos"].number.GetValue(), UtilsDirection.X), Utils.ConvertPixelToPosition(objParams["YPos"].number.GetValue(), UtilsDirection.Y));
+        }
+
+        public virtual void SetSize(float baseSizeX, float baseSizeY)
+        {
+            mainObject.transform.localScale = new Vector3(Utils.CalculateSize(objParams["Size"].number.GetValue(), baseSizeX), Utils.CalculateSize(objParams["Size"].number.GetValue(), baseSizeY), 1);
+        }
+
         public virtual void Frame()
         {
             if (!OSBLevelEditorStaticValues.IsInEditor)

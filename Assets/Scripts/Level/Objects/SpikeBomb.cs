@@ -7,8 +7,8 @@ public class SpikeBomb : LevelActor
     public SpikeBomb() : base()
     {
         objParams["Duration"].number.expression = "100";
-        objParams.Add("XPos", new("rand|2|4"));
-        objParams.Add("YPos", new("rand|-3|3"));
+        objParams.Add("XPos", new("rand|690|1190"));
+        objParams.Add("YPos", new("rand|200|520"));
         objParams.Add("numberOfSpikes", new(8));
         needsWarning = true;
     }
@@ -27,7 +27,7 @@ public class SpikeBomb : LevelActor
 
         LogicHitbox.AddToLA(this);
 
-        mainObject.transform.DOMove(new Vector3(objParams["XPos"].number.GetValue(), objParams["YPos"].number.GetValue()), objParams["Warning"].number.GetValue() * 0.001f).SetEase(Ease.OutExpo);
+        mainObject.transform.DOMove(new Vector3(Utils.ConvertPixelToPosition(objParams["XPos"].number.GetValue(), UtilsDirection.X), Utils.ConvertPixelToPosition(objParams["YPos"].number.GetValue(), UtilsDirection.Y)), objParams["Warning"].number.GetValue() * 0.001f).SetEase(Ease.OutExpo);
         mainObject.transform.DOScale(Vector3.one, objParams["Warning"].number.GetValue() * 0.001f);
     }
 

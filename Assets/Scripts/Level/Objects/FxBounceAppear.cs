@@ -7,16 +7,17 @@ public class FxBounceAppear : LevelActor
     public FxBounceAppear() : base()
     {
         needsWarning = true;
-        objParams.Add("XPos", new("rand|-8.5|8.5"));
-        objParams.Add("YPos", new("rand|-5|5"));
+        objParams.Add("XPos", new("rand|0|1280"));
+        objParams.Add("YPos", new("rand|0|720"));
+        objParams.Add("Size", new(100));
     }
 
     public override void Prepare()
     {
         base.Prepare();
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_SQUARE);
-        mainObject.transform.localScale = new Vector3(1.3f, 1.3f, 1f);
-        mainObject.transform.position = new Vector3(objParams["XPos"].number.GetValue(), objParams["YPos"].number.GetValue());
+        SetSize(1.3f, 1.3f);
+        SetPosition();
         rc.renderer.color = new Color(RenderComponent.pink.r, RenderComponent.pink.g, RenderComponent.pink.b, 0.25f);
         rc.renderer.DOColor(new Color(1, 0.6933962f, 0.8485016f, 0.25f), 0.05f).SetLoops(-1, LoopType.Yoyo);
     }

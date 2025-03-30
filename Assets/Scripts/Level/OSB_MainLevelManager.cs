@@ -130,7 +130,7 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
         
         onFrame?.Invoke();
 
-        if (Input.GetKeyDown(KeyCode.Escape) && !inPauseMenu)
+        if (Input.GetKeyDown(KeyCode.Escape) && !inPauseMenu && levelActive)
         {
             inPauseMenu = true;
             Notification.CreateNotification(@"[_<_EXIT LEVEL_>_]

@@ -6,9 +6,20 @@ public class ObzFormat
 {
     string filePath;
 
+    string[] level;
+    string metadata;
+    string songPath;
+
     public ObzFormat(string path)
     {
         filePath = path;
+    }
+
+    public ObzFormat(string[] lvl, string songName, string songArtist, string middleLine, string author, string musicPath)
+    {
+        level = lvl;
+        metadata = $"1|{songName}|{songArtist}|{middleLine}|{author}|{new FileInfo(musicPath).Name}";
+        songPath = musicPath;
     }
 
     public void Import()
@@ -39,5 +50,31 @@ public class ObzFormat
         File.Copy(metadataFile.FullName, Path.Combine(levelsserialized, metadataFile.Name), true);
         File.Copy(lvlFile.FullName, Path.Combine(levelsserialized, lvlFile.Name), true);
         File.Copy(songName.FullName, Path.Combine(songs, songName.Name), true);
+
+        Directory.Delete(tempPath, true);
+    }
+
+    public void Export(string destination)
+    {
+        Debug.Log("Exporting to " + destination + "...");
+
+        string tempPath = Path.Combine(Application.persistentDataPath, "temp_obzexport");
+        if (Directory.Exists(tempPath))
+        {
+            Directory.Delete(tempPath, true);
+        }
+        Directory.CreateDirectory(tempPath);
+
+        string destinationName = Path.GetFileNameWithoutExtension(new FileInfo(destination).Name);
+
+        File.WriteAllText(Path.Combine(tempPath, destinationName + ".txt"), metadata);
+        File.WriteAllLines(Path.Combine(tempPath, destinationName + "_lvl.osb"), level);
+        File.Copy(songPath, Path.Combine(tempPath, new FileInfo(songPath).Name), true);
+
+        ZipFile.CreateFromDirectory(tempPath, destination);
+
+        Directory.Delete(tempPath, true);
+
+        Debug.Log("Finished export!");
     }
 }

@@ -36,6 +36,7 @@ public static class DifficultySelection
 
         instance.transform.Find("Bg/MainWindow/ButtonList/Normal/Button").GetComponent<DifficultySelectionButton>().onClick.AddListener(() =>
         {
+            MainLevelManager.Singleton.currentLevelMode = LevelMode.Normal;
             OpenLevel(levelToLoad, instance);
         });
 

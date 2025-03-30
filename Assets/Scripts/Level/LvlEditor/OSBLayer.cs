@@ -18,10 +18,11 @@ public class OSBLayer : MonoBehaviour
 
     public Image layerStuffBg;
     public Color selectedColor;
+    public EditorTooltip bindKeyTooltip;
     Color defaultColor;
     LevelActor thingToClone;
     GameObject objToClone;
-    KeyCode keybind;
+    KeyCode keybind = KeyCode.None;
 
     [Header("Debug")]
     public GameObject prefab;
@@ -62,6 +63,8 @@ public class OSBLayer : MonoBehaviour
         {
             AddObjectToLayer(prefab, EditorPlayhead.Singleton.SongPosMS);
         }*/
+
+        bindKeyTooltip.tooltipText = "Key: " + keybind.ToString();
 
         if (currentlySelectedLayer == this)
         {
@@ -149,6 +152,8 @@ public class OSBLayer : MonoBehaviour
     // hell yeah i love long function names
     IEnumerator WaitForKeyPressAndAssign()
     {
+        ScreenMessage msg = ScreenMessages.Create("<b>PRESS ANY KEY</b>\nto bind the layer");
+        Debug.Log("Press any key");
         yield return new WaitUntil(() => Input.anyKeyDown);
         foreach(KeyCode key in Enum.GetValues(typeof(KeyCode)))
         {
@@ -158,6 +163,8 @@ public class OSBLayer : MonoBehaviour
             }
         }
         Debug.Log(keybind);
+        msg.RemoveFromScreen();
+        bindKeyTooltip.ForceUpdate();
     }
 
     

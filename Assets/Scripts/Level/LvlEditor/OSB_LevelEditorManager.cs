@@ -14,6 +14,7 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
 {
     [Header("Shown Text Stuff")]
     public TextMeshProUGUI playheadTimePosition;
+    public GameObject tooltip;
 
     [Header("Topbar Related References")]
     public Image playIcon;
@@ -92,6 +93,10 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         OSBLevelEditorStaticValues.deltaTime = EditorPlayhead.Singleton.SongPosS - lastSongPos;
         lastSongPos = EditorPlayhead.Singleton.SongPosS;
 
+        Vector2 pos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(), Input.mousePosition, null, out pos);
+        tooltip.GetComponent<RectTransform>().anchoredPosition = pos + new Vector2(10, -10);
+
         // TESTING RELATED STUFF
 #if UNITY_2017_1_OR_NEWER
         bool pointer = IsPointerFocusedInputField();
@@ -104,6 +109,16 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
 
 #endif
+    }
+
+    public void ShowTooltip()
+    {
+        tooltip.GetComponent<CanvasGroup>().alpha = 1f;
+    }
+
+    public void HideTooltip()
+    {
+        tooltip.GetComponent<CanvasGroup>().alpha = 0f;
     }
 
     // Playback Related Stuff
@@ -249,6 +264,29 @@ All unsaved progress you've done in this level will be lost!
             
             
         }
+    }
+
+    public void Event_OpenExportWindow()
+    {
+        GameObject win = Instantiate(Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/ExportWindow"));
+        win.transform.SetParent(transform, false);
+    }
+
+    public void ExportLevel(string title, string middleLine, string artist, string author)
+    {
+        string filePath = StandaloneFileBrowser.SaveFilePanel("Export...", "", "Level.obz", "obz");
+
+        StringBuilder builder = new StringBuilder();
+        builder.AppendLine(musicFilePath);
+        foreach (OSBLayer layer in layers)
+        {
+            builder.Append(layer.Save());
+        }
+        string[] lines = builder.ToString().Split(System.Environment.NewLine.ToCharArray());
+
+        ObzFormat file = new ObzFormat(lines, title, artist, middleLine, author, levelMusic.musicPath);
+
+        file.Export(filePath);
     }
 
 
