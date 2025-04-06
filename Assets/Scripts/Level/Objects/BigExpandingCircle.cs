@@ -19,7 +19,7 @@ public class BigExpandingCircle : LevelActor
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_CIRCLE);
         SetPosition();
         SetSize(4f, 4f);
-        rc.renderer.color = new Color(RenderComponent.pink.r, RenderComponent.pink.g, RenderComponent.pink.b, 0.25f);
+        rc.renderer.color = new Color(rc.pink.r, rc.pink.g, rc.pink.b, 0.25f);
         
     }
 

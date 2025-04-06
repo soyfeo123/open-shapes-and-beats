@@ -57,6 +57,8 @@ public class OSBLayer : MonoBehaviour
         return dictOut;
     }
 
+    int framesElapsedSinceProejctileLaunch = 0;
+
     private void Update()
     {
         /*if (!OSB_LevelEditorManager.IsPointerFocusedInputField() && ( Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.K)))
@@ -77,7 +79,7 @@ public class OSBLayer : MonoBehaviour
 
         if (OSB_LevelEditorManager.Singleton.isRecording)
         {
-            if (Input.GetKeyDown(keybind))
+            if (thingToClone is FlyingProjectile ? (Input.GetKey(keybind) && framesElapsedSinceProejctileLaunch == 0) : Input.GetKeyDown(keybind))
             {
                 
                 GameObject instance = Instantiate(objToClone);
@@ -90,11 +92,22 @@ public class OSBLayer : MonoBehaviour
                 
                 instance.GetComponent<OSBEditorObject>().assignedActor.objParams["Time"].number.expression = EditorPlayhead.Singleton.SongPosMS.ToString();
                 instance.transform.SetParent(objContainer.transform);
-                
+
+                if(keybind == KeyCode.Mouse0)
+                {
+                    instance.GetComponent<OSBEditorObject>().assignedActor.OverridePositionParam(0, 0);
+                }
                 
                 //instance.GetComponent<RectTransform>().anchoredPosition = new Vector2(instance.GetComponent<RectTransform>().anchoredPosition.x, 0);
                 Debug.Log(instance.GetComponent<OSBEditorObject>());
                 objectsOnLayer.Add(instance.GetComponent<OSBEditorObject>());
+
+                
+            }
+            framesElapsedSinceProejctileLaunch++;
+            if (framesElapsedSinceProejctileLaunch >= 35)
+            {
+                framesElapsedSinceProejctileLaunch = 0;
             }
         }
     }

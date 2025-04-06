@@ -18,7 +18,7 @@ public class FxBounceAppear : LevelActor
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_SQUARE);
         SetSize(1.3f, 1.3f);
         SetPosition();
-        rc.renderer.color = new Color(RenderComponent.pink.r, RenderComponent.pink.g, RenderComponent.pink.b, 0.25f);
+        rc.renderer.color = new Color(rc.pink.r, rc.pink.g, rc.pink.b, 0.25f);
         rc.renderer.DOColor(new Color(1, 0.6933962f, 0.8485016f, 0.25f), 0.05f).SetLoops(-1, LoopType.Yoyo);
     }
 
@@ -32,7 +32,7 @@ public class FxBounceAppear : LevelActor
         visual.transform.localScale = Vector3.one * 1.7f;
         visual.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutSine);
         rc.renderer.color = Color.white;
-        rc.renderer.DOColor(RenderComponent.pink, 0.2f);
+        rc.renderer.DOColor(rc.pink, 0.2f);
 
         
     }

@@ -50,6 +50,8 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public Transform songContainer;
     public GameObject playlistEntry;
     public List<LvlMetadataV1> playlistSongs = new List<LvlMetadataV1>();
+    public TextMeshProUGUI songName;
+    public TextMeshProUGUI songArtist;
 
     [Header("Background Stuff")]
     public GameObject spinnySquareThings;

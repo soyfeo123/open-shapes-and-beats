@@ -24,6 +24,12 @@ public static class Utils
     {
         return Mathf.LerpUnclamped(0, baseValue, percent * 0.01f);
     }
+
+    public static float MapWorldToPixel(float value, UtilsDirection direction)
+    {
+        float t = Mathf.InverseLerp(direction == UtilsDirection.X ? -9f : 5f, direction == UtilsDirection.X ? 9f : -5f, value); 
+        return Mathf.LerpUnclamped(0, direction == UtilsDirection.X ? 1280 : 720, t);
+    }
 }
 
 public enum UtilsDirection

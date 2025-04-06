@@ -103,6 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   direction: 45
   speed: 7
+  isPooled: 1
 --- !u!58 &1944924675653618959
 CircleCollider2D:
   m_ObjectHideFlags: 0

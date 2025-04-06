@@ -10,6 +10,7 @@ public class SpikeBomb : LevelActor
         objParams.Add("XPos", new("rand|690|1190"));
         objParams.Add("YPos", new("rand|200|520"));
         objParams.Add("numberOfSpikes", new(8));
+        objParams.Add("teleport (0-1)", new(0));
         needsWarning = true;
     }
 
@@ -27,8 +28,14 @@ public class SpikeBomb : LevelActor
 
         LogicHitbox.AddToLA(this);
 
+        if(objParams["teleport (0-1)"].number.GetValue() == 0)
         mainObject.transform.DOMove(new Vector3(Utils.ConvertPixelToPosition(objParams["XPos"].number.GetValue(), UtilsDirection.X), Utils.ConvertPixelToPosition(objParams["YPos"].number.GetValue(), UtilsDirection.Y)), objParams["Warning"].number.GetValue() * 0.001f).SetEase(Ease.OutExpo);
-        mainObject.transform.DOScale(Vector3.one, objParams["Warning"].number.GetValue() * 0.001f);
+        if (objParams["teleport (0-1)"].number.GetValue() == 1)
+            mainObject.transform.position = new Vector3(Utils.ConvertPixelToPosition(objParams["XPos"].number.GetValue(), UtilsDirection.X), Utils.ConvertPixelToPosition(objParams["YPos"].number.GetValue(), UtilsDirection.Y));
+
+        if (objParams["teleport (0-1)"].number.GetValue() == 0)
+            mainObject.transform.DOScale(Vector3.one, objParams["Warning"].number.GetValue() * 0.001f);
+        
     }
 
     public override void ActivateAttack()

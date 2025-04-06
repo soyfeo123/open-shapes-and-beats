@@ -35,6 +35,8 @@ public class ParamsWindowController : MonoBehaviour
         }
     }
 
+    
+
     public void CloseWindow()
     {
         Destroy(gameObject);

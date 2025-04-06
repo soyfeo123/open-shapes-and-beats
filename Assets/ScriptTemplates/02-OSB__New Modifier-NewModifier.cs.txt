@@ -1,0 +1,13 @@
+using UnityEngine;
+
+public class #SCRIPTNAME# : Modifier
+{
+    // The argument in base(x) is the modifier's multiplier.
+    public #SCRIPTNAME#() : base(1) {  }
+    
+    public override void ReadyToModify()
+    {
+        base.ReadyToModify();
+#NOTRIM#
+    }
+}

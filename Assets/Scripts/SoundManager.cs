@@ -60,6 +60,16 @@ public static class LoadedSFXEnum
     public static AudioClip UI_PANEL_OPEN;
     public static AudioClip UI_PANEL_CLOSE;
 
+    public static AudioClip EXPLOSION;
+    public static AudioClip HIT
+    {
+        get
+        {
+            return (AudioClip)Resources.Load("Sound/SFX/Gameplay/SFX_HIT_" + Mathf.Clamp(Random.Range(1, 3), 1, 2));
+        }
+    }
+    public static AudioClip CHECKPOINT;
+
     [RuntimeInitializeOnLoadMethod]
     static void Load()
     {
@@ -70,6 +80,9 @@ public static class LoadedSFXEnum
 
         UI_PANEL_OPEN = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_PANEL_OPEN");
         UI_PANEL_CLOSE = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_PANEL_CLOSE");
+
+        EXPLOSION = (AudioClip)Resources.Load("Sound/SFX/Gameplay/SFX_DIENOW");
+        CHECKPOINT = (AudioClip)Resources.Load("Sound/SFX/Gameplay/SFX_CHECKPOINT");
     }
 }
 
@@ -177,7 +190,9 @@ public class Music
 
     public void Dispose()
     {
+        if(audioSrc != null)
         Object.Destroy(audioSrc.gameObject);
+        audioSrc = null;
     }
 
     public void Play(float time = 0, float vol = 100)

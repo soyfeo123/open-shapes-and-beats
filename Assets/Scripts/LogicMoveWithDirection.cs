@@ -5,6 +5,7 @@ public class LogicMoveWithDirection : MonoBehaviour
     public float direction;
     float innerDirection;
     public float speed = 9f;
+    public bool isPooled = false;
 
     private void Awake()
     {
@@ -20,7 +21,10 @@ public class LogicMoveWithDirection : MonoBehaviour
 
         if (transform.position.x > 10.5f || transform.position.x < -10.5f || transform.position.y > 6 || transform.position.y < -6)
         {
-            Destroy(this.gameObject);
+            if (isPooled)
+                GameProjectileManager.ReturnProjectileToPool(gameObject);
+            else
+                Destroy(this.gameObject);
         }
     }
 }

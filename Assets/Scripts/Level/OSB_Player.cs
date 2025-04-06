@@ -41,6 +41,8 @@ public class OSB_Player : MonoBehaviour
     public float dashCooldownTime = 0.34f;
     public float dashDuration = 0.18f;
     public float DamageCooldown = 1f;
+    public int MaxLives = 3;
+    public int Lives = 3;
     int framesDuringCooldownDamage;
     int currentDmgCooldownFrame = 0;
     Color defaultColor;
@@ -57,7 +59,7 @@ public class OSB_Player : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        defaultColor = VisualObj.GetComponent<SpriteRenderer>().color;
+        defaultColor = VisualObj.GetComponent<SpriteRenderer>().sharedMaterial.GetColor("_Backgroundfillcolor");
 
         dashCooldownTimeFrames = Mathf.FloorToInt(dashCooldownTime * 50);
         framesDuringCooldownDamage = Mathf.FloorToInt(DamageCooldown * 50);
@@ -104,13 +106,13 @@ public class OSB_Player : MonoBehaviour
         movesDuringTheFrame = false;
         Vector2 movement = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             movement += Vector2.up; // (0,1)
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             movement += Vector2.right; // (-1,0)
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
             movement += Vector2.down; // (0,-1)
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             movement += Vector2.left ; // (1,0)
 
         if (movement != Vector2.zero)
@@ -126,6 +128,8 @@ public class OSB_Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        VisualObj.GetComponent<SpriteRenderer>().material.SetFloat("_Fillpercentage", (1f / (float)MaxLives) * (float)(MaxLives - Lives));
+
         KeyboardMovement();
 
         p_direction = Mathf.Lerp(p_direction, p_targetDirection, 35 * Time.deltaTime);
@@ -167,9 +171,9 @@ public class OSB_Player : MonoBehaviour
         {
             p_targetVel = Vector2.zero;
         }
-        p_vel = Vector3.Lerp(p_vel, p_targetVel, 20);
+        
 
-        rb.MovePosition(rb.position + p_targetVel);
+        rb.linearVelocity = p_targetVel;
         transform.rotation = Quaternion.Euler(0, 0, p_direction);
 
         if (Input.GetKeyDown(KeyCode.Space) && canDash)
@@ -200,14 +204,16 @@ public class OSB_Player : MonoBehaviour
             effectFrame--;
             if (effectFrame <= 0)
             {
-                VisualObj.GetComponent<SpriteRenderer>().color = isMagenta ? defaultColor : Color.magenta;
+                VisualObj.GetComponent<SpriteRenderer>().material.SetColor("_Backgroundfillcolor", isMagenta ? defaultColor : Color.magenta);
+                
                 effectFrame = 2;
                 isMagenta = !isMagenta;
             }
             if(currentDmgCooldownFrame <= 0)
             {
                 effectFrame = 2;
-                VisualObj.GetComponent<SpriteRenderer>().color = defaultColor;
+                VisualObj.GetComponent<SpriteRenderer>().material.SetColor("_Backgroundfillcolor", defaultColor   );
+                
                 isMagenta = false;
                 IsInDamageCooldown = false;
             }
@@ -251,7 +257,7 @@ public class OSB_Player : MonoBehaviour
         GUI.Label(new Rect(0, 18, 900, 900), "Target Velocity: " + p_targetVel);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if(collision.tag == "LevelHitbox" && !IsInDamageCooldown && !isInDash)
         {
@@ -260,6 +266,22 @@ public class OSB_Player : MonoBehaviour
             HitParticles.Play();
             currentDmgCooldownFrame = framesDuringCooldownDamage;
             IsInDamageCooldown = true;
+
+            OSBCamera.Singleton.Flash(0.02f);
+            SoundManager.Singleton.PlaySound(LoadedSFXEnum.HIT);
+            if (!OSBLevelEditorStaticValues.IsInEditor)
+            {
+                Lives--;
+                if(Lives <= 0)
+                {
+                    MainLevelManager.Singleton.StopAndRewind();
+                    SoundManager.Singleton.PlaySound(LoadedSFXEnum.EXPLOSION);
+                }
+                else
+                {
+                    
+                }
+            }
         }
 
         if(collision.tag == "FinishLine")

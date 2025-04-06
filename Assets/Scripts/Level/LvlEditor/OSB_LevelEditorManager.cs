@@ -21,6 +21,9 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
     public Sprite playIconSprite;
     public Sprite pauseIconSprite;
 
+    [Header("Window Prefabs")]
+    public GameObject spriteManager;
+
     [Header("Actual Editor Variables")]
     public bool isPlaying;
     public bool isRecording;
@@ -212,14 +215,32 @@ All unsaved progress you've done in this level will be lost!
     {
         string filePath = StandaloneFileBrowser.SaveFilePanel("Save the level", "", "level.osb", "osb");
 
+        
+
+        File.WriteAllText(filePath, SaveLevel());
+    }
+
+    public string SaveLevel()
+    {
         StringBuilder builder = new StringBuilder();
         builder.AppendLine(musicFilePath);
-        foreach(OSBLayer layer in layers)
+
+        builder.AppendLine("SPRITE");
+        foreach(KeyValuePair<string, ImageAsset> sprite in MainLevelManager.Singleton.imageResources)
+        {
+            builder.AppendLine($"SPR>{sprite.Key};{sprite.Value.path}");
+        }
+        builder.AppendLine("ENDSPRITE");
+        foreach (OSBLayer layer in layers)
         {
             builder.Append(layer.Save());
         }
+        return builder.ToString();
+    }
 
-        File.WriteAllText(filePath, builder.ToString());
+    public string[] SaveLevel(bool array)
+    {
+        return SaveLevel().Split(System.Environment.NewLine.ToCharArray());
     }
 
     public void Event_LoadLevel()
@@ -237,9 +258,16 @@ All unsaved progress you've done in this level will be lost!
         levelMusic.LoadMusic(file[0], ()=> { });
 
         StringBuilder currentLayer = new StringBuilder();
+        StringBuilder currentSpriteGroup = new StringBuilder();
         foreach(string line in file)
         {
             string[] splitFromLineID = line.Split('>');
+
+            if (line == "SPRITE")
+            {
+                currentSpriteGroup = new StringBuilder();
+                Debug.Log("New sprite group!");
+            }
 
             if (line == "LAYER>a")
             {
@@ -261,9 +289,34 @@ All unsaved progress you've done in this level will be lost!
                 
                 currentLayer.AppendLine(splitFromLineID[1]);
             }
+            else if(splitFromLineID[0] == "SPR")
+            {
+                currentSpriteGroup.AppendLine(splitFromLineID[1]);
+            }
+            else if(line == "ENDSPRITE")
+            {
+                Debug.Log("Finished sprite group!");
+
+                foreach(string sprite in currentSpriteGroup.ToString().Split(System.Environment.NewLine.ToCharArray()))
+                {
+                    if (string.IsNullOrEmpty(sprite))
+                    {
+                        continue;
+                    }
+
+                    Debug.Log(sprite);
+                    string[] split = sprite.Split(';');
+                    MainLevelManager.Singleton.LoadSprite(split[1], split[0]);
+                }
+            }
             
             
         }
+    }
+
+    public void Event_OpenSpriteManager()
+    {
+        Instantiate(spriteManager, transform);
     }
 
     public void Event_OpenExportWindow()
@@ -276,13 +329,8 @@ All unsaved progress you've done in this level will be lost!
     {
         string filePath = StandaloneFileBrowser.SaveFilePanel("Export...", "", "Level.obz", "obz");
 
-        StringBuilder builder = new StringBuilder();
-        builder.AppendLine(musicFilePath);
-        foreach (OSBLayer layer in layers)
-        {
-            builder.Append(layer.Save());
-        }
-        string[] lines = builder.ToString().Split(System.Environment.NewLine.ToCharArray());
+        
+        string[] lines = SaveLevel(true);
 
         ObzFormat file = new ObzFormat(lines, title, artist, middleLine, author, levelMusic.musicPath);
 

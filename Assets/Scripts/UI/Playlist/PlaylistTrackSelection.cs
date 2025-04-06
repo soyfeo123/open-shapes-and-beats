@@ -31,6 +31,8 @@ public class PlaylistTrackSelection : MonoBehaviour, IPointerEnterHandler, IPoin
     {
         GetComponent<RectTransform>().DOKill();
         GetComponent<RectTransform>().anchoredPosition = new Vector2(defaultpos - 20f, GetComponent<RectTransform>().anchoredPosition.y);
+        MainMenuManager.Singleton.songName.text = metadata.TrackName;
+        MainMenuManager.Singleton.songArtist.text = metadata.MiddleLine + "\n" + metadata.TrackArtist;
         if(!MainMenuManager.Singleton.noMoreSongsPlease)
         MainMenuManager.Singleton.menuMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", metadata.SongFileName), ()=> { MainMenuManager.Singleton.menuMusic.Play(0, 65);
             

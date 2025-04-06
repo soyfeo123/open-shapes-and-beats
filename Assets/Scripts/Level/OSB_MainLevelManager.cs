@@ -6,6 +6,8 @@ using System.IO;
 using UnityEngine.Events;
 using OSB.Editor;
 using System;
+using UnityEngine.Networking;
+using DG.Tweening;
 
 public class MainLevelManager : MBSingleton<MainLevelManager>
 {
@@ -14,12 +16,17 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
     public bool levelActive = false;
     public string fullLevelPath;
     public string fullMetadataPath;
+    public string currentLevelName;
     public GameObject player1;
     public LvlMetadataV1 levelMetadata;
 
     public UnityEvent onFrame = new UnityEvent();
 
     public List<LevelActor> levelActors = new List<LevelActor>();
+
+    public Dictionary<string, ImageAsset> imageResources = new Dictionary<string, ImageAsset>();
+
+    public Modifier[] l_modifiers;
 
     public Music levelMusic;
 
@@ -36,14 +43,23 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
         });
     }
 
-    public void LoadLevel(string levelName)
+    public void LoadLevel(string levelName, Modifier[] modifiers, bool loadInstantly = false)
     {
-        
+        if(levelMusic != null)
+        {
+            levelMusic.Dispose();
+        }
+
+        levelMusic = new Music();
+
+        imageResources.Clear();
         levelActors.Clear();
         levelActors = new List<LevelActor>();
         LevelSpawnSprites.LoadSprites();
         levelActive = false;
         msTime = 0;
+
+        l_modifiers = modifiers;
 
         fullLevelPath = Path.Combine(Application.streamingAssetsPath, "levelsserialized", levelName + "_lvl.osb");
         fullMetadataPath = Path.Combine(Application.streamingAssetsPath, "levelsserialized", levelName + ".txt");
@@ -57,7 +73,12 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
         if(currentLevelMode != LevelMode.ZenMode)
         ThePlayersParents.Singleton.SpawnPlayer();
 
-        StartCoroutine(LevelDelay());
+        currentLevelName = levelName;
+
+        if (loadInstantly)
+            CoreLoadLevel();
+        else
+            StartCoroutine(LevelDelay());
     }
 
     private void OnGUI()
@@ -65,23 +86,18 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
         GUI.Label(new Rect(Vector2.zero, new Vector2(500, 500)), msTime.ToString());
     }
 
-    IEnumerator LevelDelay()
+    void CoreLoadLevel()
     {
-        yield return new WaitForSeconds(2f);
-
-        SongIndicator.Show(levelMetadata.TrackName.ToUpper(), levelMetadata.MiddleLine, levelMetadata.TrackArtist, levelMetadata.LevelAuthor);
-
-        yield return new WaitForSeconds(2.5f);
         string[] levelLines = File.ReadAllLines(fullLevelPath);
 
-        foreach(string line in levelLines)
+        foreach (string line in levelLines)
         {
             if (string.IsNullOrEmpty(line))
             {
                 continue;
             }
             string[] lineId = line.Split('>');
-            if(lineId[0] == "OBJ")
+            if (lineId[0] == "OBJ")
             {
                 string[] splitParam = lineId[1].Split(',');
                 if (string.IsNullOrEmpty(splitParam[0]))
@@ -92,7 +108,7 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
                 string actorType = splitParam[0].Split(':')[1];
                 LevelActor actor = Activator.CreateInstance(Type.GetType(actorType)) as LevelActor;
 
-                foreach(string param in splitParam)
+                foreach (string param in splitParam)
                 {
                     if (string.IsNullOrEmpty(param))
                     {
@@ -109,10 +125,25 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
                 levelActors.Add(actor);
             }
         }
-        
+
+        foreach (Modifier mod in l_modifiers)
+        {
+            mod.ApplyMultipler();
+            mod.ReadyToModify();
+        }
 
         levelMusic.Play();
         levelActive = true;
+    }
+
+    IEnumerator LevelDelay()
+    {
+        yield return new WaitForSeconds(2f);
+
+        SongIndicator.Show(levelMetadata.TrackName.ToUpper(), levelMetadata.MiddleLine, levelMetadata.TrackArtist, levelMetadata.LevelAuthor);
+
+        yield return new WaitForSeconds(2.5f);
+        CoreLoadLevel();
     }
 
     float lastSongPos = 0;
@@ -143,32 +174,40 @@ You'll lose any rewards you were going to get.
         }
     }
 
+    void DisposeLevel()
+    {
+        levelActive = false;
+
+        l_modifiers = null;
+
+        onFrame.RemoveAllListeners();
+
+        for (int i = 0; i < levelActors.Count; i++)
+        {
+            LevelActor actor = levelActors[i];
+
+            try
+            {
+                actor.Dispose();
+                levelActors[i] = null;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.ToString());
+            }
+        }
+
+        levelActors.Clear();
+        levelActors = new List<LevelActor>();
+
+        System.GC.Collect();
+    }
+
     public void StopLevel()
     {
         if (!OSBLevelEditorStaticValues.IsInEditor)
         {
-            levelActive = false;
-
-            onFrame.RemoveAllListeners();
-
-            for(int i = 0; i < levelActors.Count; i++)
-            {
-                LevelActor actor = levelActors[i];
-                
-                try
-                {
-                    actor.Dispose();
-                    levelActors[i] = null;
-                }
-                catch(Exception ex) {
-                    Debug.LogError(ex.ToString());
-                }
-            }
-
-            levelActors.Clear();
-            levelActors = new List<LevelActor>();
-
-            System.GC.Collect();
+            DisposeLevel();
 
             levelMusic.FadeOut(null, 1f);
 
@@ -186,6 +225,51 @@ You'll lose any rewards you were going to get.
             });
         }
     }
+
+    public void LoadSprite(string assetPath, string key)
+    {
+        Texture2D tex = new Texture2D(2, 2);
+        tex.LoadImage(File.ReadAllBytes(assetPath));
+
+        Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), tex.width > tex.height ? tex.width : tex.height, 1, SpriteMeshType.Tight, Vector4.zero, true);
+
+        imageResources.Add(key, new(assetPath, sprite));
+    }
+
+    public void StopAndRewind()
+    {
+        
+        levelMusic.audioSrc.DOPitch(0f, 1f).SetEase(Ease.OutSine);
+        ThePlayersParents.Singleton.DestroyPlayer();
+
+        Utils.Timer(1.3f, () =>
+        {
+            levelMusic.audioSrc.loop = true;
+
+            
+            
+
+            levelMusic.audioSrc.DOPitch(1.5f, 2f).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                Modifier[] cloned = (Modifier[])l_modifiers.Clone();
+
+                DisposeLevel();
+                Utils.Timer(0.1f, () =>
+                {
+                    levelMusic.Stop();
+                    levelMusic.Dispose();
+                    levelMusic = null;
+
+                    OSBCamera.Singleton.Flash(0.1f);
+
+                    SoundManager.Singleton.PlaySound(LoadedSFXEnum.CHECKPOINT);
+
+                    LoadLevel(currentLevelName, cloned);
+                    
+                });
+            });
+        });
+    }
 }
 
 public static class MainGameLevels
@@ -196,4 +280,16 @@ public static class MainGameLevels
 public enum LevelMode
 {
     Normal, ZenMode, HardcoreMode
+}
+
+public class ImageAsset
+{
+    public string path;
+    public Sprite sprite;
+
+    public ImageAsset(string path_, Sprite sprite_)
+    {
+        path = path_;
+        sprite = sprite_;
+    }
 }

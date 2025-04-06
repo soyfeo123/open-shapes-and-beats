@@ -27,6 +27,9 @@ public class FlyingProjectile : LevelActor
 
     public FlyingProjectile() : base()
     {
+        objParams.Add("XPos", new ActorParam(1280));
+        objParams.Add("YPos", new ActorParam("rand|0|720"));
+
         needsWarning = false;
     }
 
@@ -41,7 +44,7 @@ public class FlyingProjectile : LevelActor
         innerCircle.transform.position = new Vector3(0,0,0.1f);
         innerCircle.transform.localScale = Vector3.one * 5;
         innerCircle.transform.DOScale(0, 0.35f).SetEase(Ease.Linear);
-        innerCircle.GetComponent<SpriteRenderer>().DOColor(RenderComponent.pink,0.3f).SetEase(Ease.Linear);
+        innerCircle.GetComponent<SpriteRenderer>().DOColor(rc.pink,0.3f).SetEase(Ease.Linear);
 
         rc.SetColorToPink();
 
@@ -51,9 +54,11 @@ public class FlyingProjectile : LevelActor
         LogicHitbox.AddToLA(this);
 
         int randomValue = Random.Range((int)0, (int)3);
-        mainObject.transform.position = new Vector3(9, randomValue == 0 ? -3f : (randomValue == 1 ? 0 : (randomValue == 2 ? 3f : 0)), 0);
+        
         direction = Random.Range(-30, -122) * Mathf.Deg2Rad; // ??? // NO WAY THAT ACTUALLY WORKED?????
         randomSpeed = Random.Range(4f, 6f);
+
+        SetPosition();
     }
 
     public override void Frame()
@@ -61,5 +66,15 @@ public class FlyingProjectile : LevelActor
         base.Frame();
         if(hasPrepared)
         MoveBy(randomSpeed * OSBLevelEditorStaticValues.deltaTime * Mathf.Sin(direction), randomSpeed * OSBLevelEditorStaticValues.deltaTime * Mathf.Cos(direction));
+    }
+
+    public override void OverridePositionParam(float x, float y)
+    {
+        base.OverridePositionParam(x, y);
+        
+        float mousePosY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
+        float toPos = Utils.MapWorldToPixel(mousePosY, UtilsDirection.Y);
+
+        objParams["YPos"].number.expression = toPos.ToString();
     }
 }

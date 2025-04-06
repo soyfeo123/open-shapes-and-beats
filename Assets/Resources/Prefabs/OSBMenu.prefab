@@ -2765,6 +2765,8 @@ MonoBehaviour:
   defaultUser: {fileID: 0}
   songContainer: {fileID: 5147281106969636048}
   playlistEntry: {fileID: 6785555789287182814, guid: 9026f429b840d4d599b27cb18f04b52d, type: 3}
+  songName: {fileID: 5690227103430252133}
+  songArtist: {fileID: 5383324200101605841}
   spinnySquareThings: {fileID: 5231211221291040477}
   snow: {fileID: 8788088709608170011}
   mainColorBg: {fileID: 5360498806861458952}

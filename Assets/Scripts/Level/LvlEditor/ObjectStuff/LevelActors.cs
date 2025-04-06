@@ -82,7 +82,18 @@ namespace OSB.Editor
         public LevelActor parent;
         public GameObject visibilityRenderer;
 
-        public static Color pink = new Color(1, 0, 0.5058824f);
+        public bool customSprite = false;
+
+        public Color pink
+        {
+            get
+            {
+                if (customSprite)
+                    return new Color(1, 1, 1);
+                else
+                    return new Color(1, 0, 0.5058824f);
+            }
+        }
 
         public static void AddToLA(LevelActor actor, Sprite sprite)
         {
@@ -92,7 +103,16 @@ namespace OSB.Editor
             actor.rc.renderer = actor.visual.AddComponent<SpriteRenderer>();
 
             //Debug.Log(sprite);
-            actor.rc.renderer.sprite = sprite;
+            if (string.IsNullOrEmpty(actor.objParams["Visual"].text))
+            {
+                actor.rc.renderer.sprite = sprite;
+                actor.rc.customSprite = false;
+            }
+            else
+            {
+                actor.rc.renderer.sprite = MainLevelManager.Singleton.imageResources[actor.objParams["Visual"].text].sprite;
+                actor.rc.customSprite = true;
+            }
 
             
         }
@@ -240,6 +260,7 @@ namespace OSB.Editor
             objParams.Add("Time", new(99999));
             objParams.Add("Duration", new(1000));
             objParams.Add("OutroDuration", new(200));
+            objParams.Add("Visual", new("", ""));
         }
 
         public virtual void Prepare()
@@ -267,6 +288,11 @@ namespace OSB.Editor
         public virtual void SetSize(float baseSizeX, float baseSizeY)
         {
             mainObject.transform.localScale = new Vector3(Utils.CalculateSize(objParams["Size"].number.GetValue(), baseSizeX), Utils.CalculateSize(objParams["Size"].number.GetValue(), baseSizeY), 1);
+        }
+
+        public virtual void OverridePositionParam(float x, float y)
+        {
+
         }
 
         public virtual void Frame()

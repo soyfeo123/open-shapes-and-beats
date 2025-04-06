@@ -62,7 +62,7 @@ public class Laser : LevelActor
         }
         mainObject.transform.position = getPosition();
         rc.SetColorToPink();
-        rc.renderer.color = new Color(RenderComponent.pink.r, RenderComponent.pink.g, RenderComponent.pink.b, 0.25f);
+        rc.renderer.color = new Color(rc.pink.r, rc.pink.g, rc.pink.b, 0.25f);
     }
 
     public override void ActivateAttack()
@@ -102,7 +102,7 @@ public class Laser : LevelActor
             }
             mainObject.transform.DOMoveX(0f, 0.1f).SetEase(Ease.OutSine);
         }
-        rc.renderer.DOColor(RenderComponent.pink, 0.2f);
+        rc.renderer.DOColor(rc.pink, 0.2f);
         mainObject.transform.localScale = new Vector3(finalDirection == 0 || finalDirection == 1 ? 0 : 18, finalDirection == 2 || finalDirection == 3 ? 0 : 10, 1f);
 
         if (finalDirection == 0 || finalDirection == 1)
