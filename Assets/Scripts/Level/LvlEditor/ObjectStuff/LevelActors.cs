@@ -166,6 +166,7 @@ namespace OSB.Editor
     {
         public ActorNumber number;
         public string text;
+        public LevelActor actor;
 
         public ActorParam()
         {
@@ -182,6 +183,11 @@ namespace OSB.Editor
         {
             text = text_;
             number = num;
+        }
+
+        public ActorParam(LevelActor actor_)
+        {
+            actor = actor_;
         }
     }
 
@@ -222,6 +228,7 @@ namespace OSB.Editor
         {
             expression = exp;
             Overrides = new();
+            
         }
 
         public static implicit operator ActorNumber(float value)
@@ -249,15 +256,19 @@ namespace OSB.Editor
         public bool hasActivated = false;
         public bool hasPrepared = false;
 
+        public bool isControlledByItself = true;
+
         public string ID;
 
         public Dictionary<string, ActorParam> objParams = new Dictionary<string, ActorParam>();
+
+        public List<PaloUtils.ExpressionVariables> overrides;
 
         public LevelActor()
         {
             objParams.Add("ID", new("", ""));
             objParams.Add("Warning", new(1000));
-            objParams.Add("Time", new(99999));
+            objParams.Add("Time", new(0));
             objParams.Add("Duration", new(1000));
             objParams.Add("OutroDuration", new(200));
             objParams.Add("Visual", new("", ""));
@@ -297,7 +308,7 @@ namespace OSB.Editor
 
         public virtual void Frame()
         {
-            if (!OSBLevelEditorStaticValues.IsInEditor)
+            if (!OSBLevelEditorStaticValues.IsInEditor && isControlledByItself)
             {
                 //Debug.Log("Not on editor");
                 float timeValue = objParams["Time"].number.GetValue();

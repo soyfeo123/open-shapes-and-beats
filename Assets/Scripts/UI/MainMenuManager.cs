@@ -52,6 +52,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public List<LvlMetadataV1> playlistSongs = new List<LvlMetadataV1>();
     public TextMeshProUGUI songName;
     public TextMeshProUGUI songArtist;
+    public PlaylistSongContainer songContainerScript;
 
     [Header("Background Stuff")]
     public GameObject spinnySquareThings;
@@ -220,6 +221,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         MainMenuContainerGroup.DOFade(0f, 0.5f);
         MainMenuContainerGroup.interactable = false;
         playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(0, 0.5f).SetEase(Ease.OutExpo);
+        songContainerScript.UpdateButtons();
     }
 
     public void ClosePlaylist()
@@ -234,6 +236,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         });
         MainMenuContainerGroup.interactable = true;
         playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(1080, 0.5f).SetEase(Ease.OutExpo);
+        songContainerScript.RemoveAllPlaylistEntries();
     }
 
 
@@ -243,7 +246,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     {
         
         HideRightButtons();
-        TopbarExit();
+        //TopbarExit();
         OpenPlaylist();
     }
 

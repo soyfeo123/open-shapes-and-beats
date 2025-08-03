@@ -5,12 +5,14 @@ using UnityEngine;
 public static class GameProjectileManager
 {
     static GameObject genericProjectile;
+    static GameObject squareProjectile;
     static List<PooledObjectInfo> pools = new List<PooledObjectInfo>();
 
     [RuntimeInitializeOnLoadMethod]
     static void Init()
     {
         genericProjectile = Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/Projectiles/GenericProjectile");
+        squareProjectile = Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/Projectiles/SquareProjectile");
     }
 
     static GameObject SpawnPoolObject(GameObject objectToSpawn)
@@ -69,6 +71,13 @@ Contact Palo for more info!", "[enter] awh", new() { { KeyCode.Return, () => { }
             projectile.transform.position = point;
             projectile.GetComponent<LogicMoveWithDirection>().direction = angle * i + setRandomValue;
         }
+    }
+
+    public static void CreateSquareProjectile(Vector3 point, float direction)
+    {
+        GameObject projectile = SpawnPoolObject(squareProjectile);
+        projectile.transform.position = point;
+        projectile.GetComponent<LogicMoveWithDirection>().direction = direction;
     }
 }
 

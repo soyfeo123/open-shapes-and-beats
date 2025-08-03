@@ -2,6 +2,7 @@ using UnityEngine;
 using OSB.Editor;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class ParamsWindowController : MonoBehaviour
 {
@@ -31,7 +32,20 @@ public class ParamsWindowController : MonoBehaviour
             {
                 param.Value.number.expression = val;
                 param.Value.text = val;
+
+                if(param.Key == "Enemy")
+                {
+                    (actor as EnemyGroup).OnEnemyFieldChanged();
+                    InitWindow();
+                }
             });
+            if(param.Key == "Enemy")
+            {
+                field.ActivateInputField();
+                field.caretPosition = param.Value.text.Length;
+                field.selectionAnchorPosition = param.Value.text.Length;
+                field.selectionFocusPosition = param.Value.text.Length;
+            }
         }
     }
 

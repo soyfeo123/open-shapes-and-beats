@@ -36,7 +36,7 @@ public class FlyingProjectile : LevelActor
     public override void Prepare()
     {
         base.Prepare();
-        mainObject.transform.localScale = Vector3.one * 0.15f;
+        /*mainObject.transform.localScale = Vector3.one * 0.15f;
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_SQUARE);
         innerCircle = new GameObject("CoolCircleBecauseItLooksGood");
         innerCircle.transform.parent = visual.transform;
@@ -53,20 +53,23 @@ public class FlyingProjectile : LevelActor
         visualGoRoundRound.startAtRandomDir = false;
         LogicHitbox.AddToLA(this);
 
-        int randomValue = Random.Range((int)0, (int)3);
+        int randomValue = Random.Range((int)0, (int)3);*/
         
-        direction = Random.Range(-30, -122) * Mathf.Deg2Rad; // ??? // NO WAY THAT ACTUALLY WORKED?????
-        randomSpeed = Random.Range(4f, 6f);
+        
+        direction = Random.Range(-30, -122); // ??? // NO WAY THAT ACTUALLY WORKED?????
 
         SetPosition();
+
+        GameProjectileManager.CreateSquareProjectile(mainObject.transform.position, direction);
+        Dispose();
     }
 
-    public override void Frame()
+    /*public override void Frame()
     {
         base.Frame();
         if(hasPrepared)
         MoveBy(randomSpeed * OSBLevelEditorStaticValues.deltaTime * Mathf.Sin(direction), randomSpeed * OSBLevelEditorStaticValues.deltaTime * Mathf.Cos(direction));
-    }
+    }*/
 
     public override void OverridePositionParam(float x, float y)
     {

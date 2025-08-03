@@ -61,6 +61,8 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
 
         l_modifiers = modifiers;
 
+        OSB_Player.numberOfRespawns = 0;
+
         fullLevelPath = Path.Combine(Application.streamingAssetsPath, "levelsserialized", levelName + "_lvl.osb");
         fullMetadataPath = Path.Combine(Application.streamingAssetsPath, "levelsserialized", levelName + ".txt");
         levelMetadata = new LvlMetadataV1();
@@ -226,6 +228,23 @@ You'll lose any rewards you were going to get.
         }
     }
 
+    public void StopLevelWithCompleteScreen()
+    {
+        if (!OSBLevelEditorStaticValues.IsInEditor)
+        {
+            DisposeLevel();
+
+            levelMusic.FadeOut(null, 1f);
+
+            Utils.Timer(1f, () =>
+            {
+                
+                UIController.OpenMenu(UIMenus.LEVEL_COMPLETE);
+            }
+            );
+        }
+    }
+
     public void LoadSprite(string assetPath, string key)
     {
         Texture2D tex = new Texture2D(2, 2);
@@ -264,8 +283,10 @@ You'll lose any rewards you were going to get.
 
                     SoundManager.Singleton.PlaySound(LoadedSFXEnum.CHECKPOINT);
 
+                    int prevNumberRespawns = OSB_Player.numberOfRespawns;
                     LoadLevel(currentLevelName, cloned);
-                    
+                    OSB_Player.numberOfRespawns = prevNumberRespawns;
+                    Debug.Log("NUMBER OF RESPAWNS: " + OSB_Player.numberOfRespawns);
                 });
             });
         });

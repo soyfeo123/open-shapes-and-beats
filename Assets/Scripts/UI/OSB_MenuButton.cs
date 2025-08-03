@@ -69,9 +69,9 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         }
         currentTransform.DOKill();
         currentTransform.DOSizeDelta(new Vector2(previousWidth, currentTransform.sizeDelta.y), 0.3f).SetEase(Ease.OutBack);
-        Vector3 pos = currentTransform.position;
-        pos.z = 0;
-        currentTransform.position = pos;
+        //Vector3 pos = currentTransform.position;
+        //pos.z = 0;
+        //currentTransform.position = pos;
 
         leftTriangle.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
         mainBg.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);

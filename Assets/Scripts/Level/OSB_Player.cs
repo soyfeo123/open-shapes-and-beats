@@ -55,6 +55,8 @@ public class OSB_Player : MonoBehaviour
     [Header("Debug")]
     public bool DebugEnabled = false;
 
+    public static int numberOfRespawns;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +65,8 @@ public class OSB_Player : MonoBehaviour
 
         dashCooldownTimeFrames = Mathf.FloorToInt(dashCooldownTime * 50);
         framesDuringCooldownDamage = Mathf.FloorToInt(DamageCooldown * 50);
+
+        
     }
 
     /*void KeyboardMovement()
@@ -274,6 +278,7 @@ public class OSB_Player : MonoBehaviour
                 Lives--;
                 if(Lives <= 0)
                 {
+                    numberOfRespawns++;
                     MainLevelManager.Singleton.StopAndRewind();
                     SoundManager.Singleton.PlaySound(LoadedSFXEnum.EXPLOSION);
                 }
@@ -289,7 +294,7 @@ public class OSB_Player : MonoBehaviour
             Debug.Log("finished!");
             Destroy(collision.transform.parent.gameObject);
 
-            MainLevelManager.Singleton.StopLevel();
+            MainLevelManager.Singleton.StopLevelWithCompleteScreen();
         }
     }
 

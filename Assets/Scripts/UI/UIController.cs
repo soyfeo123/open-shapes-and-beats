@@ -39,6 +39,7 @@ public static class UIMenus
 {
     public static GameObject MAIN_MENU;
     public static GameObject WELCOME_SCREEN;
+    public static GameObject LEVEL_COMPLETE;
     
     [RuntimeInitializeOnLoadMethod]
     static void InitResources()
@@ -48,5 +49,6 @@ public static class UIMenus
         // for gosh's sake i will throw my cat out of my window if this doesn't work
         MAIN_MENU = Resources.Load<GameObject>("Prefabs/OSBMenu");
         WELCOME_SCREEN = Resources.Load<GameObject>("Prefabs/Welcome");
+        LEVEL_COMPLETE = Resources.Load<GameObject>("Prefabs/LevelCompleteScreen");
     }
 }

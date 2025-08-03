@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
+using Newtonsoft.Json;
 
 public static class Utils
 {
@@ -29,6 +30,15 @@ public static class Utils
     {
         float t = Mathf.InverseLerp(direction == UtilsDirection.X ? -9f : 5f, direction == UtilsDirection.X ? 9f : -5f, value); 
         return Mathf.LerpUnclamped(0, direction == UtilsDirection.X ? 1280 : 720, t);
+    }
+
+    /// <summary>
+    /// uses json so idk bout this
+    /// </summary>
+    /// <returns></returns>
+    public static T CloneObject<T>(T obj)
+    {
+        return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
     }
 }
 

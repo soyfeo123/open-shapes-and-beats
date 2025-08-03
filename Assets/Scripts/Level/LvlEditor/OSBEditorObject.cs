@@ -127,6 +127,7 @@ public class OSBEditorObject : MonoBehaviour
         }
         
 
+        
         //Debug.Log(actualTime);
         if (mustExecute && EditorPlayhead.Singleton.SongPosMS >= actualTime && !objectNeedsWarning)
         {

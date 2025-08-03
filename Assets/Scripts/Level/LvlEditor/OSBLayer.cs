@@ -1,3 +1,8 @@
+/*
+ * OSBLayer.cs contributors:
+ * GXGamerRU
+*/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,7 +84,7 @@ public class OSBLayer : MonoBehaviour
 
         if (OSB_LevelEditorManager.Singleton.isRecording)
         {
-            if (thingToClone is FlyingProjectile ? (Input.GetKey(keybind) && framesElapsedSinceProejctileLaunch == 0) : Input.GetKeyDown(keybind))
+            if (thingToClone is FlyingProjectile ? (Input.GetKey(keybind) && Time.frameCount % 35 == 0) : Input.GetKeyDown(keybind))
             {
                 
                 GameObject instance = Instantiate(objToClone);
@@ -89,8 +94,8 @@ public class OSBLayer : MonoBehaviour
                 // WHO CARES?????
                 instance.GetComponent<OSBEditorObject>().InitInstance();
                 instance.GetComponent<OSBEditorObject>().assignedActor.objParams = JsonConvert.DeserializeObject<Dictionary<string, ActorParam>>(JsonConvert.SerializeObject(thingToClone.objParams));
-                
-                instance.GetComponent<OSBEditorObject>().assignedActor.objParams["Time"].number.expression = EditorPlayhead.Singleton.SongPosMS.ToString();
+
+                instance.GetComponent<OSBEditorObject>().assignedActor.objParams["Time"].number.expression = ((int)EditorPlayhead.Singleton.SongPosMS).ToString();
                 instance.transform.SetParent(objContainer.transform);
 
                 if(keybind == KeyCode.Mouse0)
@@ -104,11 +109,7 @@ public class OSBLayer : MonoBehaviour
 
                 
             }
-            framesElapsedSinceProejctileLaunch++;
-            if (framesElapsedSinceProejctileLaunch >= 35)
-            {
-                framesElapsedSinceProejctileLaunch = 0;
-            }
+            
         }
     }
 
