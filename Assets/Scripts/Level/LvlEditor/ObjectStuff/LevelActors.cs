@@ -277,6 +277,7 @@ namespace OSB.Editor
         public virtual void Prepare()
         {
             mainObject = new GameObject(Utils.GenerateUniqueName("Spawn"));
+            mainObject.tag = "Level";
             visual = new GameObject("Visual");
             visual.transform.parent = mainObject.transform;
             if(OSBLevelEditorStaticValues.IsInEditor)

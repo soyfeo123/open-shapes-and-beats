@@ -24,11 +24,19 @@ public class ParamsWindowController : MonoBehaviour
         {
             GameObject go = Instantiate(paramsPrefab);
             go.transform.SetParent(content);
-            go.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = param.Key;
+            go.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = param.Key.Split("///")[0];
 
-            TMP_InputField field = go.transform.Find("Field").GetComponent<TMP_InputField>();
-            field.text = param.Value.number != null ? param.Value.number.expression : param.Value.text;
-            field.onValueChanged.AddListener((string val) =>
+            string[] split = param.Key.Split("///");
+            string path = "Prefabs/LevelEditorPrefabs/Params/Fields/" + (split.Length > 1 ? split[1] : "Normal");
+
+            Debug.Log(path);
+            GameObject fieldObj = Instantiate(Resources.Load<GameObject>(path));
+            fieldObj.transform.SetParent(go.transform);
+            fieldObj.name = "Field";
+
+            ParamFieldGetter field = go.transform.Find("Field").GetComponent<ParamFieldGetter>();
+            field.SetValue(param.Value.number != null ? param.Value.number.expression : param.Value.text);
+            field.OnValueChanged.AddListener((string val) =>
             {
                 param.Value.number.expression = val;
                 param.Value.text = val;
@@ -41,10 +49,7 @@ public class ParamsWindowController : MonoBehaviour
             });
             if(param.Key == "Enemy")
             {
-                field.ActivateInputField();
-                field.caretPosition = param.Value.text.Length;
-                field.selectionAnchorPosition = param.Value.text.Length;
-                field.selectionFocusPosition = param.Value.text.Length;
+                field.Focus(param.Value.text.Length);
             }
         }
     }

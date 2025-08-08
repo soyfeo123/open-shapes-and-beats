@@ -7,6 +7,7 @@ TagManager:
   - ScreenViewTrigger
   - LevelHitbox
   - FinishLine
+  - Level
   layers:
   - Default
   - TransparentFX

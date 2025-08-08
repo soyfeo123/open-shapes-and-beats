@@ -13,6 +13,8 @@ using System;
 using System.Linq;
 using Newtonsoft.Json;
 using System.Text;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class OSBLayer : MonoBehaviour
 {
@@ -27,7 +29,8 @@ public class OSBLayer : MonoBehaviour
     Color defaultColor;
     LevelActor thingToClone;
     GameObject objToClone;
-    KeyCode keybind = KeyCode.None;
+    public EditorActions m_keybinds;
+    string keybind = "";
 
     [Header("Debug")]
     public GameObject prefab;
@@ -45,6 +48,40 @@ public class OSBLayer : MonoBehaviour
     private void Start()
     {
         defaultColor = layerStuffBg.color;
+    }
+
+    void OnEnable()
+    {
+        m_keybinds = new EditorActions();
+
+        m_keybinds.Main.Enable();
+        m_keybinds.Main.Record.performed += Record_performed;
+    }
+
+    private void Record_performed(InputAction.CallbackContext obj)
+    {
+        // we only want a key from a keyboard
+
+        //Debug.Log("pressed key? " + "ERM WHAT THE SIGAM");
+        //if (!(obj.control is KeyControl keyControl)) return;
+
+        //KeyCode pressedKey = (KeyCode)(int)keyControl.keyCode;
+
+        //Debug.Log("pressed key? " + pressedKey);
+        //// if the key pressed is not the key assigned, forget it all
+        //if (pressedKey != keybind) return;
+
+        // not needed because keybinds are set but hey just in case :)
+
+        if (!OSB_LevelEditorManager.Singleton.isRecording) return;
+
+        SpawnObjectAt((int)EditorPlayhead.Singleton.SongPosMS);
+    }
+
+    void OnDisable()
+    {
+        m_keybinds.Main.Disable();
+        m_keybinds.Main.Record.performed -= Record_performed;
     }
 
     internal static Dictionary<string, ActorParam> Clone(Dictionary<string, ActorParam> dictIn)
@@ -80,37 +117,7 @@ public class OSBLayer : MonoBehaviour
         else
         {
             layerStuffBg.color = defaultColor;
-        }
-
-        if (OSB_LevelEditorManager.Singleton.isRecording)
-        {
-            if (thingToClone is FlyingProjectile ? (Input.GetKey(keybind) && Time.frameCount % 35 == 0) : Input.GetKeyDown(keybind))
-            {
-                
-                GameObject instance = Instantiate(objToClone);
-                // HELL YEAH I MADE IT WORK
-                // I'M A GENIUS
-                // hacky solution though
-                // WHO CARES?????
-                instance.GetComponent<OSBEditorObject>().InitInstance();
-                instance.GetComponent<OSBEditorObject>().assignedActor.objParams = JsonConvert.DeserializeObject<Dictionary<string, ActorParam>>(JsonConvert.SerializeObject(thingToClone.objParams));
-
-                instance.GetComponent<OSBEditorObject>().assignedActor.objParams["Time"].number.expression = ((int)EditorPlayhead.Singleton.SongPosMS).ToString();
-                instance.transform.SetParent(objContainer.transform);
-
-                if(keybind == KeyCode.Mouse0)
-                {
-                    instance.GetComponent<OSBEditorObject>().assignedActor.OverridePositionParam(0, 0);
-                }
-                
-                //instance.GetComponent<RectTransform>().anchoredPosition = new Vector2(instance.GetComponent<RectTransform>().anchoredPosition.x, 0);
-                Debug.Log(instance.GetComponent<OSBEditorObject>());
-                objectsOnLayer.Add(instance.GetComponent<OSBEditorObject>());
-
-                
-            }
-            
-        }
+        }    
     }
 
     public void SetAsSelectedLayer()
@@ -164,28 +171,54 @@ public class OSBLayer : MonoBehaviour
     }
 
     // hell yeah i love long function names
-    IEnumerator WaitForKeyPressAndAssign()
+    void WaitForKeyPressAndAssign()
     {
+        m_keybinds.Disable();
+
         ScreenMessage msg = ScreenMessages.Create("<b>PRESS ANY KEY</b>\nto bind the layer");
         Debug.Log("Press any key");
-        yield return new WaitUntil(() => Input.anyKeyDown);
-        foreach(KeyCode key in Enum.GetValues(typeof(KeyCode)))
+
+        m_keybinds.Main.Record.PerformInteractiveRebinding().WithControlsExcluding("Mouse").OnComplete(op =>
         {
-            if (Input.GetKey(key))
-            {
-                keybind = key;
-            }
-        }
-        Debug.Log(keybind);
-        msg.RemoveFromScreen();
-        bindKeyTooltip.ForceUpdate();
+            Debug.Log("Pressed");
+            
+            
+            var control = m_keybinds.Main.Record;
+
+            keybind = op.selectedControl.path;
+
+            msg.RemoveFromScreen();
+
+            op.Dispose();
+        }).Start();
+
+        m_keybinds.Enable();
     }
 
     
 
     public void CallbackKeyClicked()
     {
-        StartCoroutine(WaitForKeyPressAndAssign());
+        WaitForKeyPressAndAssign();
+    }
+
+    private void SpawnObjectAt(int timestamp)
+    {
+        GameObject instance = Instantiate(objToClone);
+        
+        instance.GetComponent<OSBEditorObject>().InitInstance();
+        instance.GetComponent<OSBEditorObject>().assignedActor.objParams = JsonConvert.DeserializeObject<Dictionary<string, ActorParam>>(JsonConvert.SerializeObject(thingToClone.objParams));
+
+        instance.GetComponent<OSBEditorObject>().assignedActor.objParams["Time"].number.expression = timestamp.ToString();
+        instance.transform.SetParent(objContainer.transform);
+
+        //if (keybind == KeyCode.Mouse0)
+        //{
+        //    instance.GetComponent<OSBEditorObject>().assignedActor.OverridePositionParam(0, 0);
+        //}
+
+        Debug.Log(instance.GetComponent<OSBEditorObject>());
+        objectsOnLayer.Add(instance.GetComponent<OSBEditorObject>());
     }
 
     public string Save()

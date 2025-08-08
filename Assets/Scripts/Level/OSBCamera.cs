@@ -1,11 +1,15 @@
 using UnityEngine;
 using DG.Tweening;
 using OSB.Editor;
+using System;
 
 public class OSBCamera : MBSingletonDestroy<OSBCamera>
 {
     Vector3 defaultCamPos = new Vector3(0, 0, -2f);
     GameObject flash;
+
+    private Vector2 m_cameraOffset = new Vector2(0, 0);
+    private Vector2 m_cameraPosition = new Vector2();
 
     private void Start()
     {
@@ -18,16 +22,22 @@ public class OSBCamera : MBSingletonDestroy<OSBCamera>
         flash.SetActive(false);
     }
 
-    public void CameraMove(float x, float y, float duration)
+    public void Update()
     {
-        transform.DOMoveX(x, duration / 2).OnComplete(() =>
+        transform.position = new Vector3(m_cameraPosition.x + m_cameraOffset.x, m_cameraPosition.y + m_cameraOffset.y, defaultCamPos.z);
+    }
+
+    public void CameraMoveOffset(float x, float y, float duration)
+    {
+        TweenOffset(new Vector2(x, y), duration * 0.5f, () =>
         {
-            transform.DOMove(defaultCamPos, duration/ 2);
+            TweenOffset(Vector2.zero, duration * 0.5f);
         });
-        transform.DOMoveY(y, duration / 2).OnComplete(() =>
-        {
-            transform.DOMove(defaultCamPos, duration / 2);
-        });
+    }
+
+    public void CameraMovePerm(float x, float y, float duration, Ease ease)
+    {
+        DOTween.To(() => m_cameraPosition, n => m_cameraPosition = n, new Vector2(x, y), duration).SetEase(ease);
     }
 
     public void Flash(float duration)
@@ -38,6 +48,19 @@ public class OSBCamera : MBSingletonDestroy<OSBCamera>
         flash.transform.DOLocalMove(Vector3.zero, duration).OnComplete(() =>
         {
             flash.SetActive(false);
+        });
+    }
+
+    public void CameraRotationPerm(float direction, float duration, Ease ease)
+    {
+        transform.DORotate(new Vector3(0, 0, direction), duration).SetEase(ease);
+    }
+
+    private void TweenOffset(Vector2 endValue, float duration, Action onComplete = null)
+    {
+        DOTween.To(() => m_cameraOffset, n => m_cameraOffset = n, endValue, duration).OnComplete(() =>
+        {
+            onComplete?.Invoke();
         });
     }
 }

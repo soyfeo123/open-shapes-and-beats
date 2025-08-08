@@ -7,6 +7,7 @@ using DG.Tweening;
 // 1: bottom to top
 // 2: left to right
 // 3: right to left
+// 4: random
 
 // 18: full width
 // 10: full height
@@ -17,7 +18,7 @@ public class Laser : LevelActor
     {
         needsWarning = true;
 
-        objParams.Add("laserDirection", new("rand|0|3"));
+        objParams.Add("laserDirection///LaserDir", new("0"));
         objParams.Add("position (0-100)", new("rand|0|100"));
         objParams.Add("thickness", new(3f));
     }
@@ -45,8 +46,16 @@ public class Laser : LevelActor
     public override void Prepare()
     {
         base.Prepare();
+        
         finalPosition = objParams["position (0-100)"].number.GetValue();
-        finalDirection = Mathf.Clamp(Mathf.RoundToInt(objParams["laserDirection"].number.GetValue()), 0, 3);
+        if (objParams["laserDirection///LaserDir"].number.GetValue() == 4)
+        {
+            finalDirection = Mathf.RoundToInt(Random.Range(0, 3));
+        }
+        else
+        {
+            finalDirection = Mathf.Clamp(Mathf.RoundToInt(objParams["laserDirection///LaserDir"].number.GetValue()), 0, 3);
+        }
         RenderComponent.AddToLA(this, LevelSpawnSprites.GENERIC_SQUARE);
 
 
@@ -79,12 +88,12 @@ public class Laser : LevelActor
             {
                 mainObject.transform.position += new Vector3(0, 10f, 0);
 
-                OSBCamera.Singleton.CameraMove(0, 0.1f, 0.2f);
+                OSBCamera.Singleton.CameraMoveOffset(0, 0.1f, 0.2f);
             }
             else
             {
                 mainObject.transform.position -= new Vector3(0, 10f, 0);
-                OSBCamera.Singleton.CameraMove(0, -0.1f, 0.2f);
+                OSBCamera.Singleton.CameraMoveOffset(0, -0.1f, 0.2f);
             }
             mainObject.transform.DOMoveY(0f, 0.1f).SetEase(Ease.OutSine);
         }
@@ -93,12 +102,12 @@ public class Laser : LevelActor
             if (finalDirection == 2)
             {
                 mainObject.transform.position += new Vector3(18f, 0, 0);
-                OSBCamera.Singleton.CameraMove(0.1f, 0, 0.2f);
+                OSBCamera.Singleton.CameraMoveOffset(0.1f, 0, 0.2f);
             }
             else
             {
                 mainObject.transform.position -= new Vector3(18f, 0, 0);
-                OSBCamera.Singleton.CameraMove(-0.1f, 0, 0.2f);
+                OSBCamera.Singleton.CameraMoveOffset(-0.1f, 0, 0.2f);
             }
             mainObject.transform.DOMoveX(0f, 0.1f).SetEase(Ease.OutSine);
         }

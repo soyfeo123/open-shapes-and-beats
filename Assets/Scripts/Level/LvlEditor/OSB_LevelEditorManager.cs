@@ -20,6 +20,7 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
     public Image playIcon;
     public Sprite playIconSprite;
     public Sprite pauseIconSprite;
+    public TextMeshProUGUI m_infoHUD;
 
     [Header("Window Prefabs")]
     public GameObject spriteManager;
@@ -99,6 +100,11 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(), Input.mousePosition, null, out pos);
         tooltip.GetComponent<RectTransform>().anchoredPosition = pos + new Vector2(10, -10);
+
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePosnew = new Vector2(Mathf.Round(Utils.MapWorldToPixel(mousePos.x, UtilsDirection.X)), Mathf.Round(Utils.MapWorldToPixel(mousePos.y, UtilsDirection.Y)));
+
+        m_infoHUD.text = $"Objects: {GameObject.FindGameObjectsWithTag("Level").Length}\nFPS: {Mathf.Round(1f / Time.deltaTime)}\nCursor: ({mousePosnew.x}, {mousePosnew.y})";
 
         // TESTING RELATED STUFF
 #if UNITY_2017_1_OR_NEWER
