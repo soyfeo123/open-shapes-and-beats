@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using TMPro;
+using System;
 
 public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -23,7 +24,7 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     GameObject mainBg;
     Color color1;
     Color color2;
-    TextMeshProUGUI buttonText;
+    TextMeshProUGUI[] buttonText;
 
     // Start is called before the first frame update
     void Start()
@@ -34,16 +35,24 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         leftTriangle = transform.Find("LeftTriangleTHing").gameObject;
         rightTriangle = transform.Find("RightTriangleThing").gameObject;
         mainBg = transform.Find("MainBg").gameObject;
-        buttonText = mainBg.transform.GetComponentInChildren<TextMeshProUGUI>();
+        buttonText = mainBg.transform.GetComponentsInChildren<TextMeshProUGUI>();
 
         color1 = mainBg.GetComponent<Image>().color;
-        color2 = buttonText.color;
+        color2 = buttonText[0].color;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void jsForEach<T>(T[] array, Action<T> each)
+    {
+        foreach(var thing in array)
+        {
+            each?.Invoke(thing);
+        }
     }
 
     public void OnPointerEnter(PointerEventData data)
@@ -57,7 +66,7 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         leftTriangle.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
         mainBg.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
         rightTriangle.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
-        buttonText.DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
+        jsForEach(buttonText, (button) => button.DOColor(color1, 0.5f).SetEase(Ease.OutExpo));
         SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_SELECT);
         //currentTransform.DOScale(1.1f, 0.5f).SetEase(Ease.OutExpo);
     }
@@ -76,7 +85,7 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         leftTriangle.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
         mainBg.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
         rightTriangle.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
-        buttonText.DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
+        jsForEach(buttonText, (button) => button.DOColor(color2, 0.5f).SetEase(Ease.OutExpo));
 
         
 

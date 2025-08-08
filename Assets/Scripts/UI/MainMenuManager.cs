@@ -102,6 +102,11 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         Debug.Log("random: " + randomI + " from " + possibleSongs.Length);
         string selected = possibleSongs[randomI];
 
+        string[] possibleQuotes = new string[] { "Music.", "Turn up the volume!!", "Your ears are welcome.", "Are you going to stay on this menu?", "This never felt so alive.", "Browsing... browsing...", "Stay awhile, won't you?", "Flowey is coming.", "Hi. This is called flavor.", "Will you play? Or make a level?", "You're a cube." };
+        int randomQuoteI = Random.Range(0, (int)possibleQuotes.Length);
+
+        MenuNotifications.Singleton.Show(Utils.FilenameToPrettyTitle(Path.GetFileNameWithoutExtension(selected)), possibleQuotes[randomQuoteI], "Now Playing");
+
         menuMusic.LoadMusic(selected, ()=>
         {
             menuMusic.Play(vol: 35);
@@ -123,7 +128,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         topbarTime.text = System.DateTime.Now.ToString("ddd dd MMM  hh:mm tt");
         if (OSBGameJolt.Singleton.currentGJUser.IsAuthenticated)
         {
-            gamejoltTopbarUser.text = "<b>" + OSBGameJolt.Singleton.currentGJUser.DeveloperName + "</b>\n<size=17>@" + OSBGameJolt.Singleton.currentGJUser.Name;
+            gamejoltTopbarUser.text = "<b>" + OSBGameJolt.Singleton.currentGJUser.DeveloperName + "</b>\n<size=11>@" + OSBGameJolt.Singleton.currentGJUser.Name;
             GJPanel_SignedInPanel.SetActive(true);
             GJPanel_SignInPanel.SetActive(false);
             if(OSBGameJolt.Singleton.currentGJUser.Avatar)
@@ -176,11 +181,11 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void ShowRightButtons()
     {
-        MenuRightButtons.transform.DOScaleX(1, 0.5f).SetEase(Ease.OutExpo);
+        MenuRightButtons.GetComponent<RectTransform>().DOAnchorPosX(0, 0.5f).SetEase(Ease.OutExpo);
     }
     public void HideRightButtons()
     {
-        MenuRightButtons.transform.DOScaleX(0, 0.5f).SetEase(Ease.OutExpo);
+        MenuRightButtons.GetComponent<RectTransform>().DOAnchorPosX(-3000, 0.5f).SetEase(Ease.InSine);
     }
 
     public void OpenPlaylist()
@@ -220,8 +225,14 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         }, 0.5f);
         MainMenuContainerGroup.DOFade(0f, 0.5f);
         MainMenuContainerGroup.interactable = false;
-        playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(0, 0.5f).SetEase(Ease.OutExpo);
+        //playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(0, 0.5f).SetEase(Ease.OutExpo);
+        var menuTransform = playlistContainer.GetComponent<RectTransform>();
+
+        menuTransform.anchoredPosition = new Vector2(menuTransform.anchoredPosition.x, 0f);
+
         songContainerScript.UpdateButtons();
+
+        playlistContainer.GetComponent<AnimatedMenu>().Animate();
     }
 
     public void ClosePlaylist()
@@ -235,7 +246,12 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
             PlayRandomSongForMainMenu();
         });
         MainMenuContainerGroup.interactable = true;
-        playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(1080, 0.5f).SetEase(Ease.OutExpo);
+        //playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(1080, 0.5f).SetEase(Ease.OutExpo);
+        playlistContainer.GetComponent<AnimatedMenu>().AnimateExit();
+        Utils.Timer(0.5f, () =>
+        {
+            playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(1080, 0);
+        });
         songContainerScript.RemoveAllPlaylistEntries();
     }
 

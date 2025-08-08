@@ -18,14 +18,14 @@ public class OSBGameJolt : MBSingleton<OSBGameJolt>
             // bandade fix so unity doesn't go crying
         });
 
-        if(apiInstance == null)
+        if(apiInstance is null)
         {
             apiInstance = Instantiate(Resources.Load("Prefabs/GJ/GameJoltAPI") as GameObject).GetComponent<GameJoltAPI>();
         }
 
         currentGJUser = new User(PlayerPrefs.GetString("gjuser"), PlayerPrefs.GetString("ScreenResXEnc"));
 
-        SignIn();
+        SignIn(false);
     }
 
     public void SignIn(string name, string token)
@@ -35,7 +35,7 @@ public class OSBGameJolt : MBSingleton<OSBGameJolt>
         SignIn();
     }
 
-    public void SignIn()
+    public void SignIn(bool showFailure = true)
     {
         currentGJUser.SignIn(null, (bool success) =>
         {
@@ -44,15 +44,15 @@ public class OSBGameJolt : MBSingleton<OSBGameJolt>
                 Debug.Log("Signed in as " + currentGJUser.Name + "! Did it break? Sure freaking hope not!");
                 onSignIn.Invoke();
                 currentGJUser.DownloadAvatar();
-                GameJolt.UI.GameJoltUI.Instance.QueueNotification("Signed in as @" + currentGJUser.Name + " (" + currentGJUser.DeveloperName + ")");
+                MenuNotifications.Singleton.Show(currentGJUser.DeveloperName, " (@" + currentGJUser.Name + ")", "Signed in as");
                 PlayerPrefs.SetString("gjuser", currentGJUser.Name);
                 PlayerPrefs.SetString("ScreenResXEnc", currentGJUser.Token);
 
                 Trophies.TryUnlock(261658);
             }
-            else if(!string.IsNullOrEmpty(currentGJUser.Name))
+            else if(!string.IsNullOrEmpty(currentGJUser.Name) && showFailure)
             {
-                GameJolt.UI.GameJoltUI.Instance.QueueNotification("Could not sign-in. Check your credentials and use your token.");
+                MenuNotifications.Singleton.Show("Could not sign in.", "Check your credentials.");
             }
         });
     }

@@ -10,8 +10,8 @@ public class PaloDebug : OSBInit
         base.Init();
 
         //MainLevelManager.Singleton.LoadLevel(MainGameLevels.I_SAID_MEOW);
-        //UIController.OpenMenu(UIMenus.MAIN_MENU);
-        UIController.OpenMenu(UIMenus.WELCOME_SCREEN);
+        UIController.OpenMenu(UIMenus.MAIN_MENU);
+        //UIController.OpenMenu(UIMenus.WELCOME_SCREEN);
 
         //MainLevelManager.Singleton.LoadLevel("FinishLineTest", new Modifier[] {  });
 

@@ -2,6 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 public static class Utils
 {
@@ -39,6 +40,22 @@ public static class Utils
     public static T CloneObject<T>(T obj)
     {
         return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
+    }
+
+    public static string FilenameToPrettyTitle(string filename)
+    {
+        string nameOnly = System.IO.Path.GetFileNameWithoutExtension(filename);
+
+        // seriously fudge regex
+        nameOnly = Regex.Replace(nameOnly, @"^(menu_|bgm_|menu-|bgm-)", "", RegexOptions.IgnoreCase);
+        nameOnly = nameOnly.Replace("_", " ").Replace("-", " ");
+        nameOnly = Regex.Replace(nameOnly, "(?<=.)([A-Z])", " $1");
+        nameOnly = Regex.Replace(nameOnly, @"\s+", " ").Trim();
+
+        var textInfo = System.Globalization.CultureInfo.CurrentCulture.TextInfo;
+        nameOnly = textInfo.ToTitleCase(nameOnly.ToLower());
+
+        return nameOnly;
     }
 }
 
