@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Data;
 using System;
+using UnityEngine.Events;
 
 namespace OSB.Editor
 {
@@ -115,6 +116,20 @@ namespace OSB.Editor
             }
 
             
+        }
+
+        public GameObject CreateChildVisual(Sprite sprite)
+        {
+            GameObject newChild = new GameObject(Utils.GenerateUniqueName("VisualChild"));
+            newChild.transform.parent = parent.visual.transform;
+            newChild.transform.position = Vector3.zero;
+            newChild.transform.localScale = Vector3.one;
+
+            var childRenderer = newChild.AddComponent<SpriteRenderer>();
+            childRenderer.sortingOrder = renderer.sortingOrder + 1;
+            childRenderer.sprite = sprite;
+
+            return newChild;
         }
 
         /// <summary>
@@ -251,6 +266,7 @@ namespace OSB.Editor
         public RenderComponent rc;
         public LogicHitbox logicHitbox;
         public bool shouldBeDisposed = false;
+        public Rigidbody2D rb;
 
         public bool needsWarning = false;
         public bool hasActivated = false;
@@ -264,6 +280,8 @@ namespace OSB.Editor
 
         public List<PaloUtils.ExpressionVariables> overrides;
 
+        public static UnityEvent<string> Messages;
+
         public LevelActor()
         {
             objParams.Add("ID", new("", ""));
@@ -272,6 +290,14 @@ namespace OSB.Editor
             objParams.Add("Duration", new(1000));
             objParams.Add("OutroDuration", new(200));
             objParams.Add("Visual", new("", ""));
+
+            
+        }
+
+        [RuntimeInitializeOnLoadMethod]
+        static void MessageInit()
+        {
+            Messages = new();
         }
 
         public virtual void Prepare()
@@ -284,7 +310,10 @@ namespace OSB.Editor
             MainLevelManager.Singleton.onFrame.AddListener(Frame);
             hasPrepared = true;
 
-            
+            Messages.AddListener(Message);
+
+            rb = mainObject.AddComponent < Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Kinematic;
         }
 
         public virtual void SetRandomPos(float x = 0, float y = 0)
@@ -352,7 +381,7 @@ namespace OSB.Editor
             {
                 return;
             }
-            mainObject.transform.position += new Vector3(x, y, 0);
+            rb.MovePosition(rb.position + new Vector2(x, y) * Time.fixedDeltaTime);
 
             if(rc != null)
             {
@@ -364,6 +393,26 @@ namespace OSB.Editor
             }
         }
 
+        /// <summary>
+        /// gets a param (with numbers)
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public float GetFParam(string key)
+        {
+            return objParams[key].number.GetValue();
+        }
+
+        /// <summary>
+        /// gets a param (with text)
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string GetTParam(string key)
+        {
+            return objParams[key].text;
+        }
+
         public virtual void Dispose()
         {
             shouldBeDisposed = true;
@@ -371,8 +420,12 @@ namespace OSB.Editor
             {
                 GameObject.Destroy(mainObject);
                 MainLevelManager.Singleton.onFrame.RemoveListener(Frame);
+
+                Messages.RemoveListener(Message);
             }
         }
+
+        public virtual void Message(string msg) { }
     }
 
     // yeah

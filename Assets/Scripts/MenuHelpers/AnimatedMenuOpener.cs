@@ -1,4 +1,6 @@
 using DG.Tweening;
+using DG.Tweening.Core.Easing;
+using DG.Tweening.Core;
 using UnityEngine;
 
 public class AnimatedMenuOpener : MonoBehaviour
@@ -31,7 +33,10 @@ public class AnimatedMenuOpener : MonoBehaviour
 
         rect.anchoredPosition = m_defaultState;
 
-        rect.DOAnchorPos(m_initialState, 0.5f).SetEase(m_easingFunction).OnComplete(() => { rect.anchoredPosition = m_defaultState; });
+        Tween t = rect.DOAnchorPos(m_initialState, 0.5f);
+        // wtf is easefunction
+        t.SetEase(Ease.InOutBack)
+         .OnComplete(() => { rect.anchoredPosition = m_defaultState; });
 
         Debug.Log(gameObject.name + " plus " + m_defaultState);
     }

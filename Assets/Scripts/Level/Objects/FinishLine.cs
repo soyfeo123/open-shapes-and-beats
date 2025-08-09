@@ -32,6 +32,6 @@ public class FinishLine : LevelActor
 
         base.Frame();
 
-        MoveBy(-2.5f * Time.deltaTime, 0);
+        MoveBy(-2.5f, 0);
     }
 }

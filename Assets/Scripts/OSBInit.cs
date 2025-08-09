@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class OSBInit : MonoBehaviour
@@ -12,5 +13,6 @@ public class OSBInit : MonoBehaviour
     public virtual void Init()
     {
         ThePlayersParents.Singleton.InitPlayerStuffOnBoot();
+        DOTween.Init();
     }
 }

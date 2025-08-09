@@ -30,6 +30,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public TextMeshProUGUI introLogoFooter;
     public CanvasGroup MainMenuContainerGroup;
     public GameObject playlistContainer;
+    [SerializeField] private RectTransform m_mainMenuLogo;
 
     [Header("Updating Text References")]
     public TextMeshProUGUI topbarTime;
@@ -181,11 +182,15 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void ShowRightButtons()
     {
-        MenuRightButtons.GetComponent<RectTransform>().DOAnchorPosX(0, 0.5f).SetEase(Ease.OutExpo);
+        m_mainMenuLogo.DORotate(new Vector3(0, 0, 0), 0.5f).SetEase(Ease.OutExpo);
+
+        MenuRightButtons.GetComponent<RectTransform>().DOAnchorPosX(0, .5f).SetEase(Ease.OutExpo);
     }
     public void HideRightButtons()
     {
-        MenuRightButtons.GetComponent<RectTransform>().DOAnchorPosX(-3000, 0.5f).SetEase(Ease.InSine);
+        m_mainMenuLogo.DORotate(new Vector3(0, 90, 181), 0.25f).SetEase(Ease.InExpo);
+
+        MenuRightButtons.GetComponent<RectTransform>().DOAnchorPosX(-3000, .5f).SetEase(Ease.InSine);
     }
 
     public void OpenPlaylist()
