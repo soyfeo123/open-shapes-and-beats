@@ -19,6 +19,9 @@ public class PlaylistSongContainer : MonoBehaviour
             buttons.Add(btn.GetComponent<PlaylistTrackSelection>());
         }
         index = 0;
+
+        if (buttons.Count <= 0) return;
+
         buttons[index].OnPointerEnter(null);
         EventSystem.current.SetSelectedGameObject(buttons[index].gameObject);
     }
@@ -45,6 +48,7 @@ public class PlaylistSongContainer : MonoBehaviour
 
     public void EnterCurrentLevel()
     {
+        if (buttons.Count <= 0) return;
         buttons[index].OnPointerClick(null);
     }
 
@@ -90,6 +94,8 @@ public class PlaylistSongContainer : MonoBehaviour
             Debug.Log("index: " + index + ", count: " + buttons.Count);
 
             Debug.Log(index);
+
+            if (buttons.Count <= 0) return;
             buttons[index].OnPointerEnter(null);
             EventSystem.current.SetSelectedGameObject(buttons[index].gameObject);
             EnsureScrollVisible(buttons[index].GetComponent<RectTransform>());
@@ -102,6 +108,7 @@ public class PlaylistSongContainer : MonoBehaviour
             {
                 index = buttons.Count - 1;
             }
+            if (buttons.Count <= 0) return;
             buttons[index].OnPointerEnter(null);
             EventSystem.current.SetSelectedGameObject(buttons[index].gameObject);
 

@@ -34,4 +34,10 @@ public class FinishLine : LevelActor
 
         MoveBy(-2.5f, 0);
     }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        MainLevelManager.Singleton.StopLevelWithCompleteScreen();
+    }
 }

@@ -13,6 +13,8 @@ using SFB;
 
 public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 {
+    public static string PLAYLIST_LEVEL_LOCATION;
+
     [System.Serializable]
     public class ObjectToPulseWithMusic
     {
@@ -80,8 +82,23 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         Topbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(Topbar.GetComponent<RectTransform>().anchoredPosition.x, 71.3074f);
 
         defaultUser = Resources.Load<Sprite>("Textures/UI/DefaultUser");
+    }
 
-        
+    [RuntimeInitializeOnLoadMethod]
+    static void OnLaunch()
+    {
+        PLAYLIST_LEVEL_LOCATION = Path.Combine(Application.persistentDataPath, "levels");
+
+        if (!Directory.Exists(PLAYLIST_LEVEL_LOCATION))
+        {
+            Directory.CreateDirectory(PLAYLIST_LEVEL_LOCATION);
+        }
+
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "songs")))
+        {
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "songs"));
+            File.Copy(Path.Combine(Application.streamingAssetsPath, "defaultEditorSong.mp3"), Path.Combine(Application.persistentDataPath, "songs", "defaultEditorSong.mp3"));
+        }
     }
 
     float GetAverageAmplitude()
@@ -98,7 +115,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     {
         
         string supportedExt = "*.mp3,*.wav,*.ogg";
-        string[] possibleSongs = Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "songs")).Where(s => supportedExt.Contains(Path.GetExtension(s).ToLower())).ToArray();
+        string[] possibleSongs = Directory.GetFiles(Path.Combine(Application.persistentDataPath, "songs")).Where(s => supportedExt.Contains(Path.GetExtension(s).ToLower())).ToArray();
         int randomI = Random.Range(0, (int)possibleSongs.Length);
         Debug.Log("random: " + randomI + " from " + possibleSongs.Length);
         string selected = possibleSongs[randomI];
@@ -201,7 +218,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
             Destroy(transform_.gameObject);
         }
 
-        foreach(string level in Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "levelsserialized")))
+        foreach(string level in Directory.GetFiles(PLAYLIST_LEVEL_LOCATION))
         {
             if (new FileInfo(level).Extension != ".txt") continue;
             Debug.Log("Loading " + level);
@@ -209,7 +226,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
             metadata.LoadFromString(File.ReadAllText(level));
             if (!metadata.IsValid())
             {
-                Notification.CreateNotification("[_<_ERROR WHILE LOADING SONG_>_]\nOne of your levels is either corrupt or not a level.\nCheck your levelsserialized directory!", "[enter] awh, got it", new Dictionary<KeyCode, UnityAction>() { { KeyCode.Return, () => { } } });
+                Notification.CreateNotification("[_<_ERROR WHILE LOADING SONG_>_]\nOne of your levels is either corrupt or not a level.\nCheck your levels directory!", "[enter] awh, got it", new Dictionary<KeyCode, UnityAction>() { { KeyCode.Return, () => { } } });
             }
             else
             {

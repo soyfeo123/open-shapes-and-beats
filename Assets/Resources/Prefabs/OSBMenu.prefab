@@ -5961,7 +5961,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: YEAH EYAH YEAH LONG SONG SONG SWEET POTATO
+  m_text: NO SONGS!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}
   m_sharedMaterial: {fileID: -5575659497794398896, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}
@@ -8746,8 +8746,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <color=#00FFF4><b>Version 1</b></color> - Shapes the Undying - New Animations
-    & Style Overhaul!
+  m_text: <color=#00FFF4><b>Version 2</b></color> - It's Better Now - Added slight
+    editor improvements & pistons!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}
   m_sharedMaterial: {fileID: -5575659497794398896, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}
@@ -9641,9 +9641,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'by
+  m_text: 'You should probably get some.
 
-    <color=#FFFFFF>Azazal & Said'
+    When you get the .obz, click "Import".'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}
   m_sharedMaterial: {fileID: -5575659497794398896, guid: f6d0199571e1f42d3bb14d089ae9183f, type: 2}

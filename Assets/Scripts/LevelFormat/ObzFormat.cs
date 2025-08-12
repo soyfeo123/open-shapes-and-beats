@@ -44,8 +44,8 @@ public class ObzFormat
         FileInfo songName = new FileInfo(Path.Combine(tempPath, loadedMetadata.SongFileName));
 
 
-        string levelsserialized = Path.Combine(Application.streamingAssetsPath, "levelsserialized");
-        string songs = Path.Combine(Application.streamingAssetsPath, "songs");
+        string levelsserialized = Path.Combine(Application.persistentDataPath, "levels");
+        string songs = Path.Combine(Application.persistentDataPath, "songs");
 
         File.Copy(metadataFile.FullName, Path.Combine(levelsserialized, metadataFile.Name), true);
         File.Copy(lvlFile.FullName, Path.Combine(levelsserialized, lvlFile.Name), true);
