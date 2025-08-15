@@ -36,7 +36,7 @@ public class PlaylistTrackSelection : MonoBehaviour
         MainMenuManager.Singleton.songName.text = metadata.TrackName;
         MainMenuManager.Singleton.songArtist.text = metadata.MiddleLine + "\n" + metadata.TrackArtist;
         if(!MainMenuManager.Singleton.noMoreSongsPlease)
-        MainMenuManager.Singleton.menuMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", metadata.SongFileName), ()=> { MainMenuManager.Singleton.menuMusic.Play(0, 65);
+        MainMenuManager.Singleton.menuMusic.LoadMusic(Path.Combine(Application.persistentDataPath, "songs", metadata.SongFileName), ()=> { MainMenuManager.Singleton.menuMusic.Play(0, 65);
 
             if (!V2) GetComponent<RectTransform>().DOAnchorPosX(defaultpos, 1f).SetEase(Ease.OutExpo);
 

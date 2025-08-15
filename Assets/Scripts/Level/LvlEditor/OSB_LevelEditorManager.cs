@@ -53,7 +53,7 @@ The level editor is still in beta. Stuff [_IS_] going to be broken, and many oth
 
         levelMusic = new Music();
 
-        musicFilePath = Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3");
+        musicFilePath = Path.Combine(Application.persistentDataPath, "songs", "defaultEditorSong.mp3");
         levelMusic.LoadMusic(musicFilePath, () => { });
     }
 

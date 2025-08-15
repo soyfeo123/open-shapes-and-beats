@@ -63,14 +63,14 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
 
         OSB_Player.numberOfRespawns = 0;
 
-        fullLevelPath = Path.Combine(Application.streamingAssetsPath, "levelsserialized", levelName + "_lvl.osb");
-        fullMetadataPath = Path.Combine(Application.streamingAssetsPath, "levelsserialized", levelName + ".txt");
+        fullLevelPath = Path.Combine(Application.persistentDataPath, "levels", levelName + "_lvl.osb");
+        fullMetadataPath = Path.Combine(Application.persistentDataPath, "levels", levelName + ".txt");
         levelMetadata = new LvlMetadataV1();
         levelMetadata.LoadFromString(File.ReadAllText(fullMetadataPath));
         levelMetadata.StartLoad();
 
         Debug.Log(levelMetadata.TrackName + " " + levelMetadata.MiddleLine + " " + levelMetadata.TrackArtist);
-        levelMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", levelMetadata.SongFileName), ()=> { });
+        levelMusic.LoadMusic(Path.Combine(Application.persistentDataPath, "songs", levelMetadata.SongFileName), ()=> { });
 
         if(currentLevelMode != LevelMode.ZenMode)
         ThePlayersParents.Singleton.SpawnPlayer();
