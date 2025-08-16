@@ -17,3 +17,4 @@ MonoBehaviour:
   modifierDescription: Speeds up the game by 50%. Mayhem! (Stackable with other speed
     mods)
   modifierMultiplier: BP x2
+  color: {r: 1, g: 0.3537736, b: 0.3537736, a: 1}

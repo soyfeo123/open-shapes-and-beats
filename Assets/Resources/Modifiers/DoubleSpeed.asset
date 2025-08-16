@@ -16,3 +16,4 @@ MonoBehaviour:
   modifierTitle: x1.2 Speed
   modifierDescription: Speeds up the game by 20%. (Stackable with other speed mods)
   modifierMultiplier: BP x1.5
+  color: {r: 0, g: 0.7924528, b: 0.20794861, a: 1}

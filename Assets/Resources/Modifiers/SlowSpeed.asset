@@ -17,3 +17,4 @@ MonoBehaviour:
   modifierDescription: Slows down the game by 20%. Slow... Slow... (Stackable with
     other speed mods)
   modifierMultiplier: BP x0.7
+  color: {r: 0, g: 0.6102464, b: 1, a: 1}

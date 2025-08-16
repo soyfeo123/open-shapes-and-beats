@@ -318,6 +318,11 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         
     }
 
+    public void Event_OpenModifiers()
+    {
+        ModifierMenuManager.OpenMenu();
+    }
+
     public void Event_Import()
     {
         string[] files = StandaloneFileBrowser.OpenFilePanel("Select your levels", "", new ExtensionFilter[] { new("OSB Levels", "obz") }, true);

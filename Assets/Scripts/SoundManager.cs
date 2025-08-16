@@ -216,6 +216,7 @@ public class Music
         if (audioSrc == null)
             return;
 
+        audioSrc.pitch = 1f;
         audioSrc.Stop();
         TimePosition = 0;
     }

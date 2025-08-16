@@ -13,6 +13,7 @@ public class OSBInit : MonoBehaviour
     public virtual void Init()
     {
         ThePlayersParents.Singleton.InitPlayerStuffOnBoot();
+        ModifierManager.Singleton.Dummy();
         DOTween.Init();
     }
 }

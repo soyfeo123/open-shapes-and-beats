@@ -58,11 +58,9 @@ public static class DifficultySelection
         MainMenuManager.Singleton.menuMusic.FadeOut(() => { }, 0.25f);
         UIController.FadeOut(0.25f, () =>
         {
-            MainLevelManager.Singleton.LoadLevel(levelToLoad, new Modifier[] { });
+            MainLevelManager.Singleton.LoadLevel(levelToLoad, ModifierManager.Singleton.GetActiveModifiers());
             GameObject.Destroy(instance);
         });
         SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_BIGSUBMIT);
-
-        
     }
 }
