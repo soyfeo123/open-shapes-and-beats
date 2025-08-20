@@ -269,11 +269,9 @@ public class OSBEditorObject : MonoBehaviour
 
     public void DragActiveZone()
     {
-
-
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(activeZone, Input.mousePosition, null, out point);
 
-        assignedActor.objParams["Duration"].number.expression = ((point.x - activeZoneOffset) * 10f).ToString();
+        assignedActor.objParams["Duration"].number.expression = ((int)((point.x - activeZoneOffset) * 10f)).ToString();
     }
 }

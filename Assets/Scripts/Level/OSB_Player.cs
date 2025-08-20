@@ -18,7 +18,7 @@ public class OSB_Player : MonoBehaviour
     Rigidbody2D rb;
 
     bool movesDuringTheFrame = false;
-    bool movesChange = false;
+    bool movesChange = true;
 
 
     bool canDash = true;
