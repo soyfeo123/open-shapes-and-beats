@@ -28,7 +28,7 @@ public class OSB_Player : MonoBehaviour
     int dashCooldownTimeFrames;
 
     [Header("Particles")]
-    public ParticleSystem MovementParticles;
+    public PlayerEffectsManager MovementParticles;
     public ParticleSystem DashParticles;
     public ParticleSystem CircleParticles;
     public ParticleSystem HitParticles;

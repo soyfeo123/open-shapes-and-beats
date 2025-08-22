@@ -205,6 +205,9 @@ You'll lose any rewards you were going to get.
         Debug.Log("Clearing actor list");
         levelActors = new List<LevelActor>();
 
+        Debug.Log("Removing projectiles");
+        GameProjectileManager.ReturnAllProjectiles();
+
         Debug.Log("Collecting misc garbage");
         System.GC.Collect();
     }

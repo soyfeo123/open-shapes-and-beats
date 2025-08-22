@@ -38,6 +38,9 @@ public class ModifierItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         m_backColor = m_mainImage.color;
         m_foreColor = m_text.color;
+
+        m_enabled = ModifierManager.Singleton.IsEnabled(AssignedDefinition);
+        UpdateVisual(m_enabled);
     }
 
     public void OnPointerClick(PointerEventData eventData)

@@ -15,6 +15,36 @@ public static class GameProjectileManager
         squareProjectile = Resources.Load<GameObject>("Prefabs/LevelEditorPrefabs/Projectiles/SquareProjectile");
     }
 
+    public static List<GameObject> GetAllActiveProjectiles()
+    {
+        List<GameObject> activeObjects = new List<GameObject>();
+
+        foreach (var pool in pools)
+        {
+            GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>()
+                .Where(obj => obj.name.StartsWith(pool.id))
+                .ToArray();
+
+            foreach (var obj in allObjects)
+            {
+                if (obj.activeInHierarchy)
+                {
+                    activeObjects.Add(obj);
+                }
+            }
+        }
+
+        return activeObjects;
+    }
+
+    public static void ReturnAllProjectiles()
+    {
+        foreach(var projectile in GetAllActiveProjectiles())
+        {
+            GameObject.Destroy(projectile);
+        }
+    }
+
     static GameObject SpawnPoolObject(GameObject objectToSpawn)
     {
         PooledObjectInfo pool = pools.Find(p => p.id == objectToSpawn.name);
