@@ -38,6 +38,8 @@ public class FinishLine : LevelActor
     public override void Dispose()
     {
         base.Dispose();
-        MainLevelManager.Singleton.StopLevelWithCompleteScreen();
+
+        if(MainLevelManager.Singleton.levelActive)
+            MainLevelManager.Singleton.StopLevelWithCompleteScreen();
     }
 }

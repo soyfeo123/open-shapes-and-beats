@@ -182,6 +182,8 @@ You'll lose any rewards you were going to get.
 
         l_modifiers = null;
 
+        Debug.Log("Disabling frame listeners");
+
         onFrame.RemoveAllListeners();
 
         for (int i = 0; i < levelActors.Count; i++)
@@ -190,6 +192,7 @@ You'll lose any rewards you were going to get.
 
             try
             {
+                Debug.Log("Disabling actor " + actor.GetType().Name);
                 actor.Dispose();
                 levelActors[i] = null;
             }
@@ -199,9 +202,10 @@ You'll lose any rewards you were going to get.
             }
         }
 
-        levelActors.Clear();
+        Debug.Log("Clearing actor list");
         levelActors = new List<LevelActor>();
 
+        Debug.Log("Collecting misc garbage");
         System.GC.Collect();
     }
 
@@ -232,6 +236,12 @@ You'll lose any rewards you were going to get.
     {
         if (!OSBLevelEditorStaticValues.IsInEditor)
         {
+            if (currentLevelMode == LevelMode.ZenMode)
+            {
+                StopLevel();
+                return;
+            }
+
             DisposeLevel();
 
             levelMusic.FadeOut(null, 1f);
