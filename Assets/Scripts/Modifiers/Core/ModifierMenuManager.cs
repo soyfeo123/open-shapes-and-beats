@@ -7,6 +7,8 @@ public class ModifierMenuManager : MonoBehaviour
 
     private void Start()
     {
+        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_MENU_OPEN);
+
         foreach(var definition in ModifierManager.Singleton.AllModifiers)
         {
             GameObject newItem = Instantiate(m_modifierItemPrefab, m_modifierContainer);
@@ -18,6 +20,7 @@ public class ModifierMenuManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_MENU_CLOSE);
             Destroy(gameObject);
         }
     }

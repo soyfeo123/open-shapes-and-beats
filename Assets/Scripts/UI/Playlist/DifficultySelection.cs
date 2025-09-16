@@ -61,6 +61,6 @@ public static class DifficultySelection
             MainLevelManager.Singleton.LoadLevel(levelToLoad, ModifierManager.Singleton.GetActiveModifiers());
             GameObject.Destroy(instance);
         });
-        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_BIGSUBMIT);
+        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_SONGSUBMIT);
     }
 }

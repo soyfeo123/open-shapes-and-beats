@@ -19,6 +19,8 @@ public static class UIController
         Debug.Log("Opening menu " + menu);
         currentMenu = GameObject.Instantiate(menu);
         Debug.Log(currentMenu);
+
+        OSBMouse.Singleton.Visibility = MouseVisibility.OSB;
     }
 
     public static void FadeOut(float time = 0.5f, UnityAction action = null)

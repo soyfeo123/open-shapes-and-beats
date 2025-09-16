@@ -35,6 +35,8 @@ public class DifficultySelectionButton : MonoBehaviour, IPointerEnterHandler, IP
         outline.GetComponent<Image>().color = Color.white;
         GetComponent<RectTransform>().anchoredPosition = position + new Vector2(0f, 10f);
         GetComponent<RectTransform>().DOAnchorPos(position, 0.5f).SetEase(Ease.OutSine);
+
+        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_SONGSELECT_HOVER);
     }
 
     public void OnPointerExit(PointerEventData data)
@@ -55,17 +57,12 @@ public class DifficultySelectionButton : MonoBehaviour, IPointerEnterHandler, IP
         GetComponent<RectTransform>().localScale = Vector3.one * 1.2f;
         GetComponent<RectTransform>().DOScale(1f, 0.5f).SetEase(Ease.OutExpo);
 
-        SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_SUBMIT);
+        //SoundManager.Singleton.PlaySound(LoadedSFXEnum);
 
         buttonBackground.DOKill();
         buttonBackground.color = Color.white;
         buttonBackground.DOColor(foreColor, 0.5f);
 
-        float filler = 5f;
-
-        DOTween.To(() => filler, x => filler = x, 0f, 0.65f).OnComplete(() =>
-        {
-            onClick?.Invoke();
-        });
+        onClick?.Invoke();
     }
 }

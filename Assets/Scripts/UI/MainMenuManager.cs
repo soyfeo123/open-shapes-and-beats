@@ -64,6 +64,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public bool noMoreSongsPlease = false;
 
+    private string m_currentMusicPath;
 
     float[] audioSamp = new float[256];
 
@@ -125,7 +126,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
         MenuNotifications.Singleton.Show(Utils.FilenameToPrettyTitle(Path.GetFileNameWithoutExtension(selected)), possibleQuotes[randomQuoteI], "Now Playing");
 
-        menuMusic.LoadMusic(selected, ()=>
+        LoadMusic(selected, ()=>
         {
             menuMusic.Play(vol: 35);
         });
@@ -241,10 +242,10 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
         }
 
-        menuMusic.FadeOut(() =>
-        {
-            //menuMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3"), ()=> { menuMusic.Play(); });
-        }, 0.5f);
+        // menuMusic.FadeOut(() =>
+        // {
+        //     //menuMusic.LoadMusic(Path.Combine(Application.streamingAssetsPath, "songs", "defaultEditorSong.mp3"), ()=> { menuMusic.Play(); });
+        // }, 0.5f);
         MainMenuContainerGroup.DOFade(0f, 0.5f);
         MainMenuContainerGroup.interactable = false;
         //playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(0, 0.5f).SetEase(Ease.OutExpo);
@@ -259,14 +260,10 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
     public void ClosePlaylist()
     {
-        menuMusic.FadeOut(() => { }, 0.5f);
         SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_REJECT);
         ShowRightButtons();
         TopbarEnter();
-        MainMenuContainerGroup.DOFade(1f, 0.5f).OnComplete(()=>
-        {
-            PlayRandomSongForMainMenu();
-        });
+        MainMenuContainerGroup.DOFade(1f, 0.5f);
         MainMenuContainerGroup.interactable = true;
         //playlistContainer.GetComponent<RectTransform>().DOAnchorPosY(1080, 0.5f).SetEase(Ease.OutExpo);
         playlistContainer.GetComponent<AnimatedMenu>().AnimateExit();
@@ -277,12 +274,21 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         songContainerScript.RemoveAllPlaylistEntries();
     }
 
+    public void LoadMusic(string filePath, System.Action onFinish)
+    {
+        if (m_currentMusicPath != filePath)
+        {
+            menuMusic.LoadMusic(filePath, onFinish);
+            m_currentMusicPath = filePath;
+        }
+    }
+
 
     // Button Events
 
     public void Event_EnterPlaylist()
     {
-        
+
         HideRightButtons();
         //TopbarExit();
         OpenPlaylist();
@@ -304,7 +310,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     public void Event_OpenMainMenu(bool reject)
     {
         introLogoInAnimation = true;
-        SoundManager.Singleton.PlaySound(reject ? LoadedSFXEnum.UI_REJECT : LoadedSFXEnum.UI_BIGSUBMIT);
+        SoundManager.Singleton.PlaySound(reject ? LoadedSFXEnum.UI_REJECT : LoadedSFXEnum.UI_LOGO_SELECT);
         introLogoFooter.transform.DOScale(0.5f, 0.5f).SetEase(Ease.InBack);
         introLogoFooter.DOFade(0f, 0.5f).SetEase(Ease.InBack, 0.3f);
         IntroLogoVisual.DOFade(0f, 0.5f).SetEase(Ease.InExpo);
@@ -341,14 +347,14 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
     {
         if (!introLogoInAnimation)
         {
-            IntroLogo.transform.DOScale(1.5f, 0.3f).SetEase(Ease.OutBounce);
+            IntroLogo.transform.DOScale(1.5f, 0.2f).SetEase(Ease.OutBounce);
         }
     }
     public void Event_HoverExit_IntroLogo()
     {
         if (!introLogoInAnimation)
         {
-            IntroLogo.transform.DOScale(1.3f, 0.3f).SetEase(Ease.OutBounce);
+            IntroLogo.transform.DOScale(1.3f, 0.2f).SetEase(Ease.OutBounce);
         }
     }
 
@@ -361,6 +367,11 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
         {
             OSBScenes.QuitGame();
         });
+    }
+
+    public void Event_OpenSettings()
+    {
+        SettingMenuManager.Open();
     }
 
     public void Event_TopBar_GJUser()

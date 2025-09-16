@@ -18,12 +18,15 @@ public class PlaylistSongContainer : MonoBehaviour
             if(btn.GetComponent<PlaylistTrackSelection>() != null)
             buttons.Add(btn.GetComponent<PlaylistTrackSelection>());
         }
-        index = 0;
+        //index = 0;
+        if (index > buttons.Count) index = 0;
 
         if (buttons.Count <= 0) return;
 
         buttons[index].OnPointerEnter(null);
         EventSystem.current.SetSelectedGameObject(buttons[index].gameObject);
+
+        EnsureScrollVisible(buttons[index].GetComponent<RectTransform>());
     }
 
     public void RemoveAllPlaylistEntries()

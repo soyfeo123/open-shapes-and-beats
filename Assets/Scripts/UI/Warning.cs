@@ -8,6 +8,7 @@ public class Warning : MonoBehaviour
     private IEnumerator Start()
     {
         text.SetActive(false);
+        SettingMenuManager.ApplyAllSettingsAtOnce();
         yield return new WaitForSeconds(5f);
         text.SetActive(true);
     }

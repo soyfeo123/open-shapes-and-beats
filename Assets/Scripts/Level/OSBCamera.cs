@@ -5,7 +5,7 @@ using System;
 
 public class OSBCamera : MBSingletonDestroy<OSBCamera>
 {
-    Vector3 defaultCamPos = new Vector3(0, 0, -2f);
+    Vector3 defaultCamPos = new Vector3(0, 0, -50f);
     GameObject flash;
 
     private Vector2 m_cameraOffset = new Vector2(0, 0);
@@ -42,7 +42,8 @@ public class OSBCamera : MBSingletonDestroy<OSBCamera>
 
     public void Flash(float duration)
     {
-        flash.SetActive(true);
+        if(!SettingManager.Singleton.GetSetting("Gameplay", "NoFlash").boolValue)
+            flash.SetActive(true);
         // hacky af but it works so don't mess with it
         // - every programmer in the world
         flash.transform.DOLocalMove(Vector3.zero, duration).OnComplete(() =>

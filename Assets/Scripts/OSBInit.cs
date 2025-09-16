@@ -14,6 +14,9 @@ public class OSBInit : MonoBehaviour
     {
         ThePlayersParents.Singleton.InitPlayerStuffOnBoot();
         ModifierManager.Singleton.Dummy();
+        SettingManager.Singleton.Init();
+        SettingMenuManager.ApplyAllSettingsAtOnce();
+        SoundManager.Singleton.Init();
         DOTween.Init();
     }
 }

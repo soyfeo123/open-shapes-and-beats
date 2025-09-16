@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using PimDeWitte.UnityMainThreadDispatcher;
 using System.Threading;
+using UnityEngine.Audio;
 
 public class SoundManager : MBSingleton<SoundManager>
 {
@@ -18,6 +19,16 @@ public class SoundManager : MBSingleton<SoundManager>
     ///
 
     AudioSource sfxSource;
+
+    public static AudioMixer globalAudioMixer;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        globalAudioMixer = Resources.Load<AudioMixer>("Sound/MasterMixer");
+    }
+
+    public void Init() { }
 
     public void PlaySound(string resourcePath)
     {
@@ -30,6 +41,7 @@ public class SoundManager : MBSingleton<SoundManager>
         {
             GameObject go = new GameObject(Utils.GenerateUniqueName("SFX"));
             sfxSource = go.AddComponent<AudioSource>();
+            sfxSource.outputAudioMixerGroup = globalAudioMixer.FindMatchingGroups("SFX")[0];
             sfxSource.volume = volume;
         }
         sfxSource.PlayOneShot(clip);
@@ -60,6 +72,16 @@ public static class LoadedSFXEnum
     public static AudioClip UI_PANEL_OPEN;
     public static AudioClip UI_PANEL_CLOSE;
 
+    public static AudioClip UI_LOGO_SELECT;
+    public static AudioClip UI_SONGSUBMIT;
+    public static AudioClip UI_MENU_OPEN;
+    public static AudioClip UI_MENU_CLOSE;
+
+    public static AudioClip UI_SONGSELECT_HOVER;
+
+    public static AudioClip UI_CHECK_ON;
+    public static AudioClip UI_CHECK_OFF;
+
     public static AudioClip EXPLOSION;
     public static AudioClip HIT
     {
@@ -73,16 +95,32 @@ public static class LoadedSFXEnum
     [RuntimeInitializeOnLoadMethod]
     static void Load()
     {
-        UI_SUBMIT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_SUBMIT_2");
-        UI_SELECT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_SELECT");
+        UI_SUBMIT = (AudioClip)Resources.Load("Sound/SFX/UI/Lazer/SFX_UI_LAZER_BUTTON_SELECT");
+        UI_SELECT = (AudioClip)Resources.Load("Sound/SFX/UI/Lazer/SFX_UI_LAZER_BUTTON_GENHOVER");
         UI_REJECT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_REJECT");
-        UI_BIGSUBMIT = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_BIGSUBMIT");
+        UI_BIGSUBMIT = (AudioClip)Resources.Load("Sound/SFX/UI/Lazer/SFX_UI_LAZER_BUTTON_BIGSELECT");
 
-        UI_PANEL_OPEN = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_PANEL_OPEN");
-        UI_PANEL_CLOSE = (AudioClip)Resources.Load("Sound/SFX/UI/SFX_UI_PANEL_CLOSE");
+        UI_PANEL_OPEN = (AudioClip)Resources.Load("Sound/SFX/UI/Lazer/SFX_UI_LAZER_DROP_OPEN");
+        UI_PANEL_CLOSE = (AudioClip)Resources.Load("Sound/SFX/UI/Lazer/SFX_UI_LAZER_DROP_CLOSE");
 
         EXPLOSION = (AudioClip)Resources.Load("Sound/SFX/Gameplay/SFX_DIENOW");
         CHECKPOINT = (AudioClip)Resources.Load("Sound/SFX/Gameplay/SFX_CHECKPOINT");
+
+        UI_LOGO_SELECT = (AudioClip)Resources.Load("Sound/SFX/UI/Lazer/SFX_UI_LAZER_PLAY_SELECT");
+
+        UI_SONGSUBMIT = Create("UI/Lazer/Gameplay/SFX_UI_LAZER_CONFIRM");
+        UI_MENU_OPEN = Create("UI/Lazer/SFX_UI_LAZER_MENUOPEN");
+        UI_MENU_CLOSE = Create("UI/Lazer/SFX_UI_LAZER_MENUCLOSE");
+
+        UI_SONGSELECT_HOVER = Create("UI/Lazer/SFX_UI_LAZER_SS_SELECT");
+
+        UI_CHECK_ON = Create("UI/Lazer/UI/SFX_UI_LAZER_CHECKON");
+        UI_CHECK_OFF = Create("UI/Lazer/UI/SFX_UI_LAZER_CHECKOFF");
+    }
+
+    static AudioClip Create(string relativePath)
+    {
+        return (AudioClip)Resources.Load("Sound/SFX/" + relativePath);
     }
 }
 
@@ -134,6 +172,7 @@ public class Music
     {
         GameObject go = new GameObject(Utils.GenerateUniqueName("MUSIC"));
         audioSrc = go.AddComponent<AudioSource>();
+        audioSrc.outputAudioMixerGroup = SoundManager.globalAudioMixer.FindMatchingGroups("Music")[0];
     }
 
     public void LoadMusic(string filePath, System.Action onComplete)

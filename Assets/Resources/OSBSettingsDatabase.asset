@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9365699da91954c619d05d7c7230566f, type: 3}
+  m_Name: OSBSettingsDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::SettingDatabase
+  categories:
+  - categoryName: Audio
+    settings:
+    - name: Master
+      type: 1
+      minValue: 0
+      maxValue: 100
+      options: []
+      floatValue: 50
+      boolValue: 0
+      intValue: 0
+    - name: Music
+      type: 1
+      minValue: 0
+      maxValue: 100
+      options: []
+      floatValue: 100
+      boolValue: 0
+      intValue: 0
+    - name: SFX
+      type: 1
+      minValue: 0
+      maxValue: 100
+      options: []
+      floatValue: 100
+      boolValue: 0
+      intValue: 0
+  - categoryName: Gameplay
+    settings:
+    - name: Photosensitive Mode
+      type: 0
+      minValue: 0
+      maxValue: 0
+      options: []
+      floatValue: 0
+      boolValue: 0
+      intValue: 0

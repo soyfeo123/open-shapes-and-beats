@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(HorizontalLayoutGroup))]
+[RequireComponent(typeof(LayoutGroup))]
 public class OSB_LayoutUpdater : MonoBehaviour
 {
     HorizontalLayoutGroup group;

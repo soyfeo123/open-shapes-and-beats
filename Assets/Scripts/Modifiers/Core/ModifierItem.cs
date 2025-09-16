@@ -40,7 +40,7 @@ public class ModifierItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         m_foreColor = m_text.color;
 
         m_enabled = ModifierManager.Singleton.IsEnabled(AssignedDefinition);
-        UpdateVisual(m_enabled);
+        UpdateVisual(m_enabled, false);
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -65,7 +65,7 @@ public class ModifierItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         m_rectTransform.DOSizeDelta(m_defaultSize, 0.15f).SetEase(Ease.OutBack);
     }
 
-    public void UpdateVisual(bool selected)
+    public void UpdateVisual(bool selected, bool withSound = true)
     {
         m_text.color = selected ? m_backColor : m_foreColor;
 
@@ -79,6 +79,7 @@ public class ModifierItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         else
             m_rectTransform.DOScale(1f, 0.1f).SetEase(Ease.OutBack);
 
-        SoundManager.Singleton.PlaySound(selected ? LoadedSFXEnum.UI_PANEL_OPEN : LoadedSFXEnum.UI_PANEL_CLOSE);
+        if(withSound)
+            SoundManager.Singleton.PlaySound(selected ? LoadedSFXEnum.UI_PANEL_OPEN : LoadedSFXEnum.UI_PANEL_CLOSE);
     }
 }

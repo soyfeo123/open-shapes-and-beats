@@ -14,6 +14,7 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
     public float msTime = 0;
 
     public bool levelActive = false;
+    public bool isRewinding = false;
     public string fullLevelPath;
     public string fullMetadataPath;
     public string currentLevelName;
@@ -140,6 +141,8 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
 
     IEnumerator LevelDelay()
     {
+        OSBMouse.Singleton.Visibility = MouseVisibility.Invisible;
+        Debug.Log(OSBMouse.Singleton.Visibility);
         yield return new WaitForSeconds(2f);
 
         SongIndicator.Show(levelMetadata.TrackName.ToUpper(), levelMetadata.MiddleLine, levelMetadata.TrackArtist, levelMetadata.LevelAuthor);
@@ -163,7 +166,7 @@ public class MainLevelManager : MBSingleton<MainLevelManager>
         
         onFrame?.Invoke();
 
-        if (Input.GetKeyDown(KeyCode.Escape) && !inPauseMenu && levelActive)
+        if (Input.GetKeyDown(KeyCode.Escape) && !inPauseMenu && levelActive && !isRewinding)
         {
             inPauseMenu = true;
             Notification.CreateNotification(@"[_<_EXIT LEVEL_>_]
@@ -270,7 +273,8 @@ You'll lose any rewards you were going to get.
 
     public void StopAndRewind()
     {
-        
+        isRewinding = true;
+
         levelMusic.audioSrc.DOPitch(0f, 1f).SetEase(Ease.OutSine);
         ThePlayersParents.Singleton.DestroyPlayer();
 
@@ -300,6 +304,8 @@ You'll lose any rewards you were going to get.
                     LoadLevel(currentLevelName, cloned);
                     OSB_Player.numberOfRespawns = prevNumberRespawns;
                     Debug.Log("NUMBER OF RESPAWNS: " + OSB_Player.numberOfRespawns);
+
+                    isRewinding = false;
                 });
             });
         });

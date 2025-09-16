@@ -39,7 +39,7 @@ public class MBSingleton<T> : MonoBehaviour where T : MBSingleton<T>
         
     }
 
-    static T CreateInstance() => new GameObject($"{typeof(T).Name}(AutoCreated)", typeof(T)).GetComponent<T>();
+    static T CreateInstance() => new GameObject($"{typeof(T).Name}(AutoCreated)").AddComponent<T>();
 }
 
 public class MBSingletonDestroy<T> : MonoBehaviour where T : MBSingletonDestroy<T>

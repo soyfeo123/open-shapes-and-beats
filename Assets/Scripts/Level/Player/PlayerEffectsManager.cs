@@ -4,16 +4,19 @@ public class PlayerEffectsManager : MonoBehaviour
 {
     public static string CurrentEffectName { get; set; } = "JSABTrail";
 
-    public GameObject CurrentEffect { get
+    public GameObject CurrentEffect
+    {
+        get
         {
             return transform.Find(CurrentEffectName).gameObject;
-        } }
+        }
+    }
 
     private ParticleSystem[] m_effectParticleSystems;
 
     public void Play()
     {
-        for(int i = 0; i < m_effectParticleSystems.Length; i++)
+        for (int i = 0; i < m_effectParticleSystems.Length; i++)
         {
             m_effectParticleSystems[i].Play();
         }
@@ -27,15 +30,23 @@ public class PlayerEffectsManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void LoadTrailFromSettings()
     {
-        foreach(Transform childEffect in transform)
+        var setting = SettingManager.Singleton.GetSetting("Gameplay", "PlrTrail");
+        Debug.Log("loading setting " + setting.name + " with val: " + setting.intValue);
+        CurrentEffectName = transform.GetChild(setting.intValue).name;
+        Debug.Log("loaded " + CurrentEffectName);
+
+        m_effectParticleSystems = CurrentEffect.GetComponentsInChildren<ParticleSystem>();
+        CurrentEffect.SetActive(true);
+    }
+
+    private void Awake()
+    {
+        foreach (Transform childEffect in transform)
         {
             childEffect.gameObject.SetActive(false);
         }
-
-        CurrentEffect.SetActive(true);
-
-        m_effectParticleSystems = CurrentEffect.GetComponentsInChildren<ParticleSystem>();
+        LoadTrailFromSettings();
     }
 }

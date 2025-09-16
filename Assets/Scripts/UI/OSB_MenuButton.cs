@@ -18,6 +18,7 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public bool haveDelay = true;
     public bool changeScale = true;
     public bool playSubmitSound = true;
+    public bool playPlaySelectSound = false;
 
     GameObject leftTriangle;
     GameObject rightTriangle;
@@ -26,8 +27,10 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     Color color2;
     TextMeshProUGUI[] buttonText;
 
+    private Vector3 m_defaultScale;
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         currentTransform = GetComponent<RectTransform>();
         previousWidth = currentTransform.sizeDelta.x;
@@ -39,6 +42,8 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         color1 = mainBg.GetComponent<Image>().color;
         color2 = buttonText[0].color;
+
+        m_defaultScale = transform.localScale;
     }
 
     // Update is called once per frame
@@ -46,6 +51,12 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         
     }
+
+    //void OnEnable()
+    //{
+    //    transform.DOKill();
+    //    transform.localScale = m_defaultScale;
+    //}
 
     void jsForEach<T>(T[] array, Action<T> each)
     {
@@ -63,10 +74,12 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         pos.z = 10;
         currentTransform.position = pos;
 
-        leftTriangle.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
-        mainBg.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
-        rightTriangle.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
-        jsForEach(buttonText, (button) => button.DOColor(color1, 0.5f).SetEase(Ease.OutExpo));
+        //leftTriangle.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
+        //mainBg.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
+        //rightTriangle.GetComponent<Image>().DOColor(color2, 0.5f).SetEase(Ease.OutExpo);
+
+        //jsForEach(buttonText, (button) => button.DOColor(color1, 0.5f).SetEase(Ease.OutExpo));
+
         SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_SELECT);
         //currentTransform.DOScale(1.1f, 0.5f).SetEase(Ease.OutExpo);
     }
@@ -74,20 +87,23 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (changeScale)
         {
-            currentTransform.localScale = Vector3.one;
+            transform.localScale = m_defaultScale;
         }
+
         currentTransform.DOKill();
         currentTransform.DOSizeDelta(new Vector2(previousWidth, currentTransform.sizeDelta.y), 0.15f).SetEase(Ease.OutBack);
+
         //Vector3 pos = currentTransform.position;
         //pos.z = 0;
         //currentTransform.position = pos;
 
-        leftTriangle.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
-        mainBg.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
-        rightTriangle.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
-        jsForEach(buttonText, (button) => button.DOColor(color2, 0.5f).SetEase(Ease.OutExpo));
+        //leftTriangle.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
+        //mainBg.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
+        //rightTriangle.GetComponent<Image>().DOColor(color1, 0.5f).SetEase(Ease.OutExpo);
 
-        
+        //jsForEach(buttonText, (button) => button.DOColor(color2, 0.5f).SetEase(Ease.OutExpo));
+
+
 
         //currentTransform.DOScale(1f, 0.5f).SetEase(Ease.OutExpo);
     }
@@ -102,11 +118,23 @@ public class OSB_MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         if (changeScale)
         {
-            currentTransform.localScale = new Vector3(1.2f, 1.2f, 1.1f);
-            currentTransform.DOScale(1, 0.5f).SetEase(Ease.OutExpo);
+            Debug.Log(m_defaultScale);
+
+            transform.localScale = m_defaultScale * 1.3f;
+            transform.DOScale(m_defaultScale, 0.5f).SetEase(Ease.OutExpo);
         }
         if(playSubmitSound)
         SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_SUBMIT);
+        if (playPlaySelectSound)
+            SoundManager.Singleton.PlaySound(LoadedSFXEnum.UI_BIGSUBMIT);
+
+        leftTriangle.GetComponent<Image>().color = Color.white;
+        mainBg.GetComponent<Image>().color = Color.white;
+        rightTriangle.GetComponent<Image>().color = Color.white;
+
+        leftTriangle.GetComponent<Image>().DOColor(color1, 0.2f).SetEase(Ease.InExpo);
+        mainBg.GetComponent<Image>().DOColor(color1, 0.2f).SetEase(Ease.InExpo);
+        rightTriangle.GetComponent<Image>().DOColor(color1, 0.2f).SetEase(Ease.InExpo);
 
         StartCoroutine(ClickDelay());
     }
