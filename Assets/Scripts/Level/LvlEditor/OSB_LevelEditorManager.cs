@@ -33,6 +33,7 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
     public Transform layerViewContent;
     public Transform newLayerButton;
     public string musicFilePath;
+    public string currentLevelPath;
 
 #if UNITY_2017_1_OR_NEWER
     public BigExpandingCircle currentCircle;
@@ -44,12 +45,16 @@ public class OSB_LevelEditorManager : MBSingletonDestroy<OSB_LevelEditorManager>
     protected override void Awake()
     {
         base.Awake();
+
+        if (!OSBScenes.HasLoadedGracefully) OSBScenes.LoadGameplayScene();
+
         ThePlayersParents.Singleton.InitPlayerStuffOnBoot();
         LevelSpawnSprites.LoadSprites();
 
-        Notification.CreateNotification(@"[_<_NOTICE!_>_]
-The level editor is still in beta. Stuff [_IS_] going to be broken, and many other features are coming too.
-<_Remember to report any bugs to Palo/GameSharp!_>", "[enter] continue", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Return, () => { } } });
+        // Notification.CreateNotification(@"[_<_NOTICE!_>_]
+// The level editor is still in beta. Stuff [_IS_] going to be broken, and many other features are coming too.
+// <_Remember to report any bugs to Palo/GameSharp!_>", "[enter] continue", new Dictionary<KeyCode, UnityEngine.Events.UnityAction>() { { KeyCode.Return, () => { } } });
+        MenuNotifications.Singleton.Show("NOTICE", "This level editor is still in beta!", "Report any issues in GitHub.");
 
         levelMusic = new Music();
 
@@ -219,11 +224,23 @@ All unsaved progress you've done in this level will be lost!
 
     public void Event_SaveLevel()
     {
+        if (!string.IsNullOrEmpty(currentLevelPath))
+        {
+            File.WriteAllText(currentLevelPath, SaveLevel());
+            MenuNotifications.Singleton.Show("SAVED!", "Saved level successfully!", new FileInfo(currentLevelPath).Name);
+        }
+        else
+            Event_SaveAs();
+    }
+
+    public void Event_SaveAs()
+    {
         string filePath = StandaloneFileBrowser.SaveFilePanel("Save the level", "", "level.osb", "osb");
 
-        
-
         File.WriteAllText(filePath, SaveLevel());
+        currentLevelPath = filePath;
+
+        MenuNotifications.Singleton.Show("SAVED!", "Saved level successfully!", new FileInfo(currentLevelPath).Name);
     }
 
     public string SaveLevel()
@@ -318,6 +335,8 @@ All unsaved progress you've done in this level will be lost!
             
             
         }
+
+        currentLevelPath = filePath;
     }
 
     public void Event_OpenSpriteManager()

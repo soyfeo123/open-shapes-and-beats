@@ -32,6 +32,8 @@ public class OSBLayer : MonoBehaviour
     public EditorActions m_keybinds;
     string keybind = "";
 
+    private bool m_visible;
+
     [Header("Debug")]
     public GameObject prefab;
 

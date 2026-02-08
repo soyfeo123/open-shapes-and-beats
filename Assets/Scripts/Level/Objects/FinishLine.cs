@@ -22,8 +22,6 @@ public class FinishLine : LevelActor
 
         LogicHitbox.AddToLA(this);
         hitbox.tag = "FinishLine";
-
-        
     }
 
     public override void Frame()

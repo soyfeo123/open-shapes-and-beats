@@ -1,6 +1,7 @@
 using System.IO;
 using System.IO.Compression;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ObzFormat
 {
@@ -46,6 +47,16 @@ public class ObzFormat
 
         string levelsserialized = Path.Combine(Application.persistentDataPath, "levels");
         string songs = Path.Combine(Application.persistentDataPath, "songs");
+
+        if (File.Exists(Path.Combine(levelsserialized, metadataFile.Name)))
+        {
+            Notification.CreateNotification($@"[_<_ERROR IMPORTING LEVEL_>_]
+There's a conflicting level name ({metadataFile.Name}). Contact the level author to change the filename.", "[enter] got it", new ()
+            {
+                {KeyCode.Return, () => {}}
+            });
+            return;
+        }
 
         File.Copy(metadataFile.FullName, Path.Combine(levelsserialized, metadataFile.Name), true);
         File.Copy(lvlFile.FullName, Path.Combine(levelsserialized, lvlFile.Name), true);

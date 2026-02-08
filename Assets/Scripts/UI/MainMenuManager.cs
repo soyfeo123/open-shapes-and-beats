@@ -232,6 +232,7 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
             else
             {
                 metadata.StartLoad();
+                metadata.MetadataFile = level;
                 playlistSongs.Add(metadata);
                 GameObject playlistEntryLocal = Instantiate(playlistEntry);
                 playlistEntryLocal.GetComponent<PlaylistTrackSelection>().metadata = metadata;
@@ -340,7 +341,39 @@ public class MainMenuManager : MBSingletonDestroy<MainMenuManager>
 
             
         }
-        OpenPlaylist();
+        songContainerScript.index = 0;
+        ClosePlaylist();
+
+        MenuNotifications.Singleton.Show("Imported " + files.Length + " level(s)!", "Open your playlist to see them.");
+    }
+
+    public void Event_DeleteLevel()
+    {
+        var currentSelection = songContainerScript.GetCurrentLevel();
+
+        Notification.CreateNotification(@$"[_<_ARE YOU SURE?_>_]
+Are you sure you want to delete the level [_{currentSelection.metadata.TrackName}_]?
+<_This cannot be undone!_>", "[enter] yes  [esc] no", new Dictionary<KeyCode, UnityAction>() {
+    { KeyCode.Return, () => { DeleteLevel(currentSelection); } },
+    { KeyCode.Escape, () => {} } });
+    }
+
+    public void DeleteLevel(PlaylistTrackSelection selection)
+    {
+        Debug.Log("Deleting " + selection.metadata.TrackName);
+
+        // File.Delete(selection.metadata.SongLevelFile);
+        Debug.Log("delete file " + Path.Combine(PLAYLIST_LEVEL_LOCATION, selection.levelFileName + "_lvl.osb"));
+        // Debug.Log("delete file " + selection.metadata.SongFileName);
+        Debug.Log("delete file " + selection.metadata.MetadataFile);
+
+        File.Delete(Path.Combine(PLAYLIST_LEVEL_LOCATION, selection.levelFileName + "_lvl.osb"));
+        File.Delete(selection.metadata.MetadataFile);
+
+        MenuNotifications.Singleton.Show(selection.metadata.TrackName, "Deleted successfully!", "Track Deletion Success");
+
+        songContainerScript.index = 0;
+        ClosePlaylist();
     }
 
     public void Event_Hover_IntroLogo()

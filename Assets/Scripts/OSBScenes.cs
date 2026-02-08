@@ -4,15 +4,17 @@ using UnityEngine.SceneManagement;
 
 public static class OSBScenes
 {
+        public static bool HasLoadedGracefully;
+
     public static void LoadGameplayScene()
-    {
+        {
 #if UNITY_EDITOR
-        SceneManager.LoadScene("DebugSelect");
+                SceneManager.LoadScene("DebugSelect");
 #endif
 #if !UNITY_EDITOR
         SceneManager.LoadScene("OSB");
 #endif
-    }
+        }
     public static void QuitGame()
     {
 #if UNITY_EDITOR

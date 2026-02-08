@@ -8,6 +8,7 @@ public class LvlMetadataV1 : ILevelMetadata
     public string LevelAuthor { get; set; }
     public string SongFileName { get; set; }
     public string SongLevelFile;
+    public string MetadataFile;
     string[] divided;
 
     public bool IsValid()

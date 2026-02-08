@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Windows.Forms;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -53,6 +54,11 @@ public class PlaylistSongContainer : MonoBehaviour
     {
         if (buttons.Count <= 0) return;
         buttons[index].OnPointerClick(null);
+    }
+
+    public PlaylistTrackSelection GetCurrentLevel()
+    {
+        return buttons[index];
     }
 
     public void EnsureScrollVisible(RectTransform target)

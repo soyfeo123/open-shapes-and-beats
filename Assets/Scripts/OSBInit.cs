@@ -18,5 +18,7 @@ public class OSBInit : MonoBehaviour
         SettingMenuManager.ApplyAllSettingsAtOnce();
         SoundManager.Singleton.Init();
         DOTween.Init();
+
+        OSBScenes.HasLoadedGracefully = true;
     }
 }
