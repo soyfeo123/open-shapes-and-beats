@@ -12,7 +12,15 @@ Ever saw JSAB and said "Hey, I completed all the challenges, I played all the le
 - Community levels with easy installation!
 - Fully accessible open source code!
 
-# HOW TO CLONE/BUILD
+# CUSTOM OBJECTS
+
+Open Shapes & Beats uses C# as a programming language. Therefore, all custom objects are made with it.
+
+To add and contribute your own objects, you should clone this repository (see below) and look around the Wiki to make your custom objects.
+
+Afterwards, send a pull request with your own object and it'll probably get added to the game!
+
+# CLONING/BUILDING
 Open Shapes & Beats uses **Unity 6000.0.41f1**!
 It probably won't work with other Unity releases.
 
